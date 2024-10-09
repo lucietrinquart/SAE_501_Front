@@ -1,0 +1,60 @@
+<div class="p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Card pour chaque ressource -->
+      <section *ngFor="let item of resource" 
+               class="bg-white rounded-lg shadow-md p-6 transition-transform duration-200 hover:-translate-y-1">
+        
+        <!-- En-tête de la carte -->
+        <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">{{ item.name }}</h2>
+          <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+            {{ item.type }}
+          </span>
+        </div>
+  
+        <!-- Détails de la ressource -->
+        <div class="space-y-4">
+          <!-- Formation -->
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Formation</label>
+            <p class="text-gray-800">{{ item.course }}</p>
+          </div>
+  
+          <!-- Description -->
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Description</label>
+            <p class="text-gray-800">{{ item.description }}</p>
+          </div>
+  
+          <!-- Semestre -->
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Semestre</label>
+            <p class="text-gray-800">{{ item.semester_id }}</p>
+          </div>
+  
+          <!-- Volumes horaires -->
+          <div>
+            <h3 class="text-gray-600 font-medium mb-2">Volumes horaires</h3>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-600">Volume national</p>
+                <p class="text-lg font-semibold text-gray-800">{{ item.vol_nat }}h</p>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-600">Volume national TP</p>
+                <p class="text-lg font-semibold text-gray-800">{{ item.vol_nat_tp }}h</p>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-600">Volume encadré</p>
+                <p class="text-lg font-semibold text-gray-800">{{ item.vol_e }}h</p>
+              </div>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <p class="text-sm text-gray-600">Volume non encadré</p>
+                <p class="text-lg font-semibold text-gray-800">{{ item.vol_ne }}h</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
