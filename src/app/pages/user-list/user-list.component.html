@@ -20,9 +20,8 @@
     <div class="flex flex-col w-full gap-[5px]">
       <!-- Onglets pour les semestres -->
       <ul class="flex gap-[10px] p-[10px] bg-gray-300">
-        <!-- Boucle correcte pour les semestres -->
-        @for (sem of semestre; track sem.id) {  <!-- Utilisation de "sem" ici pour éviter la confusion -->
-          <li class="cursor-pointer px-4 py-2 bg-white border rounded"[class.bg-blue-500]="selectedSemester === sem.id" (click)="selectSemester(sem.id)">
+        @for (sem of semestre; track sem.id) {
+          <li class="cursor-pointer px-4 py-2 bg-white border rounded" [class.bg-blue-500]="selectedSemester === sem.id" (click)="selectSemester(sem.id)">
             Semestre {{ sem.id }}
           </li>
         }
@@ -31,6 +30,7 @@
       <!-- Afficher les ressources en fonction du semestre sélectionné -->
       @for (resources of resource; track resources.id) {
         <!-- Filtrer les ressources par semestre -->
+        @if (+resources.semester_id === selectedSemester) {
           <div class="flex flex-col w-full gap-[5px]">
             <!-- Nom de la ressource -->
             <div class="flex flex-col w-2/3 bg-gray-400 p-[5px]">
@@ -71,7 +71,7 @@
             </div>
           </div>
         }
-      
+      }
     </div>
   </div>
   
