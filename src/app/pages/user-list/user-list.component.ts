@@ -18,6 +18,11 @@ export class UserListComponent {
 
     this.user = response;
     });
+    this.apiService.requestApi(`/user_workload`)
+    .then((response: User) => {
+
+    this.user = response;
+    });
   }
 
 }
