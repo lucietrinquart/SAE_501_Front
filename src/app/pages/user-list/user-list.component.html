@@ -1,0 +1,13 @@
+<ul>
+    @for (user of users; track user.id) {
+        @for (userworkloads of userworkload; track userworkloads.id) {
+        @if(user.id == userworkloads.id){
+
+                    <li>
+                    {{ user.username }} : {{ userworkloads.vol_cm }}
+                    </li>
+                }
+        }
+    }
+</ul>
+
