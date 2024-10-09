@@ -3,7 +3,7 @@
     <div class="w-1/3 bg-gray-400 p-[5px] flex flex-col gap-[5px]">
       <div class="h-1/5 bg-gray-600"></div>
       <div class="h-4/5 bg-gray-600">
-        <!-- Liste des utilisateurs (tu peux l'adapter ici selon le besoin) -->
+        <!-- Liste des utilisateurs -->
         <ul>
           @for (user of users; track user.id) {
             @for (userworkloads of userworkload; track userworkloads.id) {
@@ -16,69 +16,62 @@
       </div>
     </div>
   
-    <div class="flex gap-[5px] p-[5px] bg-gray-200 h-screen">
-        <!-- Bloc de gauche pour les données additionnelles -->
-        <div class="w-1/3 bg-gray-400 p-[5px] flex flex-col gap-[5px]">
-          <div class="h-1/5 bg-gray-600"></div>
-          <div class="h-4/5 bg-gray-600">
-            <!-- Liste des utilisateurs (tu peux l'adapter ici selon le besoin) -->
-            <ul>
-              @for (user of users; track user.id) {
-                @for (userworkloads of userworkload; track userworkloads.id) {
-                  @if(user.id == userworkloads.id){
-                    <li>{{ user.username }} : {{ userworkloads.vol_cm }}</li>
-                  }
-                }
-              }
-            </ul>
-          </div>
-        </div>
-      
-        <!-- Bloc de droite pour le tableau -->
-        <div class="flex flex-col w-full gap-[5px]">
-          @for (resources of resource; track resources.id) {
-            <div class="flex flex-col w-full gap-[5px]">
-              <!-- Nom de la ressource -->
-              <div class="flex flex-col w-2/3 bg-gray-400 p-[5px]">
-                <div class="bg-white text-black p-[2px]">{{ resources.name }}</div>
-      
-                <!-- Section scrollable -->
-                <div class="bg-gray-300 p-[5px] h-[300px] overflow-y-auto"> <!-- Hauteur fixe et scroll vertical -->
-                  <table class="table-auto w-full text-left">
-                    <!-- En-têtes du tableau -->
-                    <thead>
-                      <tr>
-                        <th class="border px-4 py-2"></th> <!-- Cellule vide pour la première colonne -->
-                        <th class="border px-4 py-2">CM</th>
-                        <th class="border px-4 py-2">TD</th>
-                        <th class="border px-4 py-2">TP</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (user of users; track user.id) {
-                        @for (userworkloads of userworkload; track userworkloads.id) {
-                          @if(user.id == userworkloads.id) {
-                            <tr>
-                              <!-- Nom du prof dans la première colonne -->
-                              <td class="border px-4 py-2">{{ user.username }}</td>
-                              <!-- Volume CM dans la deuxième colonne -->
-                              <td class="border px-4 py-2">{{ userworkloads.vol_cm }}</td>
-                              <!-- Volume TD dans la troisième colonne -->
-                              <td class="border px-4 py-2">{{ userworkloads.vol_td }}</td>
-                              <!-- Volume TP dans la quatrième colonne -->
-                              <td class="border px-4 py-2">{{ userworkloads.vol_tp }}</td>
-                            </tr>
-                          }
+    <!-- Bloc de droite pour le tableau -->
+    <div class="flex flex-col w-full gap-[5px]">
+      <!-- Onglets pour les semestres -->
+      <ul class="flex gap-[10px] p-[10px] bg-gray-300">
+        <!-- Boucle correcte pour les semestres -->
+        @for (sem of semestre; track sem.id) {  <!-- Utilisation de "sem" ici pour éviter la confusion -->
+          <li class="cursor-pointer px-4 py-2 bg-white border rounded"[class.bg-blue-500]="selectedSemester === sem.id" (click)="selectSemester(sem.id)">
+            Semestre {{ sem.id }}
+          </li>
+        }
+      </ul>
+  
+      <!-- Afficher les ressources en fonction du semestre sélectionné -->
+      @for (resources of resource; track resources.id) {
+        <!-- Filtrer les ressources par semestre -->
+          <div class="flex flex-col w-full gap-[5px]">
+            <!-- Nom de la ressource -->
+            <div class="flex flex-col w-2/3 bg-gray-400 p-[5px]">
+              <div class="bg-white text-black p-[2px]">{{ resources.name }}</div>
+  
+              <!-- Tableau avec les utilisateurs et leurs volumes -->
+              <div class="bg-gray-300 p-[5px]">
+                <table class="table-auto w-full text-left">
+                  <!-- En-têtes du tableau -->
+                  <thead>
+                    <tr>
+                      <th class="border px-4 py-2"></th> <!-- Cellule vide pour la première colonne -->
+                      <th class="border px-4 py-2">CM</th>
+                      <th class="border px-4 py-2">TD</th>
+                      <th class="border px-4 py-2">TP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (user of users; track user.id) {
+                      @for (userworkloads of userworkload; track userworkloads.id) {
+                        @if(user.id == userworkloads.id) {
+                          <tr>
+                            <!-- Nom du prof dans la première colonne -->
+                            <td class="border px-4 py-2">{{ user.username }}</td>
+                            <!-- Volume CM dans la deuxième colonne -->
+                            <td class="border px-4 py-2">{{ userworkloads.vol_cm }}</td>
+                            <!-- Volume TD dans la troisième colonne -->
+                            <td class="border px-4 py-2">{{ userworkloads.vol_td }}</td>
+                            <!-- Volume TP dans la quatrième colonne -->
+                            <td class="border px-4 py-2">{{ userworkloads.vol_tp }}</td>
+                          </tr>
                         }
                       }
-                    </tbody>
-                  </table>
-                </div>
+                    }
+                  </tbody>
+                </table>
               </div>
             </div>
-          }
-        </div>
-      </div>
+          </div>
+        }
       
+    </div>
   </div>
   
