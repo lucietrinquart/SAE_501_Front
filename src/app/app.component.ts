@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {ApiService} from "./shared/services/api.service";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,10 @@ import { Component } from '@angular/core';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'SAE501_front';
+  title = 'SAE501';
+
+  constructor(
+    public apiService: ApiService,
+  ) {
+  }
 }
