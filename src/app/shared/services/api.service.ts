@@ -139,6 +139,6 @@ export class ApiService {
   }
 
   public updateResource(id: number, data: Partial<ResourceList>): Observable<ResourceList> {
-    return this.http.put<ResourceList>(`${this.apiUrl}/resource/${id}`, data);
+    return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data);
   }
 }
