@@ -7,13 +7,15 @@ import { provideHttpClient } from "@angular/common/http";
 import { UserListComponent } from './pages/user-list/user-list.component'; // Import du provider
 
 import { FormsModule } from '@angular/forms';
+import { FormCreateSemesterComponent } from './shared/layouts/form-create-semester/form-create-semester.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    UserListComponent
+    UserListComponent,
+    FormCreateSemesterComponent
   ],
   imports: [
     BrowserModule,

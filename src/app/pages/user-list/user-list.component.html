@@ -80,38 +80,4 @@
 
 
 <!-- Existing page content -->
-<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-  <h3 class="text-xl font-bold mb-4">Ajouter un nouveau semestre</h3>
-  <form (ngSubmit)="onSubmit()" #semesterForm="ngForm" class="space-y-6">
-    <div class="form-group">
-      <label for="number" class="block text-sm font-medium text-gray-700">Numéro du semestre</label>
-      <input type="number" id="number" [(ngModel)]="newSemester.number" name="number" required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-    </div>
-
-    <div class="form-group">
-      <label for="name" class="block text-sm font-medium text-gray-700">Nom du semestre</label>
-      <input type="text" id="name" [(ngModel)]="newSemester.name" name="name" required
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-    </div>
-
-    <div class="form-group">
-      <label for="nb_td" class="block text-sm font-medium text-gray-700">Nombre de TD</label>
-      <input type="number" id="nb_td" [(ngModel)]="newSemester.nb_td" name="nb_td"
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-    </div>
-
-    <div class="form-group">
-      <label for="nb_tp" class="block text-sm font-medium text-gray-700">Nombre de TP</label>
-      <input type="number" id="nb_tp" [(ngModel)]="newSemester.nb_tp" name="nb_tp"
-        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-    </div>
-
-    <button type="submit"
-      class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-      [disabled]="!semesterForm.form.valid">
-      Ajouter
-    </button>
-  </form>
-
-</div>
+<app-form-create-semester></app-form-create-semester>

@@ -1,16 +1,18 @@
 import { Component } from '@angular/core';
-import { ApiService } from "../../shared/services/api.service";
-import { User } from "../../shared/interfaces/user";
-import { UserWorkload } from '../../shared/interfaces/user-workload';
-import { ResourceList } from '../../shared/interfaces/resources';
-import { Semester } from '../../shared/interfaces/semester';
+import { ApiService } from "../../services/api.service";
+import { Semester } from '../../interfaces/semester';
+import { User } from "../../interfaces/user";
+import { UserWorkload } from '../../interfaces/user-workload';
+import { ResourceList } from '../../interfaces/resources';
+
 
 @Component({
-  selector: 'app-user-list',
-  templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.scss']
+  selector: 'app-form-create-semester',
+  templateUrl: './form-create-semester.component.html',
+  styleUrl: './form-create-semester.component.scss'
 })
-export class UserListComponent {
+export class FormCreateSemesterComponent {
+
   users: User[] = [];
   userworkload: UserWorkload[] = [];
   resource: ResourceList[] = [];
@@ -53,4 +55,17 @@ export class UserListComponent {
     this.selectedSemester = semestreId;
   }
 
+  // Méthode pour soumettre le formulaire du nouveau semestre
+  onSubmit() {
+    console.log("Submitted new semester:", this.newSemester);
+    this.apiService.requestApi(`/semesters/create`, 'POST', this.newSemester)
+      .then(response => {
+        alert('Le semestre a été ajouté avec succès !');
+        console.log('Semestre créé', response);
+      })
+      .catch(error => {
+        alert('Une erreur est survenue lors de l\'ajout du semestre.');
+        console.error('Erreur lors de la création du semestre', error);
+      });
+  }
 }
