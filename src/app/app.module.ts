@@ -3,8 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import {provideHttpClient} from "@angular/common/http";
+import { provideHttpClient } from "@angular/common/http";
 import { UserListComponent } from './pages/user-list/user-list.component'; // Import du provider
+
+import { FormsModule } from '@angular/forms';
+
+
 
 @NgModule({
   declarations: [
@@ -13,7 +17,8 @@ import { UserListComponent } from './pages/user-list/user-list.component'; // Im
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule
   ],
   providers: [
     provideHttpClient(), // Ajout du provider

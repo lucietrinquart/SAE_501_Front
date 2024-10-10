@@ -17,63 +17,51 @@ export class UserListComponent {
   semestre: Semester[] = [];
 
   selectedSemester: number = 1;
-  selectedProfessor: number | null = null; // C'est bien un nombre ou null
+  selectedProfessor: number | null = null;
+
+  // Ajouter ici la propriété newSemester avec les champs nécessaires
+  newSemester: any = {
+    number: null,
+    name: '',
+    nb_td: null,
+    nb_tp: null,
+  };
 
   constructor(private apiService: ApiService) {
-    // Appel API pour récupérer les utilisateurs
     this.apiService.requestApi(`/user`)
       .then((response: User[]) => {
         this.users = response;
       });
 
-    // Appel API pour récupérer la charge de travail
     this.apiService.requestApi(`/resource/workload`)
       .then((response: UserWorkload[]) => {
         this.userworkload = response;
       });
 
-    // Appel API pour récupérer les ressources
     this.apiService.requestApi(`/resource`)
       .then((response: ResourceList[]) => {
         this.resource = response;
       });
 
-    // Appel API pour récupérer les semestres
     this.apiService.requestApi(`/semesters`)
       .then((response: Semester[]) => {
         this.semestre = response;
       });
   }
 
-  // Sélection du semestre
   selectSemester(semestreId: number) {
     this.selectedSemester = semestreId;
   }
 
-  // Sélection ou désélection du professeur
-  // selectProfessor(userId: number) {
-  //   // Vérifie si le selectedProfessor est bien un nombre avant de faire la comparaison
-  //   if (this.selectedProfessor === userId) {
-  //     this.selectedProfessor = null; // Si on clique sur le même professeur, on désélectionne
-  //   } else {
-  //     this.selectedProfessor = userId; // Sélectionne le professeur
-  //   }
-  // }
-
-  // // Méthode pour filtrer les ressources
-  // filterResources(resource: ResourceList): boolean {
-  //   const semesterMatch = +resource.semester_id === this.selectedSemester;
-
-  //   // Si aucun professeur n'est sélectionné, on retourne juste les ressources du semestre
-  //   if (this.selectedProfessor === null) {
-  //     return semesterMatch;
-  //   }
-
-  //   // Vérifie si le professeur sélectionné a une ressource correspondante
-  //   const professorMatch = this.userworkload.some(uw => uw.id_user === this.selectedProfessor && uw.id_resource === resource.id
-  //   );
-    
-  //   // Retourne true seulement si les deux conditions sont vérifiées
-  //   return semesterMatch && professorMatch;
-  // }
+  // Méthode pour soumettre le formulaire du nouveau semestre
+  onSubmit() {
+    console.log("Submitted new semester:", this.newSemester);
+    this.apiService.requestApi(`/semesters/create`, 'POST', this.newSemester)
+      .then(response => {
+        console.log('Semestre créé', response);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la création du semestre', error);
+      });
+  }
 }
