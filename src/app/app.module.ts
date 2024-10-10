@@ -8,6 +8,8 @@ import { UserListComponent } from './pages/user-list/user-list.component'; // Im
 
 import { FormsModule } from '@angular/forms';
 import { FormCreateSemesterComponent } from './shared/layouts/form-create-semester/form-create-semester.component';
+import { FormCreateResourceComponent } from './shared/layouts/form-create-resource/form-create-resource.component';
+import { FormCreateUserComponent } from './shared/layouts/form-create-user/form-create-user.component';
 
 
 
@@ -15,7 +17,9 @@ import { FormCreateSemesterComponent } from './shared/layouts/form-create-semest
   declarations: [
     AppComponent,
     UserListComponent,
-    FormCreateSemesterComponent
+    FormCreateSemesterComponent,
+    FormCreateResourceComponent,
+    FormCreateUserComponent
   ],
   imports: [
     BrowserModule,
