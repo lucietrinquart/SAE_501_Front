@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {provideHttpClient} from "@angular/common/http";
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { ResourceListComponent } from './pages/resource-list/resource-list.component'; // Import du provider
+import { ReactiveFormsModule } from '@angular/forms'; // Ajoutez cette ligne
 
 @NgModule({
   declarations: [
@@ -15,7 +17,8 @@ import { ResourceListComponent } from './pages/resource-list/resource-list.compo
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
   ],
   providers: [
     provideHttpClient(), // Ajout du provider

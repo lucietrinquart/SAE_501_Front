@@ -2,7 +2,7 @@
   <!-- Boutons de filtrage -->
   <div class="mb-8">
     <div class="flex flex-wrap gap-3 justify-center">
-      <button 
+      <button
         (click)="filterBySemester(null)"
         [class.bg-blue-600]="selectedSemester === null"
         [class.text-white]="selectedSemester === null"
@@ -10,8 +10,8 @@
         class="px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:bg-blue-700 hover:text-white">
         Tous
       </button>
-      
-      <button 
+     
+      <button
         *ngFor="let semester of semesters"
         (click)="filterBySemester(semester)"
         [class.bg-blue-600]="selectedSemester === semester"
@@ -31,9 +31,9 @@
   <!-- Grid des ressources -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Card pour chaque ressource -->
-    <section *ngFor="let item of filteredResources" 
+    <section *ngFor="let item of filteredResources"
              class="bg-white rounded-lg shadow-md p-6 transition-transform duration-200 hover:-translate-y-1">
-      
+     
       <!-- En-tête de la carte -->
       <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
         <h2 class="text-xl font-semibold text-gray-800">{{ item.name }}</h2>
@@ -67,24 +67,35 @@
         <!-- Volumes horaires -->
         <div>
           <h3 class="text-gray-600 font-medium mb-2">Volumes horaires</h3>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <p class="text-sm text-gray-600">Volume national</p>
-              <p class="text-lg font-semibold text-gray-800">{{ item.vol_nat }}h</p>
+          <form [formGroup]="resourceForms[item.id]">
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <label class="text-sm text-gray-600 block mb-1">Volume national</label>
+                <input type="number" formControlName="vol_nat" class="w-full p-1 border rounded">
+              </div>
+              <div class="bg-gray-50 p-3 rounded-lg">
+                <label class="text-sm text-gray-600 block mb-1">Volume national TP</label>
+                <input type="number" formControlName="vol_nat_tp" class="w-full p-1 border rounded">
+              </div>
+              <div *ngIf="item.vol_e !== undefined" class="bg-gray-50 p-3 rounded-lg">
+                <label class="text-sm text-gray-600 block mb-1">Volume encadré</label>
+                <input type="number" formControlName="vol_e" class="w-full p-1 border rounded">
+              </div>
+              <div *ngIf="item.vol_ne !== undefined" class="bg-gray-50 p-3 rounded-lg">
+                <label class="text-sm text-gray-600 block mb-1">Volume non encadré</label>
+                <input type="number" formControlName="vol_ne" class="w-full p-1 border rounded">
+              </div>
             </div>
-            <div class="bg-gray-50 p-3 rounded-lg">
-              <p class="text-sm text-gray-600">Volume national TP</p>
-              <p class="text-lg font-semibold text-gray-800">{{ item.vol_nat_tp }}h</p>
-            </div>
-            <div *ngIf="item.vol_e" class="bg-gray-50 p-3 rounded-lg">
-              <p class="text-sm text-gray-600">Volume encadré</p>
-              <p class="text-lg font-semibold text-gray-800">{{ item.vol_e }}h</p>
-            </div>
-            <div *ngIf="item.vol_ne" class="bg-gray-50 p-3 rounded-lg">
-              <p class="text-sm text-gray-600">Volume non encadré</p>
-              <p class="text-lg font-semibold text-gray-800">{{ item.vol_ne }}h</p>
-            </div>
-          </div>
+          </form>
+        </div>
+        
+        <!-- Bouton de confirmation -->
+        <div class="flex justify-end mt-4">
+          <button 
+            (click)="saveChanges(item)"
+            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200">
+            Confirmer les modifications
+          </button>
         </div>
       </div>
     </section>
