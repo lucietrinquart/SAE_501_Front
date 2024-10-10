@@ -58,9 +58,11 @@ export class UserListComponent {
     console.log("Submitted new semester:", this.newSemester);
     this.apiService.requestApi(`/semesters/create`, 'POST', this.newSemester)
       .then(response => {
+        alert('Le semestre a été ajouté avec succès !');
         console.log('Semestre créé', response);
       })
       .catch(error => {
+        alert('Une erreur est survenue lors de l\'ajout du semestre.');
         console.error('Erreur lors de la création du semestre', error);
       });
   }
