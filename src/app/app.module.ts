@@ -19,7 +19,7 @@ import { FormCreateUserComponent } from './shared/layouts/form-create-user/form-
     UserListComponent,
     FormCreateSemesterComponent,
     FormCreateResourceComponent,
-    FormCreateUserComponent
+    FormCreateUserComponent,
   ],
   imports: [
     BrowserModule,

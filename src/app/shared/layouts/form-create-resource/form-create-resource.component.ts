@@ -5,6 +5,9 @@ import { User } from "../../interfaces/user";
 import { UserWorkload } from '../../interfaces/user-workload';
 import { ResourceList } from '../../interfaces/resources';
 
+import { ResourceType } from '../../interfaces/resource-types';
+
+
 @Component({
   selector: 'app-form-create-resource',
   templateUrl: './form-create-resource.component.html',
@@ -15,6 +18,7 @@ export class FormCreateResourceComponent {
   userworkload: UserWorkload[] = [];
   resource: ResourceList[] = [];
   semestre: Semester[] = [];
+  resource_types: ResourceType[] = [];
 
   selectedSemester: number = 1;
   selectedProfessor: number | null = null;
@@ -51,6 +55,11 @@ export class FormCreateResourceComponent {
     this.apiService.requestApi(`/semesters`)
       .then((response: Semester[]) => {
         this.semestre = response;
+      });
+
+    this.apiService.requestApi(`/resource/types`)
+      .then((response: ResourceType[]) => {
+        this.resource_types = response;
       });
   }
 

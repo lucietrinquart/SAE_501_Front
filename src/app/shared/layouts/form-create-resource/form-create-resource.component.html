@@ -23,8 +23,11 @@
 
         <div class="form-group">
             <label for="type" class="block text-sm font-medium text-gray-700">Type de ressource</label>
-            <input type="text" id="type" [(ngModel)]="newResource.type" name="type" required
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+            <select id="type" [(ngModel)]="newResource.type" name="type" required
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <option *ngFor="let resourceType of resource_types" [value]="resourceType.name">{{ resourceType.name }}
+                </option>
+            </select>
         </div>
 
         <div class="form-group">
