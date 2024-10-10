@@ -14,13 +14,13 @@ export class UserListComponent {
 
   constructor(private apiService: ApiService) {
     // Appel API pour récupérer les utilisateurs
-    this.apiService.requestApi(`/prof`)
+    this.apiService.requestApi(`/user`)
       .then((response: User[]) => {  // Supposons que l'API retourne un tableau d'utilisateurs
         this.users = response;
       });
 
     // Appel API pour récupérer la charge de travail de l'utilisateur
-    this.apiService.requestApi(`/user_workload`)
+    this.apiService.requestApi(`/resource-workload`)
       .then((response: UserWorkload[]) => {
         this.userworkload = response;
       });
