@@ -25,13 +25,12 @@ import { ReactiveFormsModule } from '@angular/forms'; // Ajoutez cette ligne
     FormCreateSemesterComponent,
     FormCreateResourceComponent,
     FormCreateUserComponent,
-    UserListComponent,
     ResourceListComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
     AppRoutingModule,
     ReactiveFormsModule,
   ],
