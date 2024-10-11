@@ -1,0 +1,107 @@
+<div class="p-6">
+    <!-- Filtering buttons -->
+    <div class="mb-8">
+      <div class="flex flex-wrap gap-3 justify-center">
+        <button
+          (click)="filterBySemester(null)"
+          [class.bg-blue-600]="selectedSemester === null"
+          [class.text-white]="selectedSemester === null"
+          [class.bg-gray-100]="selectedSemester !== null"
+          class="px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:bg-blue-700 hover:text-white">
+          All
+        </button>
+       
+        <button
+          *ngFor="let semester of userWorkloads[0]?.id_semester"
+          (click)="filterBySemester(semester.id)"
+          [class.bg-blue-600]="selectedSemester === semester.id"
+          [class.text-white]="selectedSemester === semester.id"
+          [class.bg-gray-100]="selectedSemester !== semester.id"
+          class="px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:bg-blue-700 hover:text-white">
+          Semester {{ semester.id }}
+        </button>
+      </div>
+    </div>
+  
+    <!-- Message if no workload -->
+    <div *ngIf="filteredWorkloads.length === 0" class="text-center text-gray-600 py-8">
+      No workload found for this semester.
+    </div>
+  
+    <!-- Grid of workloads -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Card for each workload -->
+      <section *ngFor="let workload of filteredWorkloads"
+               class="bg-white rounded-lg shadow-md p-6 transition-transform duration-200 hover:-translate-y-1">
+       
+        <!-- Card header -->
+        <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
+          <h2 class="text-xl font-semibold text-gray-800">{{ workload.id_ressource[0].name }}</h2>
+          <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+            {{ workload.id_ressource[0].type }}
+          </span>
+        </div>
+  
+        <!-- Workload details -->
+        <div class="space-y-4">
+          <!-- Course -->
+          <div *ngIf="workload.id_ressource[0].course">
+            <label class="text-gray-600 font-medium block mb-1">Course</label>
+            <p class="text-gray-800">{{ workload.id_ressource[0].course }}</p>
+          </div>
+  
+          <!-- Description -->
+          <div *ngIf="workload.id_ressource[0].description">
+            <label class="text-gray-600 font-medium block mb-1">Description</label>
+            <p class="text-gray-800">{{ workload.id_ressource[0].description }}</p>
+          </div>
+  
+          <!-- Semester -->
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Semester</label>
+            <span *ngFor="let semester of workload.id_semester" class="bg-gray-100 px-2 py-1 rounded text-sm mr-2">
+              Semester {{ semester.id }}
+            </span>
+          </div>
+  
+          <!-- User -->
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">User</label>
+            <span *ngFor="let user of workload.id_user" class="bg-gray-100 px-2 py-1 rounded text-sm mr-2">
+              {{ user.username }}
+            </span>
+        </div>
+  
+          <!-- Workload hours -->
+          <div>
+            <h3 class="text-gray-600 font-medium mb-2">Workload hours</h3>
+            <form [formGroup]="workloadForms[workload.id]">
+              <div class="grid grid-cols-3 gap-3">
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <label class="text-sm text-gray-600 block mb-1">CM Hours</label>
+                  <input type="number" formControlName="vol_cm" class="w-full p-1 border rounded">
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <label class="text-sm text-gray-600 block mb-1">TD Hours</label>
+                  <input type="number" formControlName="vol_td" class="w-full p-1 border rounded">
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                  <label class="text-sm text-gray-600 block mb-1">TP Hours</label>
+                  <input type="number" formControlName="vol_tp" class="w-full p-1 border rounded">
+                </div>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Confirmation button -->
+          <div class="flex justify-end mt-4">
+            <button 
+              (click)="saveChanges(workload)"
+              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200">
+              Confirm changes
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
