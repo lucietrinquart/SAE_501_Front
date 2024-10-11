@@ -3,15 +3,22 @@ import {FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
+import { ResourceList } from '../interfaces/resources';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  constructor(
-    private http: HttpClient,
-  ) { }
+  private apiUrl: string;
+
+  constructor(private http: HttpClient) {
+    this.apiUrl = environment.apiUrl; // Initialisez apiUrl ici
+  }
+
+  public getResources(): Observable<ResourceList[]> {
+    return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`);
+  }
 
   public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}): Promise<any> {
 
@@ -129,5 +136,9 @@ export class ApiService {
         message: message
       }
     })
+  }
+
+  public updateResource(id: number, data: Partial<ResourceList>): Observable<ResourceList> {
+    return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data);
   }
 }
