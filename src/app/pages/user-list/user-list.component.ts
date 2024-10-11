@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../shared/services/api.service";
 import { User } from "../../shared/interfaces/user";
 import { UserWorkload } from '../../shared/interfaces/user-workload';
+import { ResourceWorkload } from '../../shared/interfaces/resource-workload';
+
 import { ResourceList } from '../../shared/interfaces/resources';
 import { Semester } from '../../shared/interfaces/semester';
 
@@ -13,6 +15,7 @@ import { Semester } from '../../shared/interfaces/semester';
 export class UserListComponent implements OnInit {
   users: User[] = [];
   userworkload: UserWorkload[] = [];
+  resourceworkload: ResourceWorkload[] = [];
   resource: ResourceList[] = [];
   semestre: Semester[] = [];
   

@@ -1,6 +1,6 @@
-import {ResourceList} from "./resources";
-import {Semester} from "./semester";
-import {User} from "./user";
+import { ResourceList } from "./resources";
+import { Semester } from "./semester";
+import { User } from "./user";
 
 export interface UserWorkload {
     id: number;
