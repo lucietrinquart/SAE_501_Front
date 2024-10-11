@@ -40,6 +40,10 @@ export class ResourceListComponent implements OnInit {
   private initializeForms(): void {
     this.resources.forEach(resource => {
       this.resourceForms[resource.id] = this.fb.group({
+        name: [resource.name],
+        type: [resource.type],
+        description: [resource.description],
+        semester_id: [resource.semester_id],
         vol_nat: [resource.vol_nat],
         vol_nat_tp: [resource.vol_nat_tp],
         vol_e: [resource.vol_e],
@@ -70,6 +74,8 @@ export class ResourceListComponent implements OnInit {
         if (index !== -1) {
           this.resources[index] = { ...this.resources[index], ...updatedData };
         }
+        // Mettre à jour filteredResources si nécessaire
+        this.filterBySemester(this.selectedSemester);
       },
       error => {
         console.error('Error updating resource:', error);
