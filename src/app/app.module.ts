@@ -9,6 +9,8 @@ import { UserListComponent } from './pages/user-list/user-list.component';
 import { ResourceListComponent } from './pages/resource-list/resource-list.component'; // Import du provider
 import { ReactiveFormsModule } from '@angular/forms'; // Ajoutez cette ligne
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
