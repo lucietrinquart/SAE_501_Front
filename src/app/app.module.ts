@@ -7,18 +7,22 @@ import { AppComponent } from './app.component';
 import {provideHttpClient} from "@angular/common/http";
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { ResourceListComponent } from './pages/resource-list/resource-list.component'; // Import du provider
-import { ReactiveFormsModule } from '@angular/forms'; // Ajoutez cette ligne
+import { ReactiveFormsModule } from '@angular/forms';
+import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.component'; // Ajoutez cette ligne
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserListComponent,
-    ResourceListComponent
+    ResourceListComponent,
+    PdfFormComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [
     provideHttpClient(), // Ajout du provider

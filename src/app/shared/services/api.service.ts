@@ -20,7 +20,7 @@ export class ApiService {
     return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`);
   }
 
-  public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}): Promise<any> {
+  public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}, responseType: 'json' | 'blob' = 'json'): Promise<any> {
 
     const methodWanted = method.toLowerCase();
     let route = environment.apiUrl + action;
@@ -28,11 +28,17 @@ export class ApiService {
     //définition de la variable de requête
     var req: Observable<any>;
 
-    //ajout du header si il n'existe pas, on demande du json
+    //ajout du header si il n'existe pas, on demande du json par défaut
     if (httpOptions.headers === undefined) {
       httpOptions.headers = new HttpHeaders({
         'Content-Type': 'application/json',
       });
+    }
+
+    // Si le type de réponse est blob (pour le PDF), on modifie l'option responseType
+    if (responseType === 'blob') {
+      httpOptions = { ...httpOptions, responseType: 'blob' as 'json' }; // on doit caster 'blob' comme 'json' à cause de TypeScript
+      httpOptions.headers = httpOptions.headers.set('Accept', 'application/pdf'); // Spécifie qu'on attend un PDF
     }
 
     // création de la requête en fonction de la méthode
