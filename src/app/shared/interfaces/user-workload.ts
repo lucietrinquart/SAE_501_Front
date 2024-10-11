@@ -4,10 +4,10 @@ import {User} from "./user";
 
 export interface UserWorkload {
     id: number;
-    id_user: User[];
-    id_ressource: ResourceList[];
-    id_semester: Semester[];
-    vol_cm?: Float32Array;
-    vol_td?: Float32Array;
-    vol_tp?: Float32Array;
+    user_id: number; // Changé de User[] à number
+    resource_id: number; // Changé de ResourceList[] à number
+    semester_id: number; // Changé de Semester[] à number
+    vol_cm?: number; // Changé de Float32Array à number
+    vol_td?: number; // Changé de Float32Array à number
+    vol_tp?: number; // Changé de Float32Array à number
 }

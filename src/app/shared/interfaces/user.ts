@@ -4,5 +4,5 @@ export interface User {
     password?: string;
     username: string;
     role: string;
-    max_hour_vol?: Float32Array;
+    max_hour_vol?: number; // Changé de Float32Array à number
 }

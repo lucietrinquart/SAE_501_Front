@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../shared/services/api.service";
 import { User } from "../../shared/interfaces/user";
 import { UserWorkload } from '../../shared/interfaces/user-workload';
@@ -10,70 +10,137 @@ import { Semester } from '../../shared/interfaces/semester';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
 })
-export class UserListComponent {
+export class UserListComponent implements OnInit {
   users: User[] = [];
   userworkload: UserWorkload[] = [];
   resource: ResourceList[] = [];
   semestre: Semester[] = [];
-
+  
   selectedSemester: number = 1;
-  selectedProfessor: number | null = null; // C'est bien un nombre ou null
+  selectedProfessor: number | null = null;
+  showAllUsers: boolean = false;
 
-  constructor(private apiService: ApiService) {
-    // Appel API pour récupérer les utilisateurs
-    this.apiService.requestApi(`/user`)
-      .then((response: User[]) => {
-        this.users = response;
-      });
+  constructor(private apiService: ApiService) {}
 
-    // Appel API pour récupérer la charge de travail
-    this.apiService.requestApi(`/resource/workload`)
-      .then((response: UserWorkload[]) => {
-        this.userworkload = response;
-      });
-
-    // Appel API pour récupérer les ressources
-    this.apiService.requestApi(`/resource`)
-      .then((response: ResourceList[]) => {
-        this.resource = response;
-      });
-
-    // Appel API pour récupérer les semestres
-    this.apiService.requestApi(`/semesters`)
-      .then((response: Semester[]) => {
-        this.semestre = response;
-      });
+  ngOnInit() {
+    this.loadData();
   }
 
-  // Sélection du semestre
+  getVisibleUsers() {
+    return this.showAllUsers ? this.users.slice(0, 2) : this.users; 
+  }
+
+  loadData() {
+    this.apiService.requestApi(`/user`).then((response: User[]) => {
+      this.users = response;
+    });
+
+    this.apiService.requestApi(`/resource/workload`).then((response: UserWorkload[]) => {
+      this.userworkload = response;
+    });
+
+    this.apiService.requestApi(`/resource`).then((response: ResourceList[]) => {
+      this.resource = response;
+    });
+
+    this.apiService.requestApi(`/semesters`).then((response: Semester[]) => {
+      this.semestre = response;
+    });
+  }
+
   selectSemester(semestreId: number) {
     this.selectedSemester = semestreId;
+    this.selectedProfessor = null;
   }
 
-  // Sélection ou désélection du professeur
-  // selectProfessor(userId: number) {
-  //   // Vérifie si le selectedProfessor est bien un nombre avant de faire la comparaison
-  //   if (this.selectedProfessor === userId) {
-  //     this.selectedProfessor = null; // Si on clique sur le même professeur, on désélectionne
-  //   } else {
-  //     this.selectedProfessor = userId; // Sélectionne le professeur
-  //   }
-  // }
+  toggleProfessor(professorId: number) {
+    if (this.selectedProfessor === professorId) {
+      this.selectedProfessor = null;
+    } else {
+      this.selectedProfessor = professorId;
+    }
+  }
 
-  // // Méthode pour filtrer les ressources
-  // filterResources(resource: ResourceList): boolean {
-  //   const semesterMatch = +resource.semester_id === this.selectedSemester;
 
-  //   // Si aucun professeur n'est sélectionné, on retourne juste les ressources du semestre
-  //   if (this.selectedProfessor === null) {
-  //     return semesterMatch;
-  //   }
+  getFilteredResources() {
+    return this.resource.filter(res => {
+      const isCorrectSemester = res.semester_id === this.selectedSemester;
+      
+      if (!this.selectedProfessor) {
+        return isCorrectSemester;
+      }
 
-  //   // Vérifie si le professeur sélectionné a une ressource correspondante
-  //   const professorMatch = this.userworkload.some(uw => uw.id_user === this.selectedProfessor && uw.id_resource === resource.id
-  //   );
-    
-  //   // Retourne true seulement si les deux conditions sont vérifiées
-  //   return semesterMatch && professorMatch;
-  // }
+      const hasUserWorkload = this.userworkload.some(workload =>
+        workload.user_id === this.selectedProfessor &&
+        workload.resource_id === res.id &&
+        workload.semester_id === this.selectedSemester
+      );
+
+      return isCorrectSemester && hasUserWorkload;
+    });
+  }
+
+  // Fonction pour calculer la somme des workloads pour un utilisateur donné
+  calculateWorkloadSum(userworkloads: any) {
+    return userworkloads.vol_cm + userworkloads.vol_td + userworkloads.vol_tp;
+  }
+
+  expandedResources: { [key: number]: boolean } = {};
+
+  toggleResource(resourceId: number) {
+    if (!this.expandedResources[resourceId]) {
+      this.expandedResources[resourceId] = false;
+    }
+    this.expandedResources[resourceId] = !this.expandedResources[resourceId];
+  }
+  isResourceExpanded(resourceId: number): boolean {
+    return this.expandedResources[resourceId] || false;
+  }
+
+
+  calculateTotalWorkloadSum() {
+    let totalSum = 0;
+    // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
+    for (const user of this.getVisibleUsers()) {
+      for (const userworkload of this.userworkload) {
+        if (user.id === userworkload.id) {
+          totalSum += this.calculateWorkloadSum(userworkload);
+        }
+      }
+    }
+    return totalSum;
+  }
+
+calculateDifference(vol_nat: number) {
+  const totalSum = this.calculateTotalWorkloadSum();
+
+  const validTotalSum = totalSum !== undefined ? totalSum : 0;
+
+  return vol_nat - validTotalSum;
+}
+
+  getVolTpSum(userworkloads: any) {
+    return userworkloads.vol_tp;
+  }
+
+  getVolTpTotalSum() {
+    let totalSum = 0;
+    // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
+    for (const user of this.getVisibleUsers()) {
+      for (const userworkload of this.userworkload) {
+        if (user.id === userworkload.id) {
+          totalSum += this.getVolTpSum(userworkload);
+        }
+      }
+    }
+    return totalSum;
+  }
+
+  calculateDifferenceTP(vol_nat_tp: number) {
+    const totalSum = this.getVolTpTotalSum();
+  
+    const validTotalSum = totalSum !== undefined ? totalSum : 0;
+  
+    return vol_nat_tp - validTotalSum;
+  }
 }

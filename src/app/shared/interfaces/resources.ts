@@ -3,7 +3,7 @@ import {Semester} from "./semester";
 export interface ResourceList {
     id: number;
     name: string;
-    semester_id: Semester[];
+    semester_id: number; // Changé de Semester[] à number
     description?: string;
     type: string;
     course?: string;
@@ -11,6 +11,4 @@ export interface ResourceList {
     vol_nat_tp: number;
     vol_e?: number;
     vol_ne?: number;
-
-
 }
