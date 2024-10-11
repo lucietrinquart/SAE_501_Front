@@ -1,7 +1,7 @@
 export interface ResourceList {
     id: number;
     name: string;
-    semester_id: number;  // Changé de Semester[] à number
+    semester_id: number; // Changé de Semester[] à number
     description?: string;
     type: string;
     course?: string;
