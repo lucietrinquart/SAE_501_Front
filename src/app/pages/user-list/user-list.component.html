@@ -59,7 +59,7 @@
                 </tbody>
                 <tr>
                   <td colspan="4">
-                    <!-- Bouton pour basculer l'affichage de la ressource spécifique -->
+                    <!-- Bouton pour basculer l'affichage des utilisateurs -->
                     <button (click)="toggleResource(resources.id)" class="bg-blue-500 text-white px-4 py-2 rounded">
                       @if (isResourceExpanded(resources.id)) {
                         Voir moins
@@ -71,7 +71,6 @@
                 </tr>
               </table>  
             </div>             
-      
             <!-- Bloc pour afficher les volumes nationaux, uniquement si la ressource est dépliée -->
             @if (isResourceExpanded(resources.id)) {
               <div class="h-1/5 bg-gray-200 p-4">
@@ -91,6 +90,7 @@
           </div>           
         </div>     
       }
+      
     </div>
   
     
