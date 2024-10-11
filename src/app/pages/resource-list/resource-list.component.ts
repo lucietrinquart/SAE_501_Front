@@ -3,6 +3,7 @@ import { ApiService } from "../../shared/services/api.service";
 import { ResourceList } from "../../shared/interfaces/resources";
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+
 @Component({
   selector: 'app-resource-list',
   templateUrl: './resource-list.component.html',
