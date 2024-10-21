@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {Observable} from "rxjs";
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
-import { ResourceList } from '../interfaces/resources';
+import {ResourceList} from '../interfaces/resources';
 
 @Injectable({
   providedIn: 'root'
@@ -13,29 +13,29 @@ export class ApiService {
   private apiUrl: string;
 
   constructor(private http: HttpClient) {
-    this.apiUrl = environment.apiUrl; // Initialisez apiUrl ici
+    this.apiUrl = environment.apiUrl;
   }
 
   public getResources(): Observable<ResourceList[]> {
     return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`);
   }
 
-  public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}): Promise<any> {
+  public getResourceTypes(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/resource/types`);
+  }
 
+  public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}): Promise<any> {
     const methodWanted = method.toLowerCase();
     let route = environment.apiUrl + action;
 
-    //définition de la variable de requête
     var req: Observable<any>;
 
-    //ajout du header si il n'existe pas, on demande du json
     if (httpOptions.headers === undefined) {
       httpOptions.headers = new HttpHeaders({
         'Content-Type': 'application/json',
       });
     }
 
-    // création de la requête en fonction de la méthode
     switch (methodWanted) {
       case 'post':
         req = this.http.post(route, datas, httpOptions);
@@ -56,15 +56,12 @@ export class ApiService {
         break;
     }
 
-    //si le formulaire est passé en paramètre on le met en pending
     if(form){
       form.markAsPending();
     }
 
-    //on retourne une promesse
     return new Promise((resolve, reject) => {
       req.subscribe({
-        //si la requête est un succès
         next: (data) => {
           if (form){
             form.enable();
@@ -75,9 +72,7 @@ export class ApiService {
           resolve(data);
           return data;
         },
-        //si la requête est un échec
         error : (error: HttpErrorResponse) => {
-
           console.log('Http Error : ', error);
           if(form){
             form.enable();
@@ -85,7 +80,6 @@ export class ApiService {
               this.setFormAlert(form, error.error.message, 'error');
 
               if(error.error.errors){
-                // On parcourt les erreurs pour les affecter aux champs du formulaire concernés
                 Object.entries(error.error.errors).forEach((entry: [string, any]) => {
                   const [key, value] = entry;
                   const keys = key.split('.');
@@ -121,14 +115,12 @@ export class ApiService {
     });
   }
 
-  //fonction pour ajouter les paramètres à une url
   applyQueryParams(url: string, datas: any){
     return url + '?' + Object.keys(datas).map((key) => {
       return key + '=' + datas[key];
     }).join('&');
   }
 
-  //fonction pour afficher une alerte sur un formulaire
   setFormAlert(form: FormGroup, message: string, status: 'success' | 'error' | 'warning' | 'info' = 'success'){
     form.setErrors({
       serverError : {
