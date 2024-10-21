@@ -28,7 +28,7 @@ export class FormCreateResourceComponent {
     name: '',
     semester_id: null,
     description: '',
-    type: '',
+    resource_type_id: 0,
     course: '',
     vol_nat: 0,
     vol_nat_tp: 0,
