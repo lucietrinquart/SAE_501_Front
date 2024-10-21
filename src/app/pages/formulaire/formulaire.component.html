@@ -1,0 +1,27 @@
+<div>
+    <button (click)="toggleMode()" 
+      class="mb-4 py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+      {{ isLoginMode ? 'Passer à l\'inscription' : 'Passer à la connexion' }}
+    </button>
+  
+    <form (ngSubmit)="onSubmit()" *ngIf="!isLoginMode">
+      <input [(ngModel)]="newUser.username" name="username" placeholder="Nom d'utilisateur" required>
+      <input [(ngModel)]="newUser.email" name="email" type="email" placeholder="Email" required>
+      <input [(ngModel)]="newUser.password" name="password" type="password" placeholder="Mot de passe" required>
+      <input [(ngModel)]="newUser.role" name="role" placeholder="Rôle" required>
+      <input [(ngModel)]="newUser.max_hour_vol" name="max_hour_vol" type="number" placeholder="Heures de vol max">
+    
+      <button type="submit" 
+        class="w-full py-3 px-4 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200">
+        S'inscrire
+      </button>
+    </form>
+  
+    <form (ngSubmit)="login()">
+        <input [(ngModel)]="loginUser.username" name="username" required placeholder="Nom d'utilisateur">
+        <input type="email" [(ngModel)]="loginUser.email" name="email" required placeholder="Email">
+        <input type="password" [(ngModel)]="loginUser.password" name="password" required placeholder="Mot de passe">
+        <button type="submit">Se connecter</button>
+      </form>
+      
+  </div>

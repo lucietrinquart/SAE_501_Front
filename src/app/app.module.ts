@@ -14,7 +14,8 @@ import { FormCreateUserComponent } from './shared/layouts/form-create-user/form-
 
 
 import { ResourceListComponent } from './pages/resource-list/resource-list.component'; // Import du provider
-import { ReactiveFormsModule } from '@angular/forms'; // Ajoutez cette ligne
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormulaireComponent } from './pages/formulaire/formulaire.component'; // Ajoutez cette ligne
 
 
 
@@ -25,7 +26,8 @@ import { ReactiveFormsModule } from '@angular/forms'; // Ajoutez cette ligne
     FormCreateSemesterComponent,
     FormCreateResourceComponent,
     FormCreateUserComponent,
-    ResourceListComponent
+    ResourceListComponent,
+    FormulaireComponent
   ],
   imports: [
     BrowserModule,

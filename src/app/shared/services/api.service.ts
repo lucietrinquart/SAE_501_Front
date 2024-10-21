@@ -16,6 +16,10 @@ export class ApiService {
     this.apiUrl = environment.apiUrl;
   }
 
+  postApi(endpoint: string, data: any): Promise<any> {
+    return this.http.post(`${this.apiUrl}${endpoint}`, data).toPromise();
+  }
+
   public getResources(): Observable<ResourceList[]> {
     return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`);
   }

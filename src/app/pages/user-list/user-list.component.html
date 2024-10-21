@@ -45,6 +45,7 @@
                 @for (user of getVisibleUsers(); track user.id) {
                 @for (userworkloads of userworkload; track userworkloads.id) {
                 @if(user.id == userworkloads.id) {
+                @if(user.id == resources.id) {
                 <tr>
                   <td class="border px-4 py-2">{{ user.username }}</td>
                   <td class="border px-4 py-2">{{ userworkloads.vol_cm }}</td>
@@ -54,6 +55,7 @@
                 }
                 }
                 }
+              }
               </tbody>
               <tr>
                 <td colspan="4">
