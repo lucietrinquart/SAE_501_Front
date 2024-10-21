@@ -1,47 +1,63 @@
 import { Injectable } from '@angular/core';
-import {FormGroup} from "@angular/forms";
-import {Observable} from "rxjs";
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
+import { FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { ResourceList } from '../interfaces/resources';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-
   private apiUrl: string;
 
   constructor(private http: HttpClient) {
-    this.apiUrl = environment.apiUrl; // Initialisez apiUrl ici
+    this.apiUrl = environment.apiUrl;
   }
 
   public getResources(): Observable<ResourceList[]> {
-    return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`);
+    const headers = this.getNoCacheHeaders();
+    return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`, { headers });
+  }
+
+  private getNoCacheHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
   }
 
   public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}): Promise<any> {
-
     const methodWanted = method.toLowerCase();
-    let route = environment.apiUrl + action;
+    const timestamp = new Date().getTime();
+    let route = `${this.apiUrl}${action}`;
 
-    //définition de la variable de requête
-    var req: Observable<any>;
-
-    //ajout du header si il n'existe pas, on demande du json
-    if (httpOptions.headers === undefined) {
-      httpOptions.headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-      });
+    // Ajout du timestamp à l'URL pour éviter le cache
+    if (methodWanted === 'get' || methodWanted === 'delete') {
+      datas = { ...datas, _t: timestamp };
     }
 
-    // création de la requête en fonction de la méthode
+    let req: Observable<any>;
+
+    // Configuration des headers avec no-cache
+    if (!httpOptions.headers) {
+      httpOptions.headers = this.getNoCacheHeaders();
+    } else {
+      // Fusionner avec les headers existants
+      httpOptions.headers = httpOptions.headers.set('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0')
+        .set('Pragma', 'no-cache')
+        .set('Expires', '0');
+    }
+
+    // Création de la requête en fonction de la méthode
     switch (methodWanted) {
       case 'post':
         req = this.http.post(route, datas, httpOptions);
         break;
       case 'patch':
-        req = this.http.post(route, datas, httpOptions);
+        req = this.http.patch(route, datas, httpOptions);
         break;
       case 'put':
         req = this.http.put(route, datas, httpOptions);
@@ -56,38 +72,34 @@ export class ApiService {
         break;
     }
 
-    //si le formulaire est passé en paramètre on le met en pending
-    if(form){
+    // Si le formulaire est passé en paramètre, on le met en pending
+    if (form) {
       form.markAsPending();
     }
 
-    //on retourne une promesse
+    // On retourne une promesse
     return new Promise((resolve, reject) => {
       req.subscribe({
-        //si la requête est un succès
         next: (data) => {
-          if (form){
+          if (form) {
             form.enable();
-            if(data.message){
+            if (data.message) {
               this.setFormAlert(form, data.message, 'success');
             }
           }
+          console.log(`Données reçues pour ${action}:`, data); // Log pour debug
           resolve(data);
           return data;
         },
-        //si la requête est un échec
-        error : (error: HttpErrorResponse) => {
-
-          console.log('Http Error : ', error);
-          if(form){
+        error: (error: HttpErrorResponse) => {
+          console.error(`Erreur pour ${action}:`, error); // Log d'erreur amélioré
+          if (form) {
             form.enable();
             if (error.error.message) {
               this.setFormAlert(form, error.error.message, 'error');
 
-              if(error.error.errors){
-                // On parcourt les erreurs pour les affecter aux champs du formulaire concernés
-                Object.entries(error.error.errors).forEach((entry: [string, any]) => {
-                  const [key, value] = entry;
+              if (error.error.errors) {
+                Object.entries(error.error.errors).forEach(([key, value]: [string, any]) => {
                   const keys = key.split('.');
                   let control: any = form;
 
@@ -95,12 +107,12 @@ export class ApiService {
                     control = control.controls[keys[j]];
                   }
 
-                  if(control) {
-                    if(typeof value === 'string'){
-                      control.setErrors({serverError: value});
-                    }else{
+                  if (control) {
+                    if (typeof value === 'string') {
+                      control.setErrors({ serverError: value });
+                    } else {
                       for (let i = 0; i < value.length; i++) {
-                        control.setErrors({serverError: value[i]});
+                        control.setErrors({ serverError: value[i] });
                       }
                     }
                   }
@@ -117,28 +129,34 @@ export class ApiService {
           reject(error);
           return error;
         }
-      })
+      });
     });
   }
 
-  //fonction pour ajouter les paramètres à une url
-  applyQueryParams(url: string, datas: any){
-    return url + '?' + Object.keys(datas).map((key) => {
-      return key + '=' + datas[key];
-    }).join('&');
+  applyQueryParams(url: string, datas: Record<string, any>) {
+    const params = Object.entries(datas)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([key, value]: [string, any]) => `${key}=${encodeURIComponent(value)}`) // Ajout de types explicites ici
+      .join('&');
+      
+    return params ? `${url}?${params}` : url;
   }
 
-  //fonction pour afficher une alerte sur un formulaire
-  setFormAlert(form: FormGroup, message: string, status: 'success' | 'error' | 'warning' | 'info' = 'success'){
+  setFormAlert(form: FormGroup, message: string, status: 'success' | 'error' | 'warning' | 'info' = 'success') {
     form.setErrors({
-      serverError : {
+      serverError: {
         status: status,
         message: message
       }
-    })
+    });
   }
 
-  public updateResource(id: number, data: Partial<ResourceList>): Observable<ResourceList> {
-    return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data);
+  public updateResource(id: number | undefined, data: Partial<ResourceList>): Observable<ResourceList> {
+    if (id === undefined) {
+      throw new Error('ID is required for updating resource.');
+    }
+    
+    const headers = this.getNoCacheHeaders();
+    return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data, { headers });
   }
 }
