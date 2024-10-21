@@ -3,6 +3,11 @@ import { ApiService } from "../../shared/services/api.service";
 import { ResourceList } from "../../shared/interfaces/resources";
 import { FormBuilder, FormGroup } from '@angular/forms';
 
+interface ResourceType {
+  id: number;
+  name: string;
+}
+
 @Component({
   selector: 'app-resource-list',
   templateUrl: './resource-list.component.html',
@@ -14,6 +19,7 @@ export class ResourceListComponent implements OnInit {
   public selectedSemester: number | null = null;
   public semesters: number[] = [1, 2, 3, 4, 5, 6];
   public resourceForms: { [key: number]: FormGroup } = {};
+  public resourceTypes: ResourceType[] = [];
 
   constructor(
     private apiService: ApiService,
@@ -21,7 +27,19 @@ export class ResourceListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadResourceTypes();
     this.loadResources();
+  }
+
+  private loadResourceTypes(): void {
+    this.apiService.getResourceTypes().subscribe(
+      (types: ResourceType[]) => {
+        this.resourceTypes = types;
+      },
+      error => {
+        console.error('Error loading resource types:', error);
+      }
+    );
   }
 
   private loadResources(): void {
@@ -41,7 +59,7 @@ export class ResourceListComponent implements OnInit {
     this.resources.forEach(resource => {
       this.resourceForms[resource.id] = this.fb.group({
         name: [resource.name],
-        type: [resource.type],
+        resource_type_id: [resource.resource_type_id],
         description: [resource.description],
         semester_id: [resource.semester_id],
         vol_nat: [resource.vol_nat],
@@ -50,6 +68,11 @@ export class ResourceListComponent implements OnInit {
         vol_ne: [resource.vol_ne]
       });
     });
+  }
+
+  public getResourceTypeName(typeId: number): string {
+    const resourceType = this.resourceTypes.find(type => type.id === typeId);
+    return resourceType ? resourceType.name : 'Inconnu';
   }
 
   public filterBySemester(semesterId: number | null): void {
@@ -69,17 +92,14 @@ export class ResourceListComponent implements OnInit {
     this.apiService.updateResource(resource.id, updatedData).subscribe(
       updatedResource => {
         console.log('Resource updated successfully', updatedResource);
-        // Mettre à jour la ressource dans le tableau local
         const index = this.resources.findIndex(r => r.id === resource.id);
         if (index !== -1) {
           this.resources[index] = { ...this.resources[index], ...updatedData };
         }
-        // Mettre à jour filteredResources si nécessaire
         this.filterBySemester(this.selectedSemester);
       },
       error => {
         console.error('Error updating resource:', error);
-        // Gérer l'erreur (par exemple, afficher un message à l'utilisateur)
       }
     );
   }
