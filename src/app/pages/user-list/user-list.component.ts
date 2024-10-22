@@ -24,7 +24,7 @@ export class UserListComponent implements OnInit {
   selectedProfessor: number | null = null;
   expandedResources: { [key: number]: boolean } = {};
 
-  constructor(private apiService: ApiService, private http: HttpClient) {}
+  constructor(private apiService: ApiService, private http: HttpClient) { }
 
   ngOnInit() {
     this.loadData();
@@ -49,43 +49,43 @@ export class UserListComponent implements OnInit {
 
   loadData() {
     const timestamp = new Date().getTime();
-    
+
     Promise.all([
-        this.apiService.requestApi(`/user?ts=${timestamp}`, 'GET', null),
-        this.apiService.requestApi(`/user/workload?ts=${timestamp}`, 'GET', null),
-        this.apiService.requestApi(`/resource?ts=${timestamp}`, 'GET', null),
-        this.apiService.requestApi(`/semesters?ts=${timestamp}`, 'GET', null)
+      this.apiService.requestApi(`/user?ts=${timestamp}`, 'GET', null),
+      this.apiService.requestApi(`/user/workload?ts=${timestamp}`, 'GET', null),
+      this.apiService.requestApi(`/resource?ts=${timestamp}`, 'GET', null),
+      this.apiService.requestApi(`/semesters?ts=${timestamp}`, 'GET', null)
     ])
-    .then(([users, userworkload, resources, semesters]) => {
+      .then(([users, userworkload, resources, semesters]) => {
         this.users = Array.isArray(users) ? users : [];
         this.userworkload = Array.isArray(userworkload) ? userworkload : [];
         this.resources = Array.isArray(resources) ? resources : [];
         this.semestre = Array.isArray(semesters) ? semesters : [];
-        
+
         // Initialize undefined values to 0
         this.userworkload = this.userworkload.map(workload => ({
-            ...workload,
-            vol_cm: workload.vol_cm ?? 0,
-            vol_td: workload.vol_td ?? 0,
-            vol_tp: workload.vol_tp ?? 0
+          ...workload,
+          vol_cm: workload.vol_cm ?? 0,
+          vol_td: workload.vol_td ?? 0,
+          vol_tp: workload.vol_tp ?? 0
         }));
-    })
-    .catch(error => {
+      })
+      .catch(error => {
         console.error('Error loading data:', error);
-    });
+      });
   }
 
   getFilteredUserWorkloads(resourceId: number) {
     if (this.selectedProfessor !== null) {
-      return this.userworkload.filter(workload => 
-        workload.resource_id === resourceId && 
+      return this.userworkload.filter(workload =>
+        workload.resource_id === resourceId &&
         workload.semester_id === this.selectedSemester &&
         workload.user_id === this.selectedProfessor
       );
     }
-    
-    return this.userworkload.filter(workload => 
-      workload.resource_id === resourceId && 
+
+    return this.userworkload.filter(workload =>
+      workload.resource_id === resourceId &&
       workload.semester_id === this.selectedSemester
     );
   }
@@ -120,13 +120,13 @@ export class UserListComponent implements OnInit {
       const payload = { [field]: numericValue };
 
       this.apiService.requestApi(`/user/workload/update/${workloadId}`, 'PUT', payload)
-          .then(response => {
-              console.log('Workload updated:', response);
-              this.loadData();
-          })
-          .catch(error => {
-              console.error('Error updating workload:', error);
-          });
+        .then(response => {
+          console.log('Workload updated:', response);
+          this.loadData();
+        })
+        .catch(error => {
+          console.error('Error updating workload:', error);
+        });
     }
   }
 
@@ -159,7 +159,23 @@ export class UserListComponent implements OnInit {
   getInputValue(event: Event): number {
     const inputElement = event.target as HTMLInputElement;
     return Number(inputElement.value);  // Convertit la chaîne en nombre
-  } 
+  }
+
+
+  removeFromWorkload(WorkloadId: number) {
+    console.log('WorkloadId:', WorkloadId);
+
+    // Envoi de la requête DELETE
+    this.apiService.requestApi(`/user/workload/delete/` + WorkloadId, 'DELETE')
+      .then(response => {
+        console.log('Workload retiré avec succès', response);
+        this.loadData(); // Recharge les données après la suppression
+      })
+      .catch(error => {
+        console.error('Erreur lors de la suppression du workload:', error);
+      });
+  }
+
 
 }
 document.addEventListener('DOMContentLoaded', () => {

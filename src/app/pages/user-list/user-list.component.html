@@ -6,8 +6,7 @@
     <ul>
       <li *ngFor="let user of users; trackBy: trackByUser">
         <div class="cursor-pointer px-4 py-2 bg-white border rounded"
-             [class.bg-blue-500]="selectedProfessor === user.id"
-             (click)="toggleProfessor(user.id)">
+          [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
           <button>{{ user.username }}</button>
         </div>
       </li>
@@ -25,8 +24,7 @@
       <ul class="flex gap-2 p-2 bg-gray-300">
         <li *ngFor="let sem of semestre; trackBy: trackBySemester">
           <div class="cursor-pointer px-4 py-2 bg-white border rounded"
-               [class.bg-blue-500]="selectedSemester === sem.id"
-               (click)="selectSemester(sem.id)">
+            [class.bg-blue-500]="selectedSemester === sem.id" (click)="selectSemester(sem.id)">
             Semestre {{ sem.id }}
           </div>
         </li>
@@ -40,7 +38,7 @@
         <div class="flex flex-col w-full gap-2">
           <div class="bg-gray-400 p-2">
             <div class="bg-white text-black p-2">{{ resource.name }}</div>
-            
+
             <div class="bg-gray-300 p-2">
               <table class="table-auto w-full text-left">
                 <thead>
@@ -52,48 +50,46 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <ng-container *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
+                  <ng-container
+                    *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
                     <tr>
                       <td class="border px-4 py-2">{{ getUsername(workload.user_id) }}</td>
 
                       <!-- vol_cm input -->
                       <td class="border px-4 py-2">
-                        <input type="number"
-                               [ngModel]="workload.vol_cm"
-                               (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
-                               class="border rounded p-1" />
+                        <input type="number" [ngModel]="workload.vol_cm"
+                          (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
+                          class="border rounded p-1" />
                       </td>
 
                       <!-- vol_td input -->
                       <td class="border px-4 py-2">
-                        <input type="number"
-                               [ngModel]="workload.vol_td"
-                               (blur)="updateWorkload(workload.id, 'vol_td', getInputValue($event))"
-                               class="border rounded p-1" />
+                        <input type="number" [ngModel]="workload.vol_td"
+                          (blur)="updateWorkload(workload.id, 'vol_td', getInputValue($event))"
+                          class="border rounded p-1" />
                       </td>
 
                       <!-- vol_tp input -->
                       <td class="border px-4 py-2">
-                        <input type="number"
-                               [ngModel]="workload.vol_tp"
-                               (blur)="updateWorkload(workload.id, 'vol_tp', getInputValue($event))"
-                               class="border rounded p-1" />
+                        <input type="number" [ngModel]="workload.vol_tp"
+                          (blur)="updateWorkload(workload.id, 'vol_tp', getInputValue($event))"
+                          class="border rounded p-1" />
                       </td>
+
+                      <button class="bg-red-500 text-white p-2 rounded-lg"
+                        (click)="removeFromWorkload(workload.user_id, resource.id, selectedSemester, workload.id)">X</button>
+
                     </tr>
                   </ng-container>
                 </tbody>
               </table>
-              
-              <button (click)="toggleResource(resource.id)"
-                      class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
-                {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
-              </button>
             </div>
           </div>
         </div>
 
       </div>
-      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create Resource</button>
+      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
+        Resource</button>
       <div id="CreateResourceDiv" class="hidden">
         <app-form-create-resource></app-form-create-resource>
       </div>
