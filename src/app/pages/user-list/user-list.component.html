@@ -1,119 +1,108 @@
-<div class="flex gap-[5px] p-[5px] bg-gray-200 h-screen">
-  <div class="w-1/3 bg-gray-400 p-[5px] flex flex-col gap-[5px]">
+<!-- user-workload.component.html -->
+<div class="flex gap-2 p-2 bg-gray-200 h-screen">
+  <!-- Section Utilisateurs -->
+  <div class="w-1/3 bg-gray-400 p-2 flex flex-col gap-2">
     <div class="h-1/5 bg-gray-600"></div>
-    <div class="h-4/5 bg-gray-600 overflow-y-auto">
-      <ul>
-        @for (user of users; track user.id) {
-        <div class="cursor-pointer px-4 py-2 bg-white border rounded mb-1"
-          [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
+    <ul>
+      <li *ngFor="let user of users; trackBy: trackByUser">
+        <div class="cursor-pointer px-4 py-2 bg-white border rounded"
+             [class.bg-blue-500]="selectedProfessor === user.id"
+             (click)="toggleProfessor(user.id)">
           <button>{{ user.username }}</button>
         </div>
-        }
-        <button id="toggleAddUserButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Add User</button>
-        <div id="addUserDiv" class="hidden">
-          <app-form-create-user></app-form-create-user>
-        </div>
-
-      </ul>
-
-    </div>
+      </li>
+      <button id="toggleAddUserButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Add User</button>
+      <div id="addUserDiv" class="hidden">
+        <app-form-create-user></app-form-create-user>
+      </div>
+    </ul>
   </div>
 
+  <!-- Section des Ressources et Semestres -->
   <div class="flex w-full gap-5">
-    <!-- Tableau -->
     <div class="w-4/5">
-      <ul class="flex gap-[10px] p-[10px] bg-gray-300">
-        @for (sem of semestre; track sem.id) {
-        <li class="cursor-pointer px-4 py-2 bg-white border rounded" [class.bg-blue-500]="selectedSemester === sem.id"
-          (click)="selectSemester(sem.id)">
-          Semestre {{ sem.id }}
+      <!-- Liste des Semestres -->
+      <ul class="flex gap-2 p-2 bg-gray-300">
+        <li *ngFor="let sem of semestre; trackBy: trackBySemester">
+          <div class="cursor-pointer px-4 py-2 bg-white border rounded"
+               [class.bg-blue-500]="selectedSemester === sem.id"
+               (click)="selectSemester(sem.id)">
+            Semestre {{ sem.id }}
+          </div>
         </li>
-        }
         <button id="toggleCreateSemesterButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
           Semester</button>
+
       </ul>
 
-      @for (resources of getFilteredResources(); track resources.id) {
-      <div class="flex flex-col w-full gap-[5px]">
-        <div class="bg-gray-400 p-[5px]">
-          <div class="bg-white text-black p-[2px]">{{ resources.name }}</div>
+      <!-- Affichage des Ressources -->
+      <div *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
+        <div class="flex flex-col w-full gap-2">
+          <div class="bg-gray-400 p-2">
+            <div class="bg-white text-black p-2">{{ resource.name }}</div>
+            
+            <div class="bg-gray-300 p-2">
+              <table class="table-auto w-full text-left">
+                <thead>
+                  <tr>
+                    <th class="border px-4 py-2">Utilisateur</th>
+                    <th class="border px-4 py-2">CM</th>
+                    <th class="border px-4 py-2">TD</th>
+                    <th class="border px-4 py-2">TP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
+                    <tr>
+                      <td class="border px-4 py-2">{{ getUsername(workload.user_id) }}</td>
 
-          <div class="bg-gray-300 p-[5px]">
-            <table class="table-auto w-full text-left">
-              <thead>
-                <tr>
-                  <th class="border px-4 py-2"></th>
-                  <th class="border px-4 py-2">CM</th>
-                  <th class="border px-4 py-2">TD</th>
-                  <th class="border px-4 py-2">TP</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (user of getVisibleUsers(); track user.id) {
-                @for (userworkloads of userworkload; track userworkloads.id) {
-                @if(user.id == userworkloads.id) {
-                @if(user.id == resources.id) {
-                <tr>
-                  <td class="border px-4 py-2">{{ user.username }}</td>
-                  <td class="border px-4 py-2">{{ userworkloads.vol_cm }}</td>
-                  <td class="border px-4 py-2">{{ userworkloads.vol_td }}</td>
-                  <td class="border px-4 py-2">{{ userworkloads.vol_tp }}</td>
-                </tr>
-                }
-                }
-                }
-                }
+                      <!-- vol_cm input -->
+                      <td class="border px-4 py-2">
+                        <input type="number"
+                               [ngModel]="workload.vol_cm"
+                               (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
+                               class="border rounded p-1" />
+                      </td>
 
-              </tbody>
+                      <!-- vol_td input -->
+                      <td class="border px-4 py-2">
+                        <input type="number"
+                               [ngModel]="workload.vol_td"
+                               (blur)="updateWorkload(workload.id, 'vol_td', getInputValue($event))"
+                               class="border rounded p-1" />
+                      </td>
 
-              <tr>
-                <td colspan="4">
-                  <!-- Bouton pour basculer l'affichage des utilisateurs -->
-                  <button (click)="toggleResource(resources.id)" class="bg-blue-500 text-white px-4 py-2 rounded">
-                    @if (isResourceExpanded(resources.id)) {
-                    Voir moins
-                    } @else {
-                    Voir plus
-                    }
-                  </button>
-                </td>
-              </tr>
-            </table>
-
+                      <!-- vol_tp input -->
+                      <td class="border px-4 py-2">
+                        <input type="number"
+                               [ngModel]="workload.vol_tp"
+                               (blur)="updateWorkload(workload.id, 'vol_tp', getInputValue($event))"
+                               class="border rounded p-1" />
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+              
+              <button (click)="toggleResource(resource.id)"
+                      class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
+              </button>
+            </div>
           </div>
-          <!-- Bloc pour afficher les volumes nationaux, uniquement si la ressource est dépliée -->
-          @if (isResourceExpanded(resources.id)) {
-          <div class="h-1/5 bg-gray-200 p-4">
-            <h3 class="font-bold">Volumes nationaux</h3>
-            <ul>
-              <li>
-                Volume National: {{ resources.vol_nat }}
-                <div>Différence entre le volume National et le volume reparti {{ calculateDifference(resources.vol_nat)
-                  }}</div>
-              </li>
-              <li>
-                Volume National TP: {{ resources.vol_nat_tp }}
-                <div>Différence entre le volume National TP et le volume reparti TP {{
-                  calculateDifferenceTP(resources.vol_nat_tp) }}</div>
-              </li>
-            </ul>
-          </div>
-          }
         </div>
+
       </div>
-      }
-      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
-        Resource</button>
+      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create Resource</button>
       <div id="CreateResourceDiv" class="hidden">
         <app-form-create-resource></app-form-create-resource>
       </div>
 
 
     </div>
-    <!-- Existing page content -->
-    <!-- <app-form-create-semester></app-form-create-semester> -->
-    <!-- <app-form-create-resource></app-form-create-resource> -->
     <div id="CreateSemesterDiv" class="hidden">
       <app-form-create-semester></app-form-create-semester>
     </div>
   </div>
+
+</div>

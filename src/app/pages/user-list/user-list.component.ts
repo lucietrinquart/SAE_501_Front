@@ -6,6 +6,8 @@ import { ResourceWorkload } from '../../shared/interfaces/resource-workload';
 
 import { ResourceList } from '../../shared/interfaces/resources';
 import { Semester } from '../../shared/interfaces/semester';
+import { ResourceWithUsers } from '../../shared/interfaces/resource-with-users';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-list',
@@ -15,143 +17,151 @@ import { Semester } from '../../shared/interfaces/semester';
 export class UserListComponent implements OnInit {
   users: User[] = [];
   userworkload: UserWorkload[] = [];
-  resourceworkload: ResourceWorkload[] = [];
-  resource: ResourceList[] = [];
+  resources: ResourceList[] = [];
   semestre: Semester[] = [];
 
   selectedSemester: number = 1;
   selectedProfessor: number | null = null;
-  showAllUsers: boolean = false;
+  expandedResources: { [key: number]: boolean } = {};
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private http: HttpClient) {}
 
   ngOnInit() {
     this.loadData();
   }
 
-  getVisibleUsers() {
-    return this.showAllUsers ? this.users.slice(0, 2) : this.users;
+  // Track By Functions
+  trackByUser(index: number, user: User): number {
+    return user.id;
+  }
+
+  trackBySemester(index: number, semester: Semester): number {
+    return semester.id;
+  }
+
+  trackByResource(index: number, resource: ResourceList): number {
+    return resource.id;
+  }
+
+  trackByWorkload(index: number, workload: UserWorkload): number {
+    return workload.id;
   }
 
   loadData() {
-    this.apiService.requestApi(`/user`).then((response: User[]) => {
-      this.users = response;
-    });
-
-    this.apiService.requestApi(`/resource/workload`).then((response: UserWorkload[]) => {
-      this.userworkload = response;
-    });
-
-    this.apiService.requestApi(`/resource`).then((response: ResourceList[]) => {
-      this.resource = response;
-    });
-
-    this.apiService.requestApi(`/semesters`).then((response: Semester[]) => {
-      this.semestre = response;
+    const timestamp = new Date().getTime();
+    
+    Promise.all([
+        this.apiService.requestApi(`/user?ts=${timestamp}`, 'GET', null),
+        this.apiService.requestApi(`/user/workload?ts=${timestamp}`, 'GET', null),
+        this.apiService.requestApi(`/resource?ts=${timestamp}`, 'GET', null),
+        this.apiService.requestApi(`/semesters?ts=${timestamp}`, 'GET', null)
+    ])
+    .then(([users, userworkload, resources, semesters]) => {
+        this.users = Array.isArray(users) ? users : [];
+        this.userworkload = Array.isArray(userworkload) ? userworkload : [];
+        this.resources = Array.isArray(resources) ? resources : [];
+        this.semestre = Array.isArray(semesters) ? semesters : [];
+        
+        // Initialize undefined values to 0
+        this.userworkload = this.userworkload.map(workload => ({
+            ...workload,
+            vol_cm: workload.vol_cm ?? 0,
+            vol_td: workload.vol_td ?? 0,
+            vol_tp: workload.vol_tp ?? 0
+        }));
+    })
+    .catch(error => {
+        console.error('Error loading data:', error);
     });
   }
 
-  selectSemester(semestreId: number) {
-    this.selectedSemester = semestreId;
-    this.selectedProfessor = null;
+  getFilteredUserWorkloads(resourceId: number) {
+    if (this.selectedProfessor !== null) {
+      return this.userworkload.filter(workload => 
+        workload.resource_id === resourceId && 
+        workload.semester_id === this.selectedSemester &&
+        workload.user_id === this.selectedProfessor
+      );
+    }
+    
+    return this.userworkload.filter(workload => 
+      workload.resource_id === resourceId && 
+      workload.semester_id === this.selectedSemester
+    );
   }
 
   toggleProfessor(professorId: number) {
-    if (this.selectedProfessor === professorId) {
-      this.selectedProfessor = null;
-    } else {
-      this.selectedProfessor = professorId;
-    }
+    this.selectedProfessor = this.selectedProfessor === professorId ? null : professorId;
   }
 
+  selectSemester(semesterId: number) {
+    this.selectedSemester = semesterId;
+    this.selectedProfessor = null;
+  }
 
   getFilteredResources() {
-    return this.resource.filter(res => {
-      const isCorrectSemester = res.semester_id === this.selectedSemester;
-
-      if (!this.selectedProfessor) {
-        return isCorrectSemester;
-      }
-
-      const hasUserWorkload = this.userworkload.some(workload =>
-        workload.user_id === this.selectedProfessor &&
-        workload.resource_id === res.id &&
-        workload.semester_id === this.selectedSemester
-      );
-
-      return isCorrectSemester && hasUserWorkload;
-    });
+    return this.resources.filter(res => res.semester_id === this.selectedSemester);
   }
-
-  // Fonction pour calculer la somme des workloads pour un utilisateur donné
-  calculateWorkloadSum(userworkloads: any) {
-    return userworkloads.vol_cm + userworkloads.vol_td + userworkloads.vol_tp;
-  }
-
-  expandedResources: { [key: number]: boolean } = {};
 
   toggleResource(resourceId: number) {
-    if (!this.expandedResources[resourceId]) {
-      this.expandedResources[resourceId] = false;
-    }
     this.expandedResources[resourceId] = !this.expandedResources[resourceId];
   }
+
   isResourceExpanded(resourceId: number): boolean {
     return this.expandedResources[resourceId] || false;
   }
 
+  updateWorkload(workloadId: number, field: 'vol_cm' | 'vol_td' | 'vol_tp', value: number | null) {
+    const workload = this.userworkload.find(w => w.id === workloadId);
+    if (workload) {
+      // Ensure value is a number, default to 0 if null or undefined
+      const numericValue = value ?? 0;
+      workload[field] = numericValue;
+      const payload = { [field]: numericValue };
 
-  calculateTotalWorkloadSum() {
-    let totalSum = 0;
-    // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
-    for (const user of this.getVisibleUsers()) {
-      for (const userworkload of this.userworkload) {
-        if (user.id === userworkload.user_id) {
-          totalSum += this.calculateWorkloadSum(userworkload);
-        }
-      }
+      this.apiService.requestApi(`/user/workload/update/${workloadId}`, 'PUT', payload)
+          .then(response => {
+              console.log('Workload updated:', response);
+              this.loadData();
+          })
+          .catch(error => {
+              console.error('Error updating workload:', error);
+          });
     }
-    return totalSum;
   }
 
-  calculateDifference(vol_nat: number) {
-    const totalSum = this.calculateTotalWorkloadSum();
+  submitWorkloads() {
+    const updatePromises = this.userworkload.map(workload => {
+      // Ensure all values are numbers before submitting
+      const sanitizedWorkload = {
+        ...workload,
+        vol_cm: workload.vol_cm ?? 0,
+        vol_td: workload.vol_td ?? 0,
+        vol_tp: workload.vol_tp ?? 0
+      };
+      return this.apiService.requestApi(`/user/workload/update/${workload.id}`, 'PUT', sanitizedWorkload);
+    });
 
-    const validTotalSum = totalSum !== undefined ? totalSum : 0;
-
-    return vol_nat - validTotalSum;
+    Promise.all(updatePromises)
+      .then(responses => {
+        console.log('All workloads updated:', responses);
+        this.loadData();
+      })
+      .catch(error => {
+        console.error('Error submitting workloads:', error);
+      });
   }
 
-  getVolTpSum(userworkloads: any) {
-    return userworkloads.vol_tp;
+  getUsername(userId: number): string {
+    const user = this.users.find(u => u.id === userId);
+    return user ? user.username : 'Unknown';
   }
-
-  getVolTpTotalSum() {
-    let totalSum = 0;
-    // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
-    for (const user of this.getVisibleUsers()) {
-      for (const userworkload of this.userworkload) {
-        if (user.id === userworkload.user_id) {
-          totalSum += this.getVolTpSum(userworkload);
-        }
-      }
-    }
-    return totalSum;
-  }
-
-  calculateDifferenceTP(vol_nat_tp: number) {
-    const totalSum = this.getVolTpTotalSum();
-
-    const validTotalSum = totalSum !== undefined ? totalSum : 0;
-
-    return vol_nat_tp - validTotalSum;
-  }
-
-
-
+  getInputValue(event: Event): number {
+    const inputElement = event.target as HTMLInputElement;
+    return Number(inputElement.value);  // Convertit la chaîne en nombre
+  } 
 
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   // Sélectionner le bouton et la div par leur ID
   const toggleAddUserButton = document.getElementById('toggleAddUserButton');
@@ -185,4 +195,3 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
-
