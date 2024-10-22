@@ -1,3 +1,4 @@
+<!-- user-workload.component.html -->
 <div class="flex gap-2 p-2 bg-gray-200 h-screen">
   <!-- Section Utilisateurs -->
   <div class="w-1/3 bg-gray-400 p-2 flex flex-col gap-2">
@@ -5,8 +6,8 @@
     <ul>
       <li *ngFor="let user of users; trackBy: trackByUser">
         <div class="cursor-pointer px-4 py-2 bg-white border rounded"
-          [class.bg-blue-500]="selectedProfessor === user.id" 
-          (click)="toggleProfessor(user.id)">
+             [class.bg-blue-500]="selectedProfessor === user.id"
+             (click)="toggleProfessor(user.id)">
           <button>{{ user.username }}</button>
         </div>
       </li>
@@ -19,9 +20,9 @@
       <!-- Liste des Semestres -->
       <ul class="flex gap-2 p-2 bg-gray-300">
         <li *ngFor="let sem of semestre; trackBy: trackBySemester">
-          <div class="cursor-pointer px-4 py-2 bg-white border rounded" 
-              [class.bg-blue-500]="selectedSemester === sem.id"
-              (click)="selectSemester(sem.id)">
+          <div class="cursor-pointer px-4 py-2 bg-white border rounded"
+               [class.bg-blue-500]="selectedSemester === sem.id"
+               (click)="selectSemester(sem.id)">
             Semestre {{ sem.id }}
           </div>
         </li>
@@ -32,62 +33,48 @@
         <div class="flex flex-col w-full gap-2">
           <div class="bg-gray-400 p-2">
             <div class="bg-white text-black p-2">{{ resource.name }}</div>
-      
+            
             <div class="bg-gray-300 p-2">
               <table class="table-auto w-full text-left">
                 <thead>
                   <tr>
-                    <th class="border px-4 py-2"></th>
+                    <th class="border px-4 py-2">Utilisateur</th>
                     <th class="border px-4 py-2">CM</th>
                     <th class="border px-4 py-2">TD</th>
                     <th class="border px-4 py-2">TP</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let workload of getUserWorkloadsForResource(resource.id); trackBy: trackByWorkload">
-                    <td class="border px-4 py-2">{{ workload | json }}</td>
-                    <td class="border px-4 py-2">
-                        <input type="number" [(ngModel)]="workload.vol_cm" class="border rounded p-1" />
-                    </td>
-                    <td class="border px-4 py-2">
-                        <input type="number" [(ngModel)]="workload.vol_td" class="border rounded p-1" />
-                    </td>
-                    <td class="border px-4 py-2">
-                        <input type="number" [(ngModel)]="workload.vol_tp" class="border rounded p-1" />
-                    </td>
-                </tr>
+                  <ng-container *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
+                    <tr>
+                      <td class="border px-4 py-2">{{ getUsername(workload.user_id) }}</td>
+                      <td class="border px-4 py-2">
+                        <input type="number"
+                               [ngModel]="workload.vol_cm"
+                               (ngModelChange)="updateWorkload(workload.id, 'vol_cm', $event)"
+                               class="border rounded p-1" />
+                      </td>
+                      <td class="border px-4 py-2">
+                        <input type="number"
+                               [ngModel]="workload.vol_td"
+                               (ngModelChange)="updateWorkload(workload.id, 'vol_td', $event)"
+                               class="border rounded p-1" />
+                      </td>
+                      <td class="border px-4 py-2">
+                        <input type="number"
+                               [ngModel]="workload.vol_tp"
+                               (ngModelChange)="updateWorkload(workload.id, 'vol_tp', $event)"
+                               class="border rounded p-1" />
+                      </td>
+                    </tr>
+                  </ng-container>
                 </tbody>
-                
-                <tr>
-                  <td colspan="4">
-                    <button (click)="toggleResource(resource.id)" 
-                            class="bg-blue-500 text-white px-4 py-2 rounded">
-                      {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
-                    </button>
-                  </td>
-                </tr>
               </table>
-            </div>
-      
-            <!-- Détails des Volumes Nationaux -->
-            <div *ngIf="isResourceExpanded(resource.id)" class="h-1/5 bg-gray-200 p-4">
-              <h3 class="font-bold">Volumes nationaux</h3>
-              <ul>
-                <li>
-                  Volume National: {{ resource.vol_nat }}
-                  <div>
-                    Différence entre le volume National et le volume reparti: 
-                    {{ calculateDifference(resource.vol_nat, resource.id) }}
-                  </div>
-                </li>
-                <li>
-                  Volume National TP: {{ resource.vol_nat_tp }}
-                  <div>
-                    Différence entre le volume National TP et le volume reparti TP: 
-                    {{ calculateDifferenceTP(resource.vol_nat_tp, resource.id) }}
-                  </div>
-                </li>
-              </ul>
+              
+              <button (click)="toggleResource(resource.id)"
+                      class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
+              </button>
             </div>
           </div>
         </div>
