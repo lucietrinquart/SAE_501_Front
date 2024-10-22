@@ -1,102 +1,121 @@
-<div class="p-6">
-  <!-- Boutons de filtrage -->
-  <div class="mb-8">
-    <div class="flex flex-wrap gap-3 justify-center">
+<div class="p-6 bg-fond_page">
+  <!-- Navigation des semestres style tab -->
+  <nav class="mb-8 text-blanc">
+    <div class="flex items-center gap-3">
       <button
         (click)="filterBySemester(null)"
-        [class.bg-blue-600]="selectedSemester === null"
-        [class.text-white]="selectedSemester === null"
-        [class.bg-gray-100]="selectedSemester !== null"
-        class="px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:bg-blue-700 hover:text-white">
+        [class.border-b-2]="selectedSemester === null"
+        class="px-6 py-3 text-sm font-medium transition-colors duration-200 bg-fond_section1 rounded hover:bg-fond_section2">
         Tous
       </button>
-     
+      
       <button
         *ngFor="let semester of semesters"
         (click)="filterBySemester(semester)"
-        [class.bg-blue-600]="selectedSemester === semester"
-        [class.text-white]="selectedSemester === semester"
-        [class.bg-gray-100]="selectedSemester !== semester"
-        class="px-4 py-2 rounded-lg font-medium transition-colors duration-200 hover:bg-blue-700 hover:text-white">
-        Semestre {{ semester }}
+        [class.border-b-2]="selectedSemester === semester"
+        class="px-6 py-3 text-sm font-medium transition-colors duration-200 bg-fond_section1 rounded hover:bg-fond_section2">
+        S{{ semester }}
       </button>
+
+      <div class="ml-auto flex items-center gap-4">
+        <button class="px-4 py-2 rounded font-medium">
+          Ajouter une ressource
+        </button>
+        <button class="px-3 py-2 rounded">
+          Filtrer
+        </button>
+      </div>
     </div>
-  </div>
+  </nav>
 
   <!-- Message si aucune ressource -->
-  <div *ngIf="filteredResources.length === 0" class="text-center text-gray-600 py-8">
+  <div *ngIf="filteredResources.length === 0" class="text-center py-8">
     Aucune ressource trouvée pour ce semestre.
   </div>
 
   <!-- Grid des ressources -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Card pour chaque ressource -->
-    <section *ngFor="let item of filteredResources"
-             class="bg-white rounded-lg shadow-md p-6 transition-transform duration-200 hover:-translate-y-1">
-     
-      <!-- En-tête de la carte -->
-      <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-4">
-        <input *ngIf="resourceForms[item.id].get('name')" [formControl]="$any(resourceForms[item.id].get('name'))" class="text-xl font-semibold text-gray-800 border-b border-transparent focus:border-blue-500 focus:outline-none">
-        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-          {{ getResourceTypeName(item.resource_type_id) }}
-        </span>
-      </div>
-
-      <!-- Détails de la ressource -->
-      <div class="space-y-4">
-        <!-- Formation -->
-        <div *ngIf="item.course">
-          <label class="text-gray-600 font-medium block mb-1">Formation</label>
-          <p class="text-gray-800">{{ item.course }}</p>
+  <div class="container mx-auto">
+    <div class="grid grid-cols-2 gap-6 max-w-5xl mx-auto">
+      <!-- Card pour chaque ressource -->
+      <div *ngFor="let item of filteredResources"
+           class="bg-fond_section1 rounded-lg shadow-md p-6">
+        <!-- En-tête avec le code et type de ressource -->
+        <div class="flex justify-between items-center mb-6">
+          <div class="flex items-center gap-2">
+            <input *ngIf="resourceForms[item.id].get('name')" 
+                   [formControl]="$any(resourceForms[item.id].get('name'))" 
+                   class="font-medium text-lg focus:outline-none border-b border-transparent focus:border-blue-500 rounded">
+          </div>
+          <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
+            {{ getResourceTypeName(item.resource_type_id) }}
+          </span>
         </div>
 
-        <!-- Description -->
-        <div>
-          <label class="text-gray-600 font-medium block mb-1">Description</label>
-          <textarea *ngIf="resourceForms[item.id].get('description')" [formControl]="$any(resourceForms[item.id].get('description'))" class="w-full p-2 border rounded text-gray-800 focus:border-blue-500 focus:outline-none"></textarea>
-        </div>
+        <form [formGroup]="resourceForms[item.id]">
+          <!-- Formation si existe -->
+          <div *ngIf="item.course" class="mb-4">
+            <label class="text-gray-600 font-medium block mb-2">Formation</label>
+            <p class="text-gray-800">{{ item.course }}</p>
+          </div>
 
-        <!-- Semestre -->
-        <div>
-          <label class="text-gray-600 font-medium block mb-1">Semestre</label>
-          <select *ngIf="resourceForms[item.id].get('semester_id')" 
-                  [formControl]="$any(resourceForms[item.id].get('semester_id'))"
-                  class="w-full p-2 border rounded text-gray-800 focus:border-blue-500 focus:outline-none">
-            <option *ngFor="let sem of semesters" [value]="sem">Semestre {{ sem }}</option>
-          </select>
-        </div>
+          <!-- Description -->
+          <div class="mb-4">
+            <label class="text-gray-600 font-medium block mb-2">Description</label>
+            <textarea formControlName="description"
+                      class="w-full p-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
+                      rows="2"></textarea>
+          </div>
 
-        <!-- Volumes horaires -->
-        <div>
-          <h3 class="text-gray-600 font-medium mb-2">Volumes horaires</h3>
-          <form [formGroup]="resourceForms[item.id]">
-            <div class="grid grid-cols-2 gap-3">
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <label class="text-sm text-gray-600 block mb-1">Volume national</label>
-                <input type="number" formControlName="vol_nat" class="w-full p-1 border rounded">
+          <!-- Semestre -->
+          <div class="mb-4">
+            <label class="text-gray-600 font-medium block mb-2">Semestre</label>
+            <select formControlName="semester_id"
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
+              <option *ngFor="let sem of semesters" [value]="sem">Semestre {{ sem }}</option>
+            </select>
+          </div>
+
+          <!-- Volumes horaires -->
+          <div>
+            <label class="text-gray-600 font-medium block mb-2">Volumes horaires</label>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-sm text-gray-500 block mb-1">Volume national</label>
+                <input type="number" 
+                       formControlName="vol_nat"
+                       class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
-              <div class="bg-gray-50 p-3 rounded-lg">
-                <label class="text-sm text-gray-600 block mb-1">Volume national TP</label>
-                <input type="number" formControlName="vol_nat_tp" class="w-full p-1 border rounded">
+              <div>
+                <label class="text-sm text-gray-500 block mb-1">Volume national TP</label>
+                <input type="number" 
+                       formControlName="vol_nat_tp"
+                       class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
-              <div *ngIf="item.vol_e !== undefined" class="bg-gray-50 p-3 rounded-lg">
-                <label class="text-sm text-gray-600 block mb-1">Volume encadré</label>
-                <input type="number" formControlName="vol_e" class="w-full p-1 border rounded">
+              <div *ngIf="item.vol_e !== undefined">
+                <label class="text-sm text-gray-500 block mb-1">Volume encadré</label>
+                <input type="number" 
+                       formControlName="vol_e"
+                       class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
-              <div *ngIf="item.vol_ne !== undefined" class="bg-gray-50 p-3 rounded-lg">
-                <label class="text-sm text-gray-600 block mb-1">Volume non encadré</label>
-                <input type="number" formControlName="vol_ne" class="w-full p-1 border rounded">
+              <div *ngIf="item.vol_ne !== undefined">
+                <label class="text-sm text-gray-500 block mb-1">Volume non encadré</label>
+                <input type="number" 
+                       formControlName="vol_ne"
+                       class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
             </div>
-          </form>
-        </div>
-        
-        <!-- Bouton de confirmation -->
-        <div class="flex justify-end mt-4">
-          <button 
-            (click)="saveChanges(item)"
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200">
-            Confirmer les modifications
-          </button>
-        </div>
+          </div>
+
+          <!-- Bouton de confirmation -->
+          <div class="flex justify-end mt-6">
+            <button 
+              (click)="saveChanges(item)"
+              class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
+              Confirmer les modifications
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
+  </div>
+</div>
