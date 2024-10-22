@@ -3,6 +3,8 @@ import { ApiService } from "../../shared/services/api.service";
 import { User } from "../../shared/interfaces/user";
 import { UserWorkload } from '../../shared/interfaces/user-workload';
 import { ResourceWorkload } from '../../shared/interfaces/resource-workload';
+import { ResourceWithUsers } from '../../shared/interfaces/resource-with-users';
+
 
 import { ResourceList } from '../../shared/interfaces/resources';
 import { Semester } from '../../shared/interfaces/semester';
@@ -12,6 +14,7 @@ import { Semester } from '../../shared/interfaces/semester';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss']
 })
+
 export class UserListComponent implements OnInit {
   users: User[] = [];
   userworkload: UserWorkload[] = [];
@@ -20,8 +23,9 @@ export class UserListComponent implements OnInit {
   semestre: Semester[] = [];
   
   selectedSemester: number = 1;
-  selectedProfessor: number | null = null;
+  selectedUserId: number | null = null;
   showAllUsers: boolean = false;
+  resourcesWithUsers: ResourceWithUsers[] = [];
 
   constructor(private apiService: ApiService) {}
 
@@ -38,7 +42,7 @@ export class UserListComponent implements OnInit {
       this.users = response;
     });
 
-    this.apiService.requestApi(`/resource/workload`).then((response: UserWorkload[]) => {
+    this.apiService.requestApi(`/user/workload`).then((response: UserWorkload[]) => {
       this.userworkload = response;
     });
 
@@ -49,19 +53,114 @@ export class UserListComponent implements OnInit {
     this.apiService.requestApi(`/semesters`).then((response: Semester[]) => {
       this.semestre = response;
     });
+    this.updateResourcesWithUsers();
   }
 
-  selectSemester(semestreId: number) {
-    this.selectedSemester = semestreId;
-    this.selectedProfessor = null;
-  }
 
-  toggleProfessor(professorId: number) {
-    if (this.selectedProfessor === professorId) {
-      this.selectedProfessor = null;
+  logWorkloadData(userId: number) {
+    console.log('Selected User ID:', userId);
+    console.log('Workloads:', this.userworkload.filter(w => w.user_id === userId));
+    console.log('Resources:', this.resourcesWithUsers);
+  }
+  
+  // Modifiez la méthode selectUser pour inclure le débogage
+  selectUser(userId: number) {
+    console.log('Selecting user with ID:', userId);
+    // Si l'utilisateur est déjà sélectionné, on le désélectionne
+    if (this.selectedUserId === userId) {
+      this.selectedUserId = null;
     } else {
-      this.selectedProfessor = professorId;
+      this.selectedUserId = Number(userId); // Conversion explicite en nombre
     }
+    
+    this.updateResourcesWithUsers();
+  }
+
+  private ensureNumber(value: any): number {
+    if (typeof value === 'string') {
+      return Number(value);
+    }
+    return value;
+  }
+
+  updateResourcesWithUsers() {
+    // Commençons par console.log les données pour debug
+    console.log('Selected User ID:', this.selectedUserId);
+    console.log('All Workloads:', this.userworkload);
+  
+    this.resourcesWithUsers = this.resource
+      .filter(resource => {
+        // Filtrage par semestre
+        const isInSelectedSemester = resource.semester_id === this.selectedSemester;
+        
+        // Si un utilisateur est sélectionné
+        if (this.selectedUserId !== null) {
+          // Trouvons tous les workloads pour cet utilisateur et cette ressource
+          const userWorkloads = this.userworkload.filter(workload => {
+            const userMatch = Number(workload.user_id) === Number(this.selectedUserId);
+            const resourceMatch = Number(workload.resource_id) === Number(resource.id);
+            const semesterMatch = Number(workload.semester_id) === Number(this.selectedSemester);
+            
+            console.log('Checking workload:', {
+              workload,
+              userMatch,
+              resourceMatch,
+              semesterMatch
+            });
+            
+            return userMatch && resourceMatch && semesterMatch;
+          });
+          
+          return isInSelectedSemester && userWorkloads.length > 0;
+        }
+        
+        return isInSelectedSemester;
+      })
+      .map(resource => {
+        // Pour chaque ressource, on récupère les workloads correspondants
+        const relevantWorkloads = this.userworkload.filter(workload => {
+          const resourceMatch = Number(workload.resource_id) === Number(resource.id);
+          const semesterMatch = Number(workload.semester_id) === Number(this.selectedSemester);
+          const userMatch = this.selectedUserId === null || 
+                           Number(workload.user_id) === Number(this.selectedUserId);
+          
+          return resourceMatch && semesterMatch && userMatch;
+        });
+  
+        // On transforme ces workloads en données utilisateur
+        const usersForResource = relevantWorkloads.map(workload => {
+          const user = this.users.find(u => Number(u.id) === Number(workload.user_id));
+          
+          return {
+            id: workload.user_id,
+            username: user?.username || 'Utilisateur inconnu',
+            workload: {
+              vol_cm: workload.vol_cm || 0,
+              vol_td: workload.vol_td || 0,
+              vol_tp: workload.vol_tp || 0
+            }
+          };
+        });
+  
+        return {
+          id: resource.id,
+          name: resource.name,
+          users: usersForResource
+        };
+      });
+  
+    // Log final pour debug
+    console.log('Filtered Resources:', this.resourcesWithUsers);
+  }
+
+
+  selectSemester(semesterId: number) {
+    this.selectedSemester = semesterId;
+    this.updateResourcesWithUsers();
+  }
+
+  isUserSelected(userId: number): boolean {
+    return this.selectedUserId === userId;
   }
 
 
@@ -69,23 +168,41 @@ export class UserListComponent implements OnInit {
     return this.resource.filter(res => {
       const isCorrectSemester = res.semester_id === this.selectedSemester;
       
-      if (!this.selectedProfessor) {
-        return isCorrectSemester;
-      }
+
 
       const hasUserWorkload = this.userworkload.some(workload =>
-        workload.user_id === this.selectedProfessor &&
         workload.resource_id === res.id &&
         workload.semester_id === this.selectedSemester
-      );
+        
+      ) ;
+      console.log(isCorrectSemester);
+      console.log(hasUserWorkload);
 
       return isCorrectSemester && hasUserWorkload;
     });
   }
 
+  getFilteredUserWorkload() {
+    return this.userworkload.some(workload => 
+      workload.semester_id === this.selectedSemester
+    );
+  }
   // Fonction pour calculer la somme des workloads pour un utilisateur donné
   calculateWorkloadSum(userworkloads: any) {
-    return userworkloads.vol_cm + userworkloads.vol_td + userworkloads.vol_tp;
+    
+    for (const resource of this.getFilteredResources()) {
+      for (const user of this.getVisibleUsers()) {
+        for (const userworkload of this.userworkload) {
+          if (user.id === userworkload.id) {
+            if (user.id === resource.id) {
+              console.log(userworkloads.vol_cm)
+              return userworkloads.vol_cm + userworkloads.vol_td + userworkloads.vol_tp;
+              
+            }
+          }
+        }
+      }
+    }
   }
 
   expandedResources: { [key: number]: boolean } = {};
@@ -104,13 +221,18 @@ export class UserListComponent implements OnInit {
   calculateTotalWorkloadSum() {
     let totalSum = 0;
     // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
-    for (const user of this.getVisibleUsers()) {
-      for (const userworkload of this.userworkload) {
-        if (user.id === userworkload.id) {
-          totalSum += this.calculateWorkloadSum(userworkload);
+    for (const resource of this.getFilteredResources()) {
+      for (const user of this.getVisibleUsers()) {
+        for (const userworkload of this.userworkload) {
+          if (user.id === userworkload.id) {
+            if (user.id === resource.id) {
+            totalSum += this.calculateWorkloadSum(userworkload);
+            }
+          }
         }
       }
     }
+    console.log(totalSum)
     return totalSum;
   }
 
@@ -129,10 +251,14 @@ calculateDifference(vol_nat: number) {
   getVolTpTotalSum() {
     let totalSum = 0;
     // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
-    for (const user of this.getVisibleUsers()) {
-      for (const userworkload of this.userworkload) {
-        if (user.id === userworkload.id) {
-          totalSum += this.getVolTpSum(userworkload);
+    for (const resource of this.getFilteredResources()) {
+      for (const user of this.getVisibleUsers()) {
+        for (const userworkload of this.userworkload) {
+          if (user.id === userworkload.id) {
+            if (user.id === resource.id) {
+            totalSum += this.getVolTpSum(userworkload);
+            }
+          }
         }
       }
     }

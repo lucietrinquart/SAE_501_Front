@@ -4,10 +4,11 @@
     <div class="h-4/5 bg-gray-600 overflow-y-auto">
       <ul>
         @for (user of users; track user.id) {
-        <div class="cursor-pointer px-4 py-2 bg-white border rounded"
-          [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
-          <button>{{ user.username }}</button>
-        </div>
+          <li 
+            [class.selected]="isUserSelected(user.id)"
+            (click)="selectUser(user.id)">
+            <button>{{ user.username }}</button>
+          </li>
         }
       </ul>
 
@@ -22,14 +23,16 @@
         <li class="cursor-pointer px-4 py-2 bg-white border rounded" [class.bg-blue-500]="selectedSemester === sem.id"
           (click)="selectSemester(sem.id)">
           Semestre {{ sem.id }}
+
         </li>
         }
       </ul>
 
       @for (resources of getFilteredResources(); track resources.id) {
+      @for (resource of resourcesWithUsers; track resource.id) {
       <div class="flex flex-col w-full gap-[5px]">
         <div class="bg-gray-400 p-[5px]">
-          <div class="bg-white text-black p-[2px]">{{ resources.name }}</div>
+          <div class="bg-white text-black p-[2px]">{{ resource.name }}</div>
 
           <div class="bg-gray-300 p-[5px]">
             <table class="table-auto w-full text-left">
@@ -42,24 +45,20 @@
                 </tr>
               </thead>
               <tbody>
-                @for (user of getVisibleUsers(); track user.id) {
-                @for (userworkloads of userworkload; track userworkloads.id) {
-                @if(user.id == userworkloads.id) {
-                @if(user.id == resources.id) {
-                <tr>
-                  <td class="border px-4 py-2">{{ user.username }}</td>
-                  <td class="border px-4 py-2">{{ userworkloads.vol_cm }}</td>
-                  <td class="border px-4 py-2">{{ userworkloads.vol_td }}</td>
-                  <td class="border px-4 py-2">{{ userworkloads.vol_tp }}</td>
-                </tr>
-                }
-                }
-                }
-              }
+                @for (user of resource.users; track user.id) {
+
+
+                  <tr>
+                    <td class="border px-4 py-2">{{ user.username}}</td>
+                    <td class="border px-4 py-2">{{ user.workload.vol_cm }}</td>
+                    <td class="border px-4 py-2">{{ user.workload.vol_td }}</td>
+                    <td class="border px-4 py-2">{{ user.workload.vol_tp }}</td>
+                  </tr>
+                  }
+              
               </tbody>
-              <tr>
+              <!-- <tr>
                 <td colspan="4">
-                  <!-- Bouton pour basculer l'affichage des utilisateurs -->
                   <button (click)="toggleResource(resources.id)" class="bg-blue-500 text-white px-4 py-2 rounded">
                     @if (isResourceExpanded(resources.id)) {
                     Voir moins
@@ -68,11 +67,11 @@
                     }
                   </button>
                 </td>
-              </tr>
+              </tr> -->
             </table>
           </div>
           <!-- Bloc pour afficher les volumes nationaux, uniquement si la ressource est dépliée -->
-          @if (isResourceExpanded(resources.id)) {
+          <!-- @if (isResourceExpanded(resources.id)) {
           <div class="h-1/5 bg-gray-200 p-4">
             <h3 class="font-bold">Volumes nationaux</h3>
             <ul>
@@ -88,7 +87,7 @@
               </li>
             </ul>
           </div>
-          }
+          } -->
         </div>
       </div>
       }
