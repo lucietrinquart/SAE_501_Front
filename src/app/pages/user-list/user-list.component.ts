@@ -18,19 +18,19 @@ export class UserListComponent implements OnInit {
   resourceworkload: ResourceWorkload[] = [];
   resource: ResourceList[] = [];
   semestre: Semester[] = [];
-  
+
   selectedSemester: number = 1;
   selectedProfessor: number | null = null;
   showAllUsers: boolean = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService) { }
 
   ngOnInit() {
     this.loadData();
   }
 
   getVisibleUsers() {
-    return this.showAllUsers ? this.users.slice(0, 2) : this.users; 
+    return this.showAllUsers ? this.users.slice(0, 2) : this.users;
   }
 
   loadData() {
@@ -68,7 +68,7 @@ export class UserListComponent implements OnInit {
   getFilteredResources() {
     return this.resource.filter(res => {
       const isCorrectSemester = res.semester_id === this.selectedSemester;
-      
+
       if (!this.selectedProfessor) {
         return isCorrectSemester;
       }
@@ -114,13 +114,13 @@ export class UserListComponent implements OnInit {
     return totalSum;
   }
 
-calculateDifference(vol_nat: number) {
-  const totalSum = this.calculateTotalWorkloadSum();
+  calculateDifference(vol_nat: number) {
+    const totalSum = this.calculateTotalWorkloadSum();
 
-  const validTotalSum = totalSum !== undefined ? totalSum : 0;
+    const validTotalSum = totalSum !== undefined ? totalSum : 0;
 
-  return vol_nat - validTotalSum;
-}
+    return vol_nat - validTotalSum;
+  }
 
   getVolTpSum(userworkloads: any) {
     return userworkloads.vol_tp;
@@ -141,9 +141,27 @@ calculateDifference(vol_nat: number) {
 
   calculateDifferenceTP(vol_nat_tp: number) {
     const totalSum = this.getVolTpTotalSum();
-  
+
     const validTotalSum = totalSum !== undefined ? totalSum : 0;
-  
+
     return vol_nat_tp - validTotalSum;
   }
+
+
+
+
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Sélectionner le bouton et la div par leur ID
+  const toggleButton = document.getElementById('toggleButton');
+  const addUserDiv = document.getElementById('addUserDiv');
+
+  if (toggleButton && addUserDiv) {
+    toggleButton.addEventListener('click', () => {
+      // Basculer la classe 'hidden' pour afficher ou masquer la div
+      addUserDiv.classList.toggle('hidden');
+    });
+  }
+});
+
