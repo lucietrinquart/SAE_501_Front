@@ -157,8 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleAddUserButton = document.getElementById('toggleAddUserButton');
   const addUserDiv = document.getElementById('addUserDiv');
 
-  const toggleAddCreateResourceButton = document.getElementById('toggleAddCreateResourceButton');
+  const toggleCreateResourceButton = document.getElementById('toggleCreateResourceButton');
   const CreateResourceDiv = document.getElementById('CreateResourceDiv');
+
+  const toggleCreateSemesterButton = document.getElementById('toggleCreateSemesterButton');
+  const CreateSemesterDiv = document.getElementById('CreateSemesterDiv');
 
   if (toggleAddUserButton && addUserDiv) {
     toggleAddUserButton.addEventListener('click', () => {
@@ -167,10 +170,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (toggleAddCreateResourceButton && CreateResourceDiv) {
-    toggleAddCreateResourceButton.addEventListener('click', () => {
+  if (toggleCreateResourceButton && CreateResourceDiv) {
+    toggleCreateResourceButton.addEventListener('click', () => {
       // Basculer la classe 'hidden' pour afficher ou masquer la div
       CreateResourceDiv.classList.toggle('hidden');
+    });
+  }
+
+  if (toggleCreateSemesterButton && CreateSemesterDiv) {
+    toggleCreateSemesterButton.addEventListener('click', () => {
+      // Basculer la classe 'hidden' pour afficher ou masquer la div
+      CreateSemesterDiv.classList.toggle('hidden');
     });
   }
 
