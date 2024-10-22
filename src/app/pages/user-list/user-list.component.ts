@@ -106,7 +106,7 @@ export class UserListComponent implements OnInit {
     // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
     for (const user of this.getVisibleUsers()) {
       for (const userworkload of this.userworkload) {
-        if (user.id === userworkload.id) {
+        if (user.id === userworkload.user_id) {
           totalSum += this.calculateWorkloadSum(userworkload);
         }
       }
@@ -131,7 +131,7 @@ export class UserListComponent implements OnInit {
     // Parcourir uniquement les utilisateurs visibles selon l'état de showAllUsers
     for (const user of this.getVisibleUsers()) {
       for (const userworkload of this.userworkload) {
-        if (user.id === userworkload.id) {
+        if (user.id === userworkload.user_id) {
           totalSum += this.getVolTpSum(userworkload);
         }
       }
