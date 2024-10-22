@@ -1,140 +1,173 @@
-import {Injectable} from '@angular/core';
-import {FormGroup} from "@angular/forms";
-import {Observable} from "rxjs";
-import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
-import {environment} from "../../../environments/environment";
-import {ResourceList} from '../interfaces/resources';
+import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ResourceList } from '../interfaces/resources';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-
   private apiUrl: string;
 
   constructor(private http: HttpClient) {
     this.apiUrl = environment.apiUrl;
   }
 
-  postApi(endpoint: string, data: any): Promise<any> {
+  public postApi(endpoint: string, data: any): Promise<any> {
     return this.http.post(`${this.apiUrl}${endpoint}`, data).toPromise();
   }
 
   public getResources(): Observable<ResourceList[]> {
-    return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`);
+    const headers = this.getNoCacheHeaders();
+    return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`, { headers });
   }
 
   public getResourceTypes(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/resource/types`);
+    const headers = this.getNoCacheHeaders();
+    return this.http.get<any[]>(`${this.apiUrl}/resource/types`, { headers });
   }
 
-  public async requestApi(action: string, method: string = 'GET', datas: any = {}, form?: FormGroup, httpOptions: any = {}): Promise<any> {
+  public updateResource(id: number | undefined, data: Partial<ResourceList>): Observable<ResourceList> {
+    if (id === undefined) {
+      throw new Error('ID is required for updating resource.');
+    }
+    
+    const headers = this.getNoCacheHeaders();
+    return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data, { headers });
+  }
+
+  public async requestApi(
+    action: string, 
+    method: string = 'GET', 
+    data: Record<string, any> = {}, 
+    form?: FormGroup, 
+    httpOptions: any = {}
+  ): Promise<any> {
     const methodWanted = method.toLowerCase();
-    let route = environment.apiUrl + action;
+    const timestamp = new Date().getTime();
+    let route = `${this.apiUrl}${action}`;
 
-    var req: Observable<any>;
-
-    if (httpOptions.headers === undefined) {
-      httpOptions.headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-      });
+    // Ajout du timestamp pour éviter le cache sur GET et DELETE
+    if (methodWanted === 'get' || methodWanted === 'delete') {
+      data = { ...data, _t: timestamp };
     }
 
+    // Configuration des headers
+    if (!httpOptions.headers) {
+      httpOptions.headers = this.getNoCacheHeaders();
+    } else {
+      httpOptions.headers = httpOptions.headers
+        .set('Cache-Control', 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0')
+        .set('Pragma', 'no-cache')
+        .set('Expires', '0');
+    }
+
+    let req: Observable<any>;
+
+    // Création de la requête selon la méthode
     switch (methodWanted) {
       case 'post':
-        req = this.http.post(route, datas, httpOptions);
+        req = this.http.post(route, data, httpOptions);
         break;
       case 'patch':
-        req = this.http.post(route, datas, httpOptions);
+        req = this.http.patch(route, data, httpOptions);
         break;
       case 'put':
-        req = this.http.put(route, datas, httpOptions);
+        req = this.http.put(route, data, httpOptions);
         break;
       case 'delete':
-        route = this.applyQueryParams(route, datas);
+        route = this.applyQueryParams(route, data);
         req = this.http.delete(route, httpOptions);
         break;
-      default:
-        route = this.applyQueryParams(route, datas);
+      default: // GET
+        route = this.applyQueryParams(route, data);
         req = this.http.get(route, httpOptions);
         break;
     }
 
-    if(form){
+    // Gestion du formulaire si présent
+    if (form) {
       form.markAsPending();
     }
 
+    // Retour de la promesse avec gestion des erreurs
     return new Promise((resolve, reject) => {
       req.subscribe({
-        next: (data) => {
-          if (form){
+        next: (response) => {
+          if (form) {
             form.enable();
-            if(data.message){
-              this.setFormAlert(form, data.message, 'success');
+            if (response.message) {
+              this.setFormAlert(form, response.message, 'success');
             }
           }
-          resolve(data);
-          return data;
+          console.log(`Données reçues pour ${action}:`, response);
+          resolve(response);
         },
-        error : (error: HttpErrorResponse) => {
-          console.log('Http Error : ', error);
-          if(form){
+        error: (error: HttpErrorResponse) => {
+          console.error(`Erreur pour ${action}:`, error);
+          
+          if (form) {
             form.enable();
+            
             if (error.error.message) {
               this.setFormAlert(form, error.error.message, 'error');
+            }
 
-              if(error.error.errors){
-                Object.entries(error.error.errors).forEach((entry: [string, any]) => {
-                  const [key, value] = entry;
-                  const keys = key.split('.');
-                  let control: any = form;
+            if (error.error.errors) {
+              Object.entries(error.error.errors).forEach(([key, value]: [string, any]) => {
+                const keys = key.split('.');
+                let control: any = form;
 
-                  for (let j = 0; j < keys.length; j++) {
-                    control = control.controls[keys[j]];
+                for (const k of keys) {
+                  control = control.controls[k];
+                }
+
+                if (control) {
+                  if (typeof value === 'string') {
+                    control.setErrors({ serverError: value });
+                  } else if (Array.isArray(value)) {
+                    control.setErrors({ serverError: value[0] });
                   }
-
-                  if(control) {
-                    if(typeof value === 'string'){
-                      control.setErrors({serverError: value});
-                    }else{
-                      for (let i = 0; i < value.length; i++) {
-                        control.setErrors({serverError: value[i]});
-                      }
-                    }
-                  }
-                });
-              }
-            } else if (error.error) {
-              if (typeof error.error === 'string') {
-                this.setFormAlert(form, error.error, 'error');
-              }
-            } else {
-              this.setFormAlert(form, error.message, 'error');
+                }
+              });
             }
           }
           reject(error);
-          return error;
         }
-      })
+      });
     });
   }
 
-  applyQueryParams(url: string, datas: any){
-    return url + '?' + Object.keys(datas).map((key) => {
-      return key + '=' + datas[key];
-    }).join('&');
+  private getNoCacheHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate, post-check=0, pre-check=0',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
   }
 
-  setFormAlert(form: FormGroup, message: string, status: 'success' | 'error' | 'warning' | 'info' = 'success'){
+  private applyQueryParams(url: string, params: Record<string, any>): string {
+    const queryParams = Object.entries(params)
+      .filter(([_, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join('&');
+      
+    return queryParams ? `${url}?${queryParams}` : url;
+  }
+
+  private setFormAlert(
+    form: FormGroup, 
+    message: string, 
+    status: 'success' | 'error' | 'warning' | 'info' = 'success'
+  ): void {
     form.setErrors({
-      serverError : {
-        status: status,
-        message: message
+      serverError: {
+        status,
+        message
       }
-    })
-  }
-
-  public updateResource(id: number, data: Partial<ResourceList>): Observable<ResourceList> {
-    return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data);
+    });
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ApiService } from "../../services/api.service";
 import { User } from "../../interfaces/user";
+import { FormsModule } from '@angular/forms'; // Importer FormsModule
 
 @Component({
   selector: 'app-form-create-user',
