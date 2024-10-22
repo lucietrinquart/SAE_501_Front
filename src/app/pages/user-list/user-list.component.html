@@ -32,6 +32,8 @@
 
         </li>
         }
+        <button id="toggleCreateSemesterButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
+          Semester</button>
       </ul>
 
       @for (resource of resourcesWithUsers; track resource.id) {
@@ -92,15 +94,25 @@
             </ul>
           </div>
           } -->
+    
+    
         </div>
+        
       </div>
       }
-
+      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create Resource</button>
+      <div id="CreateResourceDiv" class="hidden">
+        <app-form-create-resource></app-form-create-resource>
+      </div>
     </div>
     <!-- Existing page content -->
     <!-- <app-form-create-semester></app-form-create-semester> -->
     <!-- <app-form-create-resource></app-form-create-resource> -->
     <!-- <app-form-create-user></app-form-create-user> -->
+    <div id="CreateSemesterDiv" class="hidden">
+      <app-form-create-semester></app-form-create-semester>
+    </div>
+
 
   </div>
   <!-- <iframe src="https://steamdb.info/embed/?appid=1790600" height="389" style="border:0;overflow:hidden;width:100%"

@@ -105,7 +105,6 @@ export class ApiService {
               this.setFormAlert(form, response.message, 'success');
             }
           }
-          console.log(`Données reçues pour ${action}:`, response);
           resolve(response);
         },
         error: (error: HttpErrorResponse) => {

@@ -54,14 +54,11 @@ export class UserListComponent implements OnInit {
   }
 
   logWorkloadData(userId: number) {
-    console.log('Selected User ID:', userId);
-    console.log('Workloads:', this.userworkload.filter(w => w.user_id === userId));
-    console.log('Resources:', this.resourcesWithUsers);
   }
   
   // Modifiez la méthode selectUser pour inclure le débogage
   selectUser(userId: number) {
-    console.log('Selecting user with ID:', userId);
+
     // Si l'utilisateur est déjà sélectionné, on le désélectionne
     if (this.selectedUserId === userId) {
       this.selectedUserId = null;
@@ -80,9 +77,7 @@ export class UserListComponent implements OnInit {
   }
 
   updateResourcesWithUsers() {
-    // Commençons par console.log les données pour debug
-    console.log('Selected User ID:', this.selectedUserId);
-    console.log('All Workloads:', this.userworkload);
+
   
     this.resourcesWithUsers = this.resource
       .filter(resource => {
@@ -96,13 +91,7 @@ export class UserListComponent implements OnInit {
             const userMatch = Number(workload.user_id) === Number(this.selectedUserId);
             const resourceMatch = Number(workload.resource_id) === Number(resource.id);
             const semesterMatch = Number(workload.semester_id) === Number(this.selectedSemester);
-            
-            console.log('Checking workload:', {
-              workload,
-              userMatch,
-              resourceMatch,
-              semesterMatch
-            });
+          
             
             return userMatch && resourceMatch && semesterMatch;
           });
@@ -145,8 +134,6 @@ export class UserListComponent implements OnInit {
         };
       });
   
-    // Log final pour debug
-    console.log('Filtered Resources:', this.resourcesWithUsers);
   }
 
 
@@ -250,8 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleAddUserButton = document.getElementById('toggleAddUserButton');
   const addUserDiv = document.getElementById('addUserDiv');
 
-  const toggleAddCreateResourceButton = document.getElementById('toggleAddCreateResourceButton');
+  const toggleCreateResourceButton = document.getElementById('toggleCreateResourceButton');
   const CreateResourceDiv = document.getElementById('CreateResourceDiv');
+
+  const toggleCreateSemesterButton = document.getElementById('toggleCreateSemesterButton');
+  const CreateSemesterDiv = document.getElementById('CreateSemesterDiv');
 
   if (toggleAddUserButton && addUserDiv) {
     toggleAddUserButton.addEventListener('click', () => {
@@ -260,12 +250,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (toggleAddCreateResourceButton && CreateResourceDiv) {
-    toggleAddCreateResourceButton.addEventListener('click', () => {
+  if (toggleCreateResourceButton && CreateResourceDiv) {
+    toggleCreateResourceButton.addEventListener('click', () => {
       // Basculer la classe 'hidden' pour afficher ou masquer la div
       CreateResourceDiv.classList.toggle('hidden');
     });
   }
 
+  if (toggleCreateSemesterButton && CreateSemesterDiv) {
+    toggleCreateSemesterButton.addEventListener('click', () => {
+      // Basculer la classe 'hidden' pour afficher ou masquer la div
+      CreateSemesterDiv.classList.toggle('hidden');
+    });
+  }
+
 });
+
 
