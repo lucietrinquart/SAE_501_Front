@@ -4,11 +4,16 @@
     <div class="h-4/5 bg-gray-600 overflow-y-auto">
       <ul>
         @for (user of users; track user.id) {
-        <div class="cursor-pointer px-4 py-2 bg-white border rounded"
+        <div class="cursor-pointer px-4 py-2 bg-white border rounded mb-1"
           [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
           <button>{{ user.username }}</button>
         </div>
         }
+        <button id="toggleButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Add User</button>
+        <div id="addUserDiv" class="hidden">
+          <app-form-create-user></app-form-create-user>
+        </div>
+
       </ul>
 
     </div>
@@ -55,7 +60,7 @@
                 }
                 }
                 }
-              }
+                }
               </tbody>
               <tr>
                 <td colspan="4">
@@ -97,8 +102,5 @@
     <!-- Existing page content -->
     <!-- <app-form-create-semester></app-form-create-semester> -->
     <!-- <app-form-create-resource></app-form-create-resource> -->
-    <!-- <app-form-create-user></app-form-create-user> -->
 
   </div>
-  <!-- <iframe src="https://steamdb.info/embed/?appid=1790600" height="389" style="border:0;overflow:hidden;width:100%"
-    loading="lazy"></iframe> -->
