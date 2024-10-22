@@ -154,14 +154,25 @@ export class UserListComponent implements OnInit {
 
 document.addEventListener('DOMContentLoaded', () => {
   // Sélectionner le bouton et la div par leur ID
-  const toggleButton = document.getElementById('toggleButton');
+  const toggleAddUserButton = document.getElementById('toggleAddUserButton');
   const addUserDiv = document.getElementById('addUserDiv');
 
-  if (toggleButton && addUserDiv) {
-    toggleButton.addEventListener('click', () => {
+  const toggleAddCreateResourceButton = document.getElementById('toggleAddCreateResourceButton');
+  const CreateResourceDiv = document.getElementById('CreateResourceDiv');
+
+  if (toggleAddUserButton && addUserDiv) {
+    toggleAddUserButton.addEventListener('click', () => {
       // Basculer la classe 'hidden' pour afficher ou masquer la div
       addUserDiv.classList.toggle('hidden');
     });
   }
+
+  if (toggleAddCreateResourceButton && CreateResourceDiv) {
+    toggleAddCreateResourceButton.addEventListener('click', () => {
+      // Basculer la classe 'hidden' pour afficher ou masquer la div
+      CreateResourceDiv.classList.toggle('hidden');
+    });
+  }
+
 });
 
