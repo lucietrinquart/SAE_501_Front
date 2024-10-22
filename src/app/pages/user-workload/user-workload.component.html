@@ -11,6 +11,10 @@
           <button>{{ user.username }}</button>
         </div>
       </li>
+      <button id="toggleAddUserButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Add User</button>
+      <div id="addUserDiv" class="hidden">
+        <app-form-create-user></app-form-create-user>
+      </div>
     </ul>
   </div>
 
@@ -26,6 +30,10 @@
             Semestre {{ sem.id }}
           </div>
         </li>
+        <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create Resource</button>
+        <div id="CreateResourceDiv" class="hidden">
+          <app-form-create-resource></app-form-create-resource>
+        </div>
       </ul>
 
       <!-- Affichage des Ressources -->
@@ -59,8 +67,8 @@
                                [ngModel]="workload.vol_td"
                                (ngModelChange)="updateWorkload(workload.id, 'vol_td', $event)"
                                class="border rounded p-1" />
-                      </td>
-                      <td class="border px-4 py-2">
+                                            </td>
+<td class="border px-4 py-2">
                         <input type="number"
                                [ngModel]="workload.vol_tp"
                                (ngModelChange)="updateWorkload(workload.id, 'vol_tp', $event)"
@@ -75,10 +83,13 @@
                       class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
                 {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
               </button>
+
             </div>
           </div>
         </div>
+
       </div>
+
 
       <!-- Bouton de Soumission -->
       <div class="flex justify-end p-4">
@@ -87,5 +98,8 @@
         </button>
       </div>
     </div>
+  </div>
+  <div id="CreateSemesterDiv" class="hidden">
+    <app-form-create-semester></app-form-create-semester>
   </div>
 </div>
