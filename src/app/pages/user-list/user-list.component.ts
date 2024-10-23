@@ -161,6 +161,69 @@ export class UserListComponent implements OnInit {
     return Number(inputElement.value);  // Convertit la chaîne en nombre
   } 
 
+
+  calculateResourceTotals(resourceId: number) {
+    const workloads = this.getFilteredUserWorkloads(resourceId);
+    const resource = this.resources.find(r => r.id === resourceId);
+    
+    if (!resource) return null;
+
+    // Calculer les totaux des volumes répartis
+    const totals = workloads.reduce((acc, workload) => ({
+      vol_cm: acc.vol_cm + (workload.vol_cm ?? 0),
+      vol_td: acc.vol_td + (workload.vol_td ?? 0),
+      vol_tp: acc.vol_tp + (workload.vol_tp ?? 0)
+    }), {
+      vol_cm: 0,
+      vol_td: 0,
+      vol_tp: 0
+    });
+
+    // Calculer la différence totale
+    const totalVolume = totals.vol_cm + totals.vol_td + totals.vol_tp;
+    const difference = resource.vol_nat - totalVolume;
+
+    return {
+      totalDifference: difference,
+      totals: totals
+    };
+  }
+
+  getTotalDifference(resourceId: number): number {
+    const calculations = this.calculateResourceTotals(resourceId);
+    return calculations ? calculations.totalDifference : 0;
+  }
+
+  calculateResourceTotalsTP(resourceId: number) {
+    const workloads = this.getFilteredUserWorkloads(resourceId);
+    const resource = this.resources.find(r => r.id === resourceId);
+    
+    if (!resource) return null;
+
+    // Calculer les totaux des volumes répartis
+    const totals = workloads.reduce((acc, workload) => ({
+      vol_tp: acc.vol_tp + (workload.vol_tp ?? 0)
+    }), {
+      vol_tp: 0
+    });
+
+    // Calculer la différence totale
+    const totalVolume = totals.vol_tp;
+    const difference = resource.vol_nat_tp - totalVolume;
+
+    return {
+      totalDifference: difference,
+      totals: totals
+    };
+  }
+
+  getTotalDifferenceTP(resourceId: number): number {
+    const calculations = this.calculateResourceTotalsTP(resourceId);
+    return calculations ? calculations.totalDifference : 0;
+  }
+
+
+
 }
 document.addEventListener('DOMContentLoaded', () => {
   // Sélectionner le bouton et la div par leur ID
