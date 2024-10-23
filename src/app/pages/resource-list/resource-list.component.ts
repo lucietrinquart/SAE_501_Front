@@ -20,6 +20,7 @@ export class ResourceListComponent implements OnInit {
   public semesters: number[] = [1, 2, 3, 4, 5, 6];
   public resourceForms: { [key: number]: FormGroup } = {};
   public resourceTypes: ResourceType[] = [];
+  public expandedResources: { [key: number]: boolean } = {};  // Nouvel objet pour suivre l'état déplié/plié
 
   constructor(
     private apiService: ApiService,
@@ -48,11 +49,22 @@ export class ResourceListComponent implements OnInit {
         this.resources = response;
         this.filteredResources = response;
         this.initializeForms();
+        this.initializeExpandedState();  // Initialise l'état déplié/plié
       },
       error => {
         console.error('Error loading resources:', error);
       }
     );
+  }
+
+  private initializeExpandedState(): void {
+    this.resources.forEach(resource => {
+      this.expandedResources[resource.id] = false;
+    });
+  }
+
+  public toggleResource(id: number): void {
+    this.expandedResources[id] = !this.expandedResources[id];
   }
 
   private initializeForms(): void {
@@ -91,7 +103,6 @@ export class ResourceListComponent implements OnInit {
     const updatedData = this.resourceForms[resource.id].value;
     this.apiService.updateResource(resource.id, updatedData).subscribe(
       updatedResource => {
-        console.log('Resource updated successfully', updatedResource);
         const index = this.resources.findIndex(r => r.id === resource.id);
         if (index !== -1) {
           this.resources[index] = { ...this.resources[index], ...updatedData };
