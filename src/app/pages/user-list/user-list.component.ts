@@ -24,6 +24,14 @@ export class UserListComponent implements OnInit {
   selectedProfessor: number | null = null;
   expandedResources: { [key: number]: boolean } = {};
 
+
+  newWorkload: { user_id: number | null, vol_cm: number, vol_td: number, vol_tp: number } = {
+    user_id: null,
+    vol_cm: 0,
+    vol_td: 0,
+    vol_tp: 0
+  };
+
   constructor(private apiService: ApiService, private http: HttpClient) { }
 
   ngOnInit() {
@@ -175,6 +183,34 @@ export class UserListComponent implements OnInit {
         console.error('Erreur lors de la suppression du workload:', error);
       });
   }
+  // workload.user_id, resource.id, selectedSemester, workload.id
+  submitNewWorkload(ResourceId: number, SemesterId: number) {
+    // Vérifiez que les champs requis sont remplis
+
+    // Préparer les données pour la requête
+    const payload = {
+      user_id: this.newWorkload.user_id,
+      semester_id: SemesterId,  // Semestre sélectionné
+      resource_id: ResourceId,  // La ressource sélectionnée
+      vol_cm: this.newWorkload.vol_cm || 0,  // Volume CM (0 si non défini)
+      vol_td: this.newWorkload.vol_td || 0,  // Volume TD (0 si non défini)
+      vol_tp: this.newWorkload.vol_tp || 0   // Volume TP (0 si non défini)
+    };
+
+    console.log(payload)
+
+    // Appel API pour soumettre le workload
+    this.apiService.requestApi('/user/workload/create', 'POST', payload)
+      .then(response => {
+        console.log('Workload créé avec succès:', response);
+        // Recharger les données ou afficher un message de succès
+        this.loadData();
+      })
+      .catch(error => {
+        console.error('Erreur lors de la création du workload:', error);
+      });
+  }
+
 
 
 }

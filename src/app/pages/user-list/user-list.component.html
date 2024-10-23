@@ -82,6 +82,41 @@
                     </tr>
                   </ng-container>
                 </tbody>
+
+                <tbody>
+                  <tr>
+                    <td class="border px-4 py-2">
+                      <!-- Selection du professeur -->
+                      <select [(ngModel)]="newWorkload.user_id" class="border rounded p-1">
+                        <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
+                      </select>
+                    </td>
+
+                    <!-- vol_cm input -->
+                    <td class="border px-4 py-2">
+                      <input type="number" [(ngModel)]="newWorkload.vol_cm" class="border rounded p-1"
+                        placeholder="CM Volume" />
+                    </td>
+
+                    <!-- vol_td input -->
+                    <td class="border px-4 py-2">
+                      <input type="number" [(ngModel)]="newWorkload.vol_td" class="border rounded p-1"
+                        placeholder="TD Volume" />
+                    </td>
+
+                    <!-- vol_tp input -->
+                    <td class="border px-4 py-2">
+                      <input type="number" [(ngModel)]="newWorkload.vol_tp" class="border rounded p-1"
+                        placeholder="TP Volume" />
+                    </td>
+
+                    <td>
+                      <button class="bg-green-500 text-white p-2 rounded-lg"
+                        (click)="submitNewWorkload(resource.id, selectedSemester)">Add
+                        Workload</button>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
