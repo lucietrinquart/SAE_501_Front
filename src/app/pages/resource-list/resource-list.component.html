@@ -44,7 +44,7 @@
           <div class="flex items-center gap-2">
             <input *ngIf="resourceForms[item.id].get('name')" 
                    [formControl]="$any(resourceForms[item.id].get('name'))" 
-                   class="font-medium text-lg focus:outline-none border-b border-transparent focus:border-blue-500 rounded">
+                   class="w-full p-2 font-medium text-lg focus:outline-none border-b border-transparent focus:border-blue-500 rounded">
           </div>
           <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
             {{ getResourceTypeName(item.resource_type_id) }}
@@ -54,13 +54,13 @@
         <form [formGroup]="resourceForms[item.id]">
           <!-- Formation si existe -->
           <div *ngIf="item.course" class="mb-4">
-            <label class="text-gray-600 font-medium block mb-2">Formation</label>
-            <p class="text-gray-800">{{ item.course }}</p>
+            <label class="font-bold text-blanc block mb-2">Formation</label>
+            <p class="text-blanc ">{{ item.course }}</p>
           </div>
 
           <!-- Description -->
           <div class="mb-4">
-            <label class="text-gray-600 font-medium block mb-2">Description</label>
+            <label class="font-bold text-blanc block mb-2">Description</label>
             <textarea formControlName="description"
                       class="w-full p-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
                       rows="2"></textarea>
@@ -68,7 +68,7 @@
 
           <!-- Semestre -->
           <div class="mb-4">
-            <label class="text-gray-600 font-medium block mb-2">Semestre</label>
+            <label class="font-bold text-blanc block mb-2">Semestre</label>
             <select formControlName="semester_id"
                     class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               <option *ngFor="let sem of semesters" [value]="sem">Semestre {{ sem }}</option>
@@ -77,28 +77,28 @@
 
           <!-- Volumes horaires -->
           <div>
-            <label class="text-gray-600 font-medium block mb-2">Volumes horaires</label>
+            <label class="font-bold text-blanc block mb-2">Volumes horaires</label>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="text-sm text-gray-500 block mb-1">Volume national</label>
+                <label class="text-sm text-blanc block mb-1">Volume national</label>
                 <input type="number" 
                        formControlName="vol_nat"
                        class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
               <div>
-                <label class="text-sm text-gray-500 block mb-1">Volume national TP</label>
+                <label class="text-sm text-blanc block mb-1">Volume national TP</label>
                 <input type="number" 
                        formControlName="vol_nat_tp"
                        class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
               <div *ngIf="item.vol_e !== undefined">
-                <label class="text-sm text-gray-500 block mb-1">Volume encadré</label>
+                <label class="text-sm text-blanc block mb-1">Volume encadré</label>
                 <input type="number" 
                        formControlName="vol_e"
                        class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
               </div>
               <div *ngIf="item.vol_ne !== undefined">
-                <label class="text-sm text-gray-500 block mb-1">Volume non encadré</label>
+                <label class="text-sm text-blanc block mb-1">Volume non encadré</label>
                 <input type="number" 
                        formControlName="vol_ne"
                        class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500">
@@ -110,7 +110,7 @@
           <div class="flex justify-end mt-6">
             <button 
               (click)="saveChanges(item)"
-              class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
+              class="px-4 py-2 bg-bouton text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
               Confirmer les modifications
             </button>
           </div>

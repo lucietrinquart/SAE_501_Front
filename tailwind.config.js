@@ -11,7 +11,7 @@ module.exports = {
         'fond_section1': '#303139',
         'police': '#000000',
         'fond_section2': '#4D4F59',
-
+        'bouton': '#638cf6'
       }
     },
   },
