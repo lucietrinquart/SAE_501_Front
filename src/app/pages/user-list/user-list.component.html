@@ -14,7 +14,6 @@
           <button>{{ user.username }}</button>
         </div>
       </li>
-
     </ul>
   </div>
 
@@ -31,7 +30,6 @@
         </li>
         <button id="toggleCreateSemesterButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
           Semester</button>
-
       </ul>
 
       <!-- Affichage des Ressources -->
@@ -56,8 +54,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <ng-container
-                    *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
+                  <ng-container *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
                     <tr>
                       <td class="border px-4 py-2">{{ getUsername(workload.user_id) }}</td>
 
@@ -84,18 +81,32 @@
 
                       <button class="bg-red-500 text-white p-2 rounded-lg"
                         (click)="removeFromWorkload(workload.id)">X</button>
-
                     </tr>
                   </ng-container>
                 </tbody>
 
                 <tbody>
                   <tr>
-                    <td class="border px-4 py-2">
-                      <!-- Selection du professeur -->
-                      <select [(ngModel)]="newWorkload.user_id" class="border rounded p-1">
-                        <option *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
-                      </select>
+                    <td class="border px-4 py-2 relative">
+                      <input
+                        type="text"
+                        [(ngModel)]="searchTerm"
+                        (input)="filterUsers()"
+                        (focus)="showDropdown = true"
+                        class="border rounded p-1 w-full"
+                        placeholder="Rechercher un professeur..."
+                      />
+                      
+                      <div *ngIf="showDropdown && filteredUsers.length > 0" 
+                           class="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                        <ul class="py-1">
+                          <li *ngFor="let user of filteredUsers"
+                              (click)="selectUser(user)"
+                              class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            {{ user.username }}
+                          </li>
+                        </ul>
+                      </div>
                     </td>
 
                     <!-- vol_cm input -->
@@ -134,7 +145,6 @@
                 <li>
                   Volume National: {{ resource.vol_nat }}
                   <div>Différence entre le volume National et le volume reparti
-                    <!-- Utiliser la première occurrence seulement -->
                     @if (getFilteredUserWorkloads(resource.id).length > 0) {
                     <div>{{ getTotalDifference(resource.id) }}</div>
                     }
@@ -150,20 +160,12 @@
               </ul>
             </div>
             }
-
           </div>
         </div>
-
-
-
       </div>
-
-
-
     </div>
     <div id="CreateSemesterDiv" class="hidden">
       <app-form-create-semester></app-form-create-semester>
     </div>
   </div>
-
 </div>
