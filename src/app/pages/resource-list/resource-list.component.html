@@ -19,16 +19,21 @@
         </button>
 
         <div class="ml-auto flex items-center gap-2 sm:gap-4">
-          <button class="px-2 sm:px-4 py-2 rounded font-medium text-sm sm:text-base bg-fond_section1">
+          <div class="relative">
+            <input
+              type="text"
+              [value]="searchTerm"
+              (input)="onSearch($event)"
+              placeholder="Rechercher une ressource..."
+              class="px-3 py-2 bg-fond_section1 rounded text-sm text-blanc placeholder-gray-400 w-48 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            >
+          </div>
+          <button class="px-2 sm:px-4 py-2 rounded font-medium text-sm sm:text-base bg-fond_section1 hover:bg-fond_section2 transition-colors duration-200">
             Ajouter une ressource
-          </button>
-          <button class="px-2 sm:px-3 py-2 rounded text-sm sm:text-base bg-fond_section1">
-            Filtrer
           </button>
         </div>
       </div>
     </nav>
-
     <!-- Message si aucune ressource -->
     <div *ngIf="filteredResources.length === 0" class="text-center py-4 sm:py-6 lg:py-8 text-blanc">
       Aucune ressource trouvée pour ce semestre.
@@ -38,11 +43,11 @@
     <div class="container mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-7xl mx-auto">
         <!-- Card pour chaque ressource -->
-        <div *ngFor="let item of filteredResources"
+        <div *ngFor="let item of filteredResources; let i = index"
              class="bg-fond_section1 rounded-lg shadow-md p-3 sm:p-4">
           <!-- En-tête avec le code et type de ressource -->
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2 sm:gap-0" 
-               (click)="toggleResource(item.id)"
+               (click)="toggleResource(i)"
                style="cursor: pointer;">
             <div class="flex items-center gap-2 w-full sm:w-auto">
               <input *ngIf="resourceForms[item.id].get('name')" 
