@@ -174,6 +174,16 @@
           </div>
         </div>
       </div>
+      <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
+          
+          <!-- Nouveau bouton détail -->
+          <button 
+          *ngIf="selectedProfessor === user.id"(click)="showUserDetails(user)"            
+          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+          >
+            Détail 
+          </button>
+      </div>
     </div>
     <div id="CreateSemesterDiv" class="hidden">
       <app-form-create-semester></app-form-create-semester>
