@@ -117,7 +117,11 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+              <button (click)="toggleResource(resource.id)"
+            class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+              {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
+            </button>
+          </div>
             @if (isResourceExpanded(resource.id)) {
               <div class="h-1/5 bg-gray-200 p-4">
                 <h3 class="font-bold">Volumes nationaux</h3>
@@ -143,7 +147,9 @@
             }
     
           </div>
-        </div>
+            </div>
+          
+
 
       </div>
       <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
