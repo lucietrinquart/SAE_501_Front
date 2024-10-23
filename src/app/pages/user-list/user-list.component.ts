@@ -221,6 +221,19 @@ export class UserListComponent implements OnInit {
       });
   }
 
+  removeFromUser(UserID: number) {
+    console.log('UserID:', UserID);
+
+    this.apiService.requestApi(`/user/delete/` + UserID, 'DELETE')
+      .then(response => {
+        console.log('User retiré avec succès', response);
+        this.loadData();
+      })
+      .catch(error => {
+        console.error('Erreur lors de la suppression du workload:', error);
+      });
+  }
+
   submitNewWorkload(ResourceId: number, SemesterId: number) {
     const payload = {
       user_id: this.newWorkload.user_id,

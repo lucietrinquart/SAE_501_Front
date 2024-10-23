@@ -1,3 +1,23 @@
 .hidden {
   display: none;
 }
+.user-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.user-container button.remove-btn {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.user-container span {
+  flex-grow: 1; /* This makes sure the text takes as much space as possible */
+}
+
+.user-container .remove-btn {
+  cursor: pointer;
+  z-index: 1;
+}
