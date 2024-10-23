@@ -9,7 +9,7 @@
 
     </div>
     <ul>
-      <button id="toggleAddUserButton" class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded">Créer
+      <button id="toggleAddUserButton" class=" mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded">Créer
         Utilisateur</button>
       <div id="addUserDiv" class="hidden">
         <app-form-create-user></app-form-create-user>
@@ -50,7 +50,8 @@
       </ul>
 
       <!-- Affichage des Ressources -->
-      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded">Créer
+      <button id="toggleCreateResourceButton"
+        class=" ml-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded">Créer
         Ressource</button>
       <div id="CreateResourceDiv" class="hidden">
         <app-form-create-resource></app-form-create-resource>
@@ -75,7 +76,7 @@
                   <ng-container
                     *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
                     <tr>
-                      <td class="border px-4 py-2">{{ getUsername(workload.user_id) }}</td>
+                      <td class="border px-4 py-2 text-white">{{ getUsername(workload.user_id) }}</td>
 
                       <!-- vol_cm input -->
                       <td class="border px-4 py-2">
