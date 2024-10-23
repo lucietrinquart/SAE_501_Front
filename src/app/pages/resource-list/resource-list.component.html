@@ -31,9 +31,13 @@
           <button class="px-2 sm:px-4 py-2 rounded font-medium text-sm sm:text-base bg-fond_section1 hover:bg-fond_section2 transition-colors duration-200">
             Ajouter une ressource
           </button>
+          <button class="px-2 sm:px-3 py-2 rounded text-sm sm:text-base bg-fond_section1 hover:bg-fond_section2 transition-colors duration-200">
+            Filtrer
+          </button>
         </div>
       </div>
     </nav>
+
     <!-- Message si aucune ressource -->
     <div *ngIf="filteredResources.length === 0" class="text-center py-4 sm:py-6 lg:py-8 text-blanc">
       Aucune ressource trouvée pour ce semestre.
@@ -43,16 +47,16 @@
     <div class="container mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-7xl mx-auto">
         <!-- Card pour chaque ressource -->
-        <div *ngFor="let item of filteredResources; let i = index"
+        <div *ngFor="let item of filteredResources"
              class="bg-fond_section1 rounded-lg shadow-md p-3 sm:p-4">
           <!-- En-tête avec le code et type de ressource -->
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2 sm:gap-0" 
-               (click)="toggleResource(i)"
+               (click)="toggleResource(item.id)"
                style="cursor: pointer;">
             <div class="flex items-center gap-2 w-full sm:w-auto">
               <input *ngIf="resourceForms[item.id].get('name')" 
                      [formControl]="$any(resourceForms[item.id].get('name'))" 
-                     class="w-full p-1 sm:p-2 font-medium text-base sm:text-lg focus:outline-none border-b border-transparent focus:border-blue-500 rounded"
+                     class="w-full p-1 sm:p-2 font-medium text-base sm:text-lg focus:outline-none border-b border-transparent focus:border-blue-500 rounded text-blanc bg-transparent"
                      (click)="$event.stopPropagation()">
             </div>
             <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
@@ -85,7 +89,8 @@
               <div class="mb-3 sm:mb-4">
                 <label class="font-bold text-blanc block mb-1 sm:mb-2 text-sm sm:text-base">Semestre</label>
                 <select formControlName="semester_id"
-                        class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                        class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm"
+                        (click)="$event.stopPropagation()">
                   <option *ngFor="let sem of semesters" [value]="sem">Semestre {{ sem }}</option>
                 </select>
               </div>
@@ -98,25 +103,29 @@
                     <label class="text-xs sm:text-sm text-blanc block mb-1">Volume national</label>
                     <input type="number" 
                            formControlName="vol_nat"
-                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm"
+                           (click)="$event.stopPropagation()">
                   </div>
                   <div>
                     <label class="text-xs sm:text-sm text-blanc block mb-1">Volume national TP</label>
                     <input type="number" 
                            formControlName="vol_nat_tp"
-                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm"
+                           (click)="$event.stopPropagation()">
                   </div>
                   <div *ngIf="item.vol_e !== undefined">
                     <label class="text-xs sm:text-sm text-blanc block mb-1">Volume encadré</label>
                     <input type="number" 
                            formControlName="vol_e"
-                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm"
+                           (click)="$event.stopPropagation()">
                   </div>
                   <div *ngIf="item.vol_ne !== undefined">
                     <label class="text-xs sm:text-sm text-blanc block mb-1">Volume non encadré</label>
                     <input type="number" 
                            formControlName="vol_ne"
-                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm">
+                           class="w-full p-1.5 sm:p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm"
+                           (click)="$event.stopPropagation()">
                   </div>
                 </div>
               </div>
@@ -124,7 +133,7 @@
               <!-- Bouton de confirmation -->
               <div class="flex justify-end mt-3 sm:mt-4">
                 <button 
-                  (click)="saveChanges(item)"
+                  (click)="saveChanges(item); $event.stopPropagation()"
                   class="px-2 sm:px-3 py-1 sm:py-1.5 bg-bouton text-white rounded-lg hover:bg-green-600 transition-colors duration-200 text-xs sm:text-sm">
                   Confirmer les modifications
                 </button>
