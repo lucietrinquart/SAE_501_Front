@@ -4,6 +4,7 @@ import {UserListComponent} from "./pages/user-list/user-list.component";
 import {ResourceListComponent} from "./pages/resource-list/resource-list.component";
 import {UserWorkloadComponent} from "./pages/user-workload/user-workload.component";
 import {FormulaireComponent} from "./pages/formulaire/formulaire.component";
+import {DetailUserComponent} from "./pages/detail-user/detail-user.component";
 
 
 
@@ -23,7 +24,9 @@ const routes: Routes = [
   {
     path: 'user-workload',
     component: UserWorkloadComponent,
-  }
+  },
+  { path: 'user-detail/:id', 
+    component: DetailUserComponent }
 ];
 
 @NgModule({

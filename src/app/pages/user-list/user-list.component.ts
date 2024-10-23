@@ -7,6 +7,7 @@ import { ResourceList } from '../../shared/interfaces/resources';
 import { Semester } from '../../shared/interfaces/semester';
 import { ResourceWithUsers } from '../../shared/interfaces/resource-with-users';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-list',
@@ -14,6 +15,8 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./user-list.component.scss']
 })
 export class UserListComponent implements OnInit {
+
+
   users: User[] = [];
   userworkload: UserWorkload[] = [];
   resources: ResourceList[] = [];
@@ -39,7 +42,7 @@ export class UserListComponent implements OnInit {
     vol_tp: 0
   };
 
-  constructor(private apiService: ApiService, private http: HttpClient) { }
+  constructor(private apiService: ApiService, private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
     this.loadData();
@@ -310,6 +313,10 @@ export class UserListComponent implements OnInit {
   getTotalDifferenceTP(resourceId: number): number {
     const calculations = this.calculateResourceTotalsTP(resourceId);
     return calculations ? calculations.totalDifference : 0;
+  }
+
+  showUserDetails(user: User) {
+    this.router.navigate(['/user-detail', user.id]);
   }
 
   updateResourceVolume(resourceId: number, field: 'vol_nat' | 'vol_nat_tp', value: number | null) {

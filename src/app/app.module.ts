@@ -15,7 +15,8 @@ import { FormCreateResourceComponent } from './shared/layouts/form-create-resour
 import { FormCreateUserComponent } from './shared/layouts/form-create-user/form-create-user.component';
 
 
-import { FormulaireComponent } from './pages/formulaire/formulaire.component'; // Ajoutez cette ligne
+import { FormulaireComponent } from './pages/formulaire/formulaire.component';
+import { DetailUserComponent } from './pages/detail-user/detail-user.component'; // Ajoutez cette ligne
 
 
 
@@ -29,7 +30,8 @@ import { FormulaireComponent } from './pages/formulaire/formulaire.component'; /
     FormCreateResourceComponent,
     FormCreateUserComponent,
     ResourceListComponent,
-    FormulaireComponent
+    FormulaireComponent,
+    DetailUserComponent
   ],
   imports: [
     BrowserModule,
