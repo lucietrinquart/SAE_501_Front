@@ -298,6 +298,40 @@ export class UserListComponent implements OnInit {
     const calculations = this.calculateResourceTotalsTP(resourceId);
     return calculations ? calculations.totalDifference : 0;
   }
+
+  updateResourceVolume(resourceId: number, field: 'vol_nat' | 'vol_nat_tp', value: number | null) {
+    const resource = this.resources.find(r => r.id === resourceId);
+    if (resource) {
+      const numericValue = value ?? 0;
+      resource[field] = numericValue;
+      
+      // On ne met à jour que le champ modifié
+      const payload = {
+        [field]: numericValue,
+        semester_id: resource.semester_id, // Requis pour la validation
+        name: resource.name              // Requis pour la validation
+      };
+
+      this.apiService.requestApi(`/resource/update/${resourceId}`, 'PUT', payload)
+        .then(response => {
+          console.log('Resource volume updated:', response);
+          // Mettre à jour la ressource localement
+          const updatedResource = response.resource;
+          const index = this.resources.findIndex(r => r.id === resourceId);
+          if (index !== -1) {
+            this.resources[index] = {
+              ...this.resources[index],
+              [field]: updatedResource[field]
+            };
+          }
+        })
+        .catch(error => {
+          console.error('Error updating resource volume:', error);
+          // Recharger les données en cas d'erreur pour assurer la cohérence
+          this.loadData();
+        });
+    }
+  }
 }
 
 
