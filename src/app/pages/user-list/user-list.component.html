@@ -119,6 +119,30 @@
                 </tbody>
               </table>
             </div>
+            @if (isResourceExpanded(resource.id)) {
+              <div class="h-1/5 bg-gray-200 p-4">
+                <h3 class="font-bold">Volumes nationaux</h3>
+                <ul>
+                  <li>
+                    Volume National: {{ resource.vol_nat }}
+                    <div>Différence entre le volume National et le volume reparti 
+                      <!-- Utiliser la première occurrence seulement -->
+                      @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                        <div>{{ getTotalDifference(resource.id) }}</div>
+                      }
+                    </div>
+                  </li>
+                  <li>
+                    Volume National TP: {{ resource.vol_nat_tp }}
+                    <div>Différence entre le volume National TP et le volume reparti TP</div>
+                    @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                      <div>{{ getTotalDifferenceTP(resource.id) }}</div>
+                    }
+                  </li>
+                </ul>
+              </div>
+            }
+    
           </div>
         </div>
 
