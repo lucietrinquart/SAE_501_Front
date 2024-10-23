@@ -1,4 +1,3 @@
-
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ApiService } from "../../shared/services/api.service";
 import { User } from "../../shared/interfaces/user";
@@ -20,7 +19,11 @@ export class UserListComponent implements OnInit {
   resources: ResourceList[] = [];
   semestre: Semester[] = [];
 
-  // Nouvelles propriétés pour l'autocomplétion
+  // Nouvelles propriétés pour la recherche d'utilisateurs
+  userSearchTerm: string = '';
+  filteredUserList: User[] = [];
+
+  // Propriétés pour l'autocomplétion
   searchTerm: string = '';
   showDropdown: boolean = false;
   filteredUsers: User[] = [];
@@ -42,7 +45,18 @@ export class UserListComponent implements OnInit {
     this.loadData();
   }
 
-  // Nouvelles méthodes pour l'autocomplétion
+  // Nouvelle méthode pour filtrer la liste des utilisateurs
+  filterUserList() {
+    if (!this.userSearchTerm) {
+      this.filteredUserList = this.users;
+    } else {
+      this.filteredUserList = this.users.filter(user =>
+        user.username.toLowerCase().startsWith(this.userSearchTerm.toLowerCase())
+      );
+    }
+  }
+
+  // Méthodes pour l'autocomplétion
   filterUsers() {
     if (this.searchTerm) {
       this.filteredUsers = this.users.filter(user =>
@@ -94,6 +108,7 @@ export class UserListComponent implements OnInit {
     ])
       .then(([users, userworkload, resources, semesters]) => {
         this.users = Array.isArray(users) ? users : [];
+        this.filteredUserList = this.users; // Initialize filtered list
         this.userworkload = Array.isArray(userworkload) ? userworkload : [];
         this.resources = Array.isArray(resources) ? resources : [];
         this.semestre = Array.isArray(semesters) ? semesters : [];
@@ -109,7 +124,6 @@ export class UserListComponent implements OnInit {
         console.error('Error loading data:', error);
       });
   }
-
   getFilteredUserWorkloads(resourceId: number) {
     if (this.selectedProfessor !== null) {
       return this.userworkload.filter(workload =>
@@ -285,6 +299,7 @@ export class UserListComponent implements OnInit {
     return calculations ? calculations.totalDifference : 0;
   }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const toggleAddUserButton = document.getElementById('toggleAddUserButton');
