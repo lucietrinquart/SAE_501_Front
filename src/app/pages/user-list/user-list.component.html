@@ -4,16 +4,17 @@
   <div class="w-1/3 bg-gray-400 p-2 flex flex-col gap-2">
     <div class="h-1/5 bg-gray-600"></div>
     <ul>
+      <button id="toggleAddUserButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Add User</button>
+      <div id="addUserDiv" class="hidden">
+        <app-form-create-user></app-form-create-user>
+      </div>
       <li *ngFor="let user of users; trackBy: trackByUser">
         <div class="cursor-pointer px-4 py-2 bg-white border rounded"
           [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
           <button>{{ user.username }}</button>
         </div>
       </li>
-      <button id="toggleAddUserButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Add User</button>
-      <div id="addUserDiv" class="hidden">
-        <app-form-create-user></app-form-create-user>
-      </div>
+
     </ul>
   </div>
 
@@ -34,6 +35,11 @@
       </ul>
 
       <!-- Affichage des Ressources -->
+      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
+        Resource</button>
+      <div id="CreateResourceDiv" class="hidden">
+        <app-form-create-resource></app-form-create-resource>
+      </div>
       <div *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
         <div class="flex flex-col w-full gap-2">
           <div class="bg-gray-400 p-2">
@@ -117,46 +123,41 @@
                   </tr>
                 </tbody>
               </table>
-              <button (click)="toggleResource(resource.id)"
-            class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
-              {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
-            </button>
-          </div>
-            @if (isResourceExpanded(resource.id)) {
-              <div class="h-1/5 bg-gray-200 p-4">
-                <h3 class="font-bold">Volumes nationaux</h3>
-                <ul>
-                  <li>
-                    Volume National: {{ resource.vol_nat }}
-                    <div>Différence entre le volume National et le volume reparti 
-                      <!-- Utiliser la première occurrence seulement -->
-                      @if (getFilteredUserWorkloads(resource.id).length > 0) {
-                        <div>{{ getTotalDifference(resource.id) }}</div>
-                      }
-                    </div>
-                  </li>
-                  <li>
-                    Volume National TP: {{ resource.vol_nat_tp }}
-                    <div>Différence entre le volume National TP et le volume reparti TP</div>
-                    @if (getFilteredUserWorkloads(resource.id).length > 0) {
-                      <div>{{ getTotalDifferenceTP(resource.id) }}</div>
-                    }
-                  </li>
-                </ul>
-              </div>
-            }
-    
-          </div>
+              <button (click)="toggleResource(resource.id)" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">
+                {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
+              </button>
             </div>
-          
+            @if (isResourceExpanded(resource.id)) {
+            <div class="h-1/5 bg-gray-200 p-4">
+              <h3 class="font-bold">Volumes nationaux</h3>
+              <ul>
+                <li>
+                  Volume National: {{ resource.vol_nat }}
+                  <div>Différence entre le volume National et le volume reparti
+                    <!-- Utiliser la première occurrence seulement -->
+                    @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                    <div>{{ getTotalDifference(resource.id) }}</div>
+                    }
+                  </div>
+                </li>
+                <li>
+                  Volume National TP: {{ resource.vol_nat_tp }}
+                  <div>Différence entre le volume National TP et le volume reparti TP</div>
+                  @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                  <div>{{ getTotalDifferenceTP(resource.id) }}</div>
+                  }
+                </li>
+              </ul>
+            </div>
+            }
+
+          </div>
+        </div>
+
 
 
       </div>
-      <button id="toggleCreateResourceButton" class="cursor-pointer px-4 py-2 bg-gray-300 border rounded">Create
-        Resource</button>
-      <div id="CreateResourceDiv" class="hidden">
-        <app-form-create-resource></app-form-create-resource>
-      </div>
+
 
 
     </div>
