@@ -5,6 +5,8 @@ import {ResourceListComponent} from "./pages/resource-list/resource-list.compone
 import {UserWorkloadComponent} from "./pages/user-workload/user-workload.component";
 import {FormulaireComponent} from "./pages/formulaire/formulaire.component";
 import {DetailUserComponent} from "./pages/detail-user/detail-user.component";
+import {PageVacataireComponent} from "./pages/page-vacataire/page-vacataire.component";
+
 
 
 
@@ -24,6 +26,10 @@ const routes: Routes = [
   {
     path: 'user-workload',
     component: UserWorkloadComponent,
+  },
+  {
+    path: 'vacataire',
+    component: PageVacataireComponent,
   },
   { path: 'user-detail/:id', 
     component: DetailUserComponent }
