@@ -1,13 +1,14 @@
-import {ResourceList} from "./resources";
-import {Semester} from "./semester";
-import {User} from "./user";
+import { ResourceList } from "./resources";
+import { Semester } from "./semester";
+import { User } from "./user";
 
 export interface UserWorkload {
     id: number;
-    id_user: User[];
-    id_ressource: ResourceList[];
-    id_semester: Semester[];
-    vol_cm?: Float32Array;
-    vol_td?: Float32Array;
-    vol_tp?: Float32Array;
-}
+    user_id: number;
+    resource_id: number;
+    semester_id: number;
+    vol_cm: number;
+    vol_td: number;
+    vol_tp: number;
+  }
+
