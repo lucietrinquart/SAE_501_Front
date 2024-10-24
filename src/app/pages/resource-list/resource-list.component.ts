@@ -24,6 +24,7 @@ export class ResourceListComponent implements OnInit {
   public resourceTypes: ResourceType[] = [];
   public expandedResources: { [key: number]: boolean } = {};
   public searchTerm: string = '';
+  public isCreateModalOpen: boolean = false;
   private searchSubject = new Subject<string>();
 
   constructor(
@@ -43,6 +44,10 @@ export class ResourceListComponent implements OnInit {
   ngOnInit(): void {
     this.loadResourceTypes();
     this.loadResources();
+  }
+
+  public toggleCreateModal(): void {
+    this.isCreateModalOpen = !this.isCreateModalOpen;
   }
 
   private loadResourceTypes(): void {
@@ -92,14 +97,12 @@ export class ResourceListComponent implements OnInit {
   private filterResources(): void {
     let filtered = this.resources;
 
-    // Filtre par semestre
     if (this.selectedSemester !== null) {
       filtered = filtered.filter(resource => 
         resource.semester_id === this.selectedSemester
       );
     }
 
-    // Filtre par terme de recherche
     if (this.searchTerm.trim()) {
       const search = this.searchTerm.toLowerCase().trim();
       filtered = filtered.filter(resource =>
