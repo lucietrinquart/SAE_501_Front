@@ -47,7 +47,7 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/'
+    component: UnauthorizedComponent,
   }
 ];
 
