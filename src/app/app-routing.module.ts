@@ -6,6 +6,8 @@ import {UserWorkloadComponent} from "./pages/user-workload/user-workload.compone
 import {FormulaireComponent} from "./pages/formulaire/formulaire.component";
 import {DetailUserComponent} from "./pages/detail-user/detail-user.component";
 import {PageVacataireComponent} from "./pages/page-vacataire/page-vacataire.component";
+import { AuthGuard } from '../app/shared/guards/auth.guard';
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 
 
 
@@ -17,22 +19,36 @@ const routes: Routes = [
   },
   {
     path: 'user',
-    component: UserListComponent
+    component: UserListComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'enseignant'] }
+  },
+  {
+    path: 'user-detail/:id',
+    component: DetailUserComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'enseignant'] } 
   },
   {
     path: 'resource',
     component: ResourceListComponent,
-  },
-  {
-    path: 'user-workload',
-    component: UserWorkloadComponent,
+    canActivate: [AuthGuard],
+    data: { roles: ['admin', 'enseignant']  }
   },
   {
     path: 'vacataire',
     component: PageVacataireComponent,
+    canActivate: [AuthGuard],
+    data: { role: 'vacataire' }
   },
-  { path: 'user-detail/:id', 
-    component: DetailUserComponent }
+  {
+    path: 'unauthorized',
+    component: UnauthorizedComponent,
+  },
+  {
+    path: '**',
+    redirectTo: '/'
+  }
 ];
 
 @NgModule({

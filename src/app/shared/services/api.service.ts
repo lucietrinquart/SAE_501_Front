@@ -1,19 +1,22 @@
-import { Injectable } from '@angular/core';
+// api.service.ts
+import { Injectable, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { ResourceList } from '../interfaces/resources';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service'; // Assurez-vous que ce chemin est correct
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl: string;
-
-  constructor(private http: HttpClient) {
-    this.apiUrl = environment.apiUrl;
-  }
+  constructor(
+    @Inject('API_URL') private apiUrl: string,
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   public postApi(endpoint: string, data: any): Promise<any> {
     return this.http.post(`${this.apiUrl}${endpoint}`, data).toPromise();
@@ -41,22 +44,21 @@ export class ApiService {
   public async requestApi(
     action: string,
     method: string = 'GET',
-    data: Record<string, any> | null = null, // Accepte null
+    data: Record<string, any> | null = null,
     form?: FormGroup,
     httpOptions: any = {}
   ): Promise<any> {
     const methodWanted = method.toLowerCase();
     const timestamp = new Date().getTime();
     let route = `${this.apiUrl}${action}`;
-  
-    // Créez un objet vide si data est null pour éviter les erreurs plus tard
+
     const requestData: Record<string, any> = data ?? {};
-  
+
     // Ajout du timestamp pour éviter le cache sur GET et DELETE
     if (methodWanted === 'get' || methodWanted === 'delete') {
-      (requestData as any)._t = timestamp;  // Utilisation d'une assertion de type
+      (requestData as any)._t = timestamp;
     }
-  
+
     // Configuration des headers
     if (!httpOptions.headers) {
       httpOptions.headers = this.getNoCacheHeaders();
@@ -66,10 +68,9 @@ export class ApiService {
         .set('Pragma', 'no-cache')
         .set('Expires', '0');
     }
-  
+
     let req: Observable<any>;
-  
-    // Création de la requête selon la méthode
+
     switch (methodWanted) {
       case 'post':
         req = this.http.post(route, requestData, httpOptions);
@@ -89,12 +90,12 @@ export class ApiService {
         req = this.http.get(route, httpOptions);
         break;
     }
-  
+
     // Gestion du formulaire si présent
     if (form) {
       form.markAsPending();
     }
-  
+
     // Retour de la promesse avec gestion des erreurs
     return new Promise((resolve, reject) => {
       req.subscribe({
@@ -112,20 +113,19 @@ export class ApiService {
           
           if (form) {
             form.enable();
-            
             if (error.error.message) {
               this.setFormAlert(form, error.error.message, 'error');
             }
-  
+
             if (error.error.errors) {
               Object.entries(error.error.errors).forEach(([key, value]: [string, any]) => {
                 const keys = key.split('.');
                 let control: any = form;
-  
+
                 for (const k of keys) {
                   control = control.controls[k];
                 }
-  
+
                 if (control) {
                   if (typeof value === 'string') {
                     control.setErrors({ serverError: value });
@@ -141,7 +141,6 @@ export class ApiService {
       });
     });
   }
-  
 
   private getNoCacheHeaders(): HttpHeaders {
     return new HttpHeaders({
@@ -171,6 +170,20 @@ export class ApiService {
         status,
         message
       }
+    });
+  }
+
+  // Méthode de déconnexion
+  logout() {
+    localStorage.removeItem('authToken');
+    this.authService.logout(); // Utilise la méthode logout du AuthService
+
+    return this.http.post(`${this.apiUrl}/logout`, {}).subscribe(() => {
+        this.router.navigate(['/']).then(() => {
+            window.location.reload(); // Recharge la page après la redirection
+        });
+    }, error => {
+        console.error('Erreur lors de la déconnexion:', error);
     });
   }
 }
