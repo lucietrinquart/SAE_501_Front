@@ -7,7 +7,7 @@ import { ApiService } from './api.service'; // Service d'authentification
 })
 export class SessionTimeoutService {
   private timeout: any;
-  private readonly timeoutDuration = 1 * 60 * 1000; // 30 minutes
+  private readonly timeoutDuration = 20 * 60 * 1000; // 30 minutes
 
   constructor(private apiService: ApiService, private router: Router) {
     this.startTimeout();
