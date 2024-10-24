@@ -2,6 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {UserListComponent} from "./pages/user-list/user-list.component";
 import {ResourceListComponent} from "./pages/resource-list/resource-list.component";
+import {UserWorkloadComponent} from "./pages/user-workload/user-workload.component";
+import {FormulaireComponent} from "./pages/formulaire/formulaire.component";
+import {DetailUserComponent} from "./pages/detail-user/detail-user.component";
+import {PageVacataireComponent} from "./pages/page-vacataire/page-vacataire.component";
+
+
 import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.component';
 
 
@@ -18,6 +24,12 @@ const routes: Routes = [
     path: 'pdf',
     component: PdfFormComponent,
   },
+  {
+    path: 'vacataire',
+    component: PageVacataireComponent,
+  },
+  { path: 'user-detail/:id', 
+    component: DetailUserComponent }
 ];
 
 @NgModule({
