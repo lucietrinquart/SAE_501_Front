@@ -11,6 +11,10 @@ import { ResourceList } from '../interfaces/resources';
 export class ApiService {
   private apiUrl: string;
 
+  public getBaseUrl(): string {
+    return 'http://localhost:8000/api';
+  }
+
   constructor(private http: HttpClient) {
     this.apiUrl = environment.apiUrl;
   }

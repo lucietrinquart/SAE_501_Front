@@ -31,7 +31,7 @@ import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.
     FormCreateUserComponent,
     ResourceListComponent,
     FormulaireComponent,
-    PageVacataireComponent
+    PageVacataireComponent,
     DetailUserComponent,
     PdfFormComponent,
   ],

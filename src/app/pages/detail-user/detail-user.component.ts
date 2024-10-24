@@ -12,6 +12,29 @@ interface ResourceWithWorkload extends ResourceList {
   semester?: Semester;
 }
 
+interface PdfData {
+  userData: {
+    user: User | null;
+    totalHours: {
+      cm: number;
+      td: number;
+      tp: number;
+      total: number;
+    };
+  };
+  semesterData: {
+    [key: string]: {
+      name: string;
+      resources: ResourceWithWorkload[];
+      hours: {
+        cm: number;
+        td: number;
+        tp: number;
+      };
+    };
+  };
+}
+
 @Component({
   selector: 'app-detail-user',
   templateUrl: './detail-user.component.html',
@@ -26,6 +49,11 @@ export class DetailUserComponent implements OnInit {
   
   currentUser: User | null = null;
   userId: number | null = null;
+
+  // PFP purpose
+  pdfFileId: string | null = null;
+  isGenerating: boolean = false;
+  errorMessage: string | null = null;
 
   constructor(
     private apiService: ApiService,
@@ -55,14 +83,14 @@ export class DetailUserComponent implements OnInit {
         this.semestre = semesters;
         this.currentUser = this.users.find(user => user.id === this.userId) || null;
         
-        // Combine resources with their workloads and semesters
         this.resourcesWithWorkload = this.resources.map(resource => {
-          const workload = this.userworkload.find(w => 
+          const workload = this.userworkload.find(w =>
             w.resource_id === resource.id
           );
-          const semester = this.semestre.find(s => 
+          const semester = this.semestre.find(s =>
             s.id === resource.semester_id
           );
+
           return {
             ...resource,
             workload,
@@ -75,7 +103,6 @@ export class DetailUserComponent implements OnInit {
     }
   }
 
-  // Grouper les ressources par semestre
   getResourcesBySemester() {
     const grouped = new Map<number, ResourceWithWorkload[]>();
     
@@ -107,7 +134,6 @@ export class DetailUserComponent implements OnInit {
     return hours;
   }
 
-  // Calculer le total des heures pour un semestre
   calculateSemesterHours(resources: ResourceWithWorkload[]): { cm: number, td: number, tp: number } {
     return resources.reduce((acc, resource) => {
       const workload = resource.workload || { vol_cm: 0, vol_td: 0, vol_tp: 0 };
@@ -122,5 +148,108 @@ export class DetailUserComponent implements OnInit {
   getSemesterName(semesterId: number): string {
     const semester = this.semestre.find(s => s.id === semesterId);
     return semester ? `Semestre ${semester.number}` : 'Semestre inconnu';
+  }
+
+  preparePdfData(): PdfData {
+    const groupedResources = this.getResourcesBySemester();
+    const totalHours = this.calculateTotalHours();
+    
+    const semesterData: PdfData['semesterData'] = {};
+    
+    groupedResources.forEach((resources, semesterId) => {
+      const semesterName = this.getSemesterName(semesterId);
+      const hours = this.calculateSemesterHours(resources);
+      
+      semesterData[semesterId] = {
+        name: semesterName,
+        resources: resources,
+        hours: hours
+      };
+    });
+
+    return {
+      userData: {
+        user: this.currentUser,
+        totalHours: totalHours
+      },
+      semesterData: semesterData
+    };
+  }
+
+  async onSubmit() {
+    try {
+      this.isGenerating = true;
+      this.errorMessage = null;
+      this.pdfFileId = null;
+
+      const pdfData = this.preparePdfData();
+      
+      const response = await this.apiService.requestApi(
+        '/pdf/generate',
+        'POST',
+        pdfData
+      );
+      
+      if (response && response.file_id) {
+        this.pdfFileId = response.file_id;
+        console.log('PDF généré avec succès', response);
+      } else {
+        throw new Error('Identifiant du PDF non reçu');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la génération du PDF', error);
+      this.errorMessage = "Une erreur est survenue lors de la génération du PDF";
+    } finally {
+      this.isGenerating = false;
+    }
+  }
+
+  getPdfUrl(): string {
+    return `${this.apiService.getBaseUrl()}/pdf/${this.pdfFileId}`;
+  }
+
+  async downloadPdf() {
+    if (!this.pdfFileId) return;
+
+    try {
+      // Faire une requête vers l'API pour obtenir le PDF
+      const response = await fetch(this.getPdfUrl());
+      
+      if (!response.ok) {
+        throw new Error('Erreur lors du téléchargement du PDF');
+      }
+
+      // Obtenir le blob du PDF
+      const blob = await response.blob();
+      
+      // Créer une URL pour le blob
+      const url = window.URL.createObjectURL(blob);
+      
+      // Créer un lien temporaire et déclencher le téléchargement
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `service_${this.currentUser?.username || 'user'}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Libérer l'URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Erreur lors du téléchargement du PDF', error);
+      this.errorMessage = "Erreur lors du téléchargement du PDF";
+    }
+  }
+
+  async viewPdf() {
+    if (!this.pdfFileId) return;
+    
+    try {
+      // Ouvrir le PDF dans un nouvel onglet via l'API
+      window.open(this.getPdfUrl(), '_blank');
+    } catch (error) {
+      console.error('Erreur lors de l\'ouverture du PDF', error);
+      this.errorMessage = "Erreur lors de l'ouverture du PDF";
+    }
   }
 }
