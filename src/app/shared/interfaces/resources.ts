@@ -3,7 +3,7 @@ export interface ResourceList {
     name: string;
     semester_id: number;  // Changé de Semester[] à number
     description?: string;
-    resource_type_id: number;
+    type: string;
     course?: string;
     vol_nat: number;
     vol_nat_tp: number;

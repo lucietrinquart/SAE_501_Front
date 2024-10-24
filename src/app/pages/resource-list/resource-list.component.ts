@@ -2,13 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../shared/services/api.service";
 import { ResourceList } from "../../shared/interfaces/resources";
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-
-interface ResourceType {
-  id: number;
-  name: string;
-}
 
 @Component({
   selector: 'app-resource-list',
@@ -21,39 +14,14 @@ export class ResourceListComponent implements OnInit {
   public selectedSemester: number | null = null;
   public semesters: number[] = [1, 2, 3, 4, 5, 6];
   public resourceForms: { [key: number]: FormGroup } = {};
-  public resourceTypes: ResourceType[] = [];
-  public expandedResources: { [key: number]: boolean } = {};
-  public searchTerm: string = '';
-  private searchSubject = new Subject<string>();
 
   constructor(
     private apiService: ApiService,
     private fb: FormBuilder
-  ) {
-    this.searchSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      )
-      .subscribe(searchTerm => {
-        this.filterResources();
-      });
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.loadResourceTypes();
     this.loadResources();
-  }
-
-  private loadResourceTypes(): void {
-    this.apiService.getResourceTypes().subscribe(
-      (types: ResourceType[]) => {
-        this.resourceTypes = types;
-      },
-      error => {
-        console.error('Error loading resource types:', error);
-      }
-    );
   }
 
   private loadResources(): void {
@@ -72,10 +40,6 @@ export class ResourceListComponent implements OnInit {
   private initializeForms(): void {
     this.resources.forEach(resource => {
       this.resourceForms[resource.id] = this.fb.group({
-        name: [resource.name],
-        resource_type_id: [resource.resource_type_id],
-        description: [resource.description],
-        semester_id: [resource.semester_id],
         vol_nat: [resource.vol_nat],
         vol_nat_tp: [resource.vol_nat_tp],
         vol_e: [resource.vol_e],
@@ -84,46 +48,16 @@ export class ResourceListComponent implements OnInit {
     });
   }
 
-  public onSearch(event: any): void {
-    this.searchTerm = event.target.value;
-    this.searchSubject.next(this.searchTerm);
-  }
-
-  private filterResources(): void {
-    let filtered = this.resources;
-
-    // Filtre par semestre
-    if (this.selectedSemester !== null) {
-      filtered = filtered.filter(resource => 
-        resource.semester_id === this.selectedSemester
-      );
-    }
-
-    // Filtre par terme de recherche
-    if (this.searchTerm.trim()) {
-      const search = this.searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(resource =>
-        resource.name.toLowerCase().includes(search) ||
-        this.resourceForms[resource.id].get('description')?.value?.toLowerCase().includes(search) ||
-        (resource.course && resource.course.toLowerCase().includes(search))
-      );
-    }
-
-    this.filteredResources = filtered;
-  }
-
-  public toggleResource(id: number): void {
-    this.expandedResources[id] = !this.expandedResources[id];
-  }
-
-  public getResourceTypeName(typeId: number): string {
-    const resourceType = this.resourceTypes.find(type => type.id === typeId);
-    return resourceType ? resourceType.name : 'Inconnu';
-  }
-
   public filterBySemester(semesterId: number | null): void {
     this.selectedSemester = semesterId;
-    this.filterResources();
+    
+    if (semesterId === null) {
+      this.filteredResources = this.resources;
+    } else {
+      this.filteredResources = this.resources.filter(resource =>
+        resource.semester_id === semesterId
+      );
+    }
   }
 
   public saveChanges(resource: ResourceList): void {
@@ -131,14 +65,15 @@ export class ResourceListComponent implements OnInit {
     this.apiService.updateResource(resource.id, updatedData).subscribe(
       updatedResource => {
         console.log('Resource updated successfully', updatedResource);
+        // Mettre à jour la ressource dans le tableau local
         const index = this.resources.findIndex(r => r.id === resource.id);
         if (index !== -1) {
           this.resources[index] = { ...this.resources[index], ...updatedData };
         }
-        this.filterResources();
       },
       error => {
         console.error('Error updating resource:', error);
+        // Gérer l'erreur (par exemple, afficher un message à l'utilisateur)
       }
     );
   }
