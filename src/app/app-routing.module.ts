@@ -39,7 +39,7 @@ const routes: Routes = [
     path: 'vacataire',
     component: PageVacataireComponent,
     canActivate: [AuthGuard],
-    data: { role: 'vacataire' }
+    data: { roles: ['admin', 'vacataire']  }
   },
   {
     path: 'unauthorized',
