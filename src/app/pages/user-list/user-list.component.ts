@@ -262,7 +262,7 @@ export class UserListComponent implements OnInit {
   calculateResourceTotals(resourceId: number) {
     const workloads = this.getFilteredUserWorkloads(resourceId);
     const resource = this.resources.find(r => r.id === resourceId);
-    
+
     if (!resource) return null;
 
     const totals = workloads.reduce((acc, workload) => ({
@@ -292,7 +292,7 @@ export class UserListComponent implements OnInit {
   calculateResourceTotalsTP(resourceId: number) {
     const workloads = this.getFilteredUserWorkloads(resourceId);
     const resource = this.resources.find(r => r.id === resourceId);
-    
+
     if (!resource) return null;
 
     const totals = workloads.reduce((acc, workload) => ({
@@ -324,7 +324,7 @@ export class UserListComponent implements OnInit {
     if (resource) {
       const numericValue = value ?? 0;
       resource[field] = numericValue;
-      
+
       // On ne met à jour que le champ modifié
       const payload = {
         [field]: numericValue,
@@ -352,6 +352,15 @@ export class UserListComponent implements OnInit {
         });
     }
   }
+
+  getUserNameById(userId: number | null | undefined): string {
+    if (userId === null || userId === undefined) {
+      return 'Pas de référent'; // Si aucun ref_teacher_id n'est défini
+    }
+    const user = this.users.find(u => u.id === userId);
+    return user ? 'Professeur Référent: ' + user.username : 'Unknown'; // Si aucun utilisateur n'est trouvé
+  }
+
 }
 
 

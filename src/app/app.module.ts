@@ -14,6 +14,9 @@ import { FormCreateSemesterComponent } from './shared/layouts/form-create-semest
 import { FormCreateResourceComponent } from './shared/layouts/form-create-resource/form-create-resource.component';
 import { FormCreateUserComponent } from './shared/layouts/form-create-user/form-create-user.component';
 import { FormulaireComponent } from './pages/formulaire/formulaire.component';
+import { PageVacataireComponent } from './pages/page-vacataire/page-vacataire.component'; // Ajoutez cette ligne
+
+
 import { DetailUserComponent } from './pages/detail-user/detail-user.component'; // Ajoutez cette ligne
 import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.component'; // Ajoutez cette ligne
 
@@ -28,6 +31,7 @@ import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.
     FormCreateUserComponent,
     ResourceListComponent,
     FormulaireComponent,
+    PageVacataireComponent
     DetailUserComponent,
     PdfFormComponent,
   ],
