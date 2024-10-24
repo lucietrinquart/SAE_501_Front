@@ -1,5 +1,5 @@
 <body class="bg-fond_page w-full">
-  <div class="flex gap-2 p-2 bg-fond_page h-screen w-full">
+  <div class="flex gap-2 p-2 bg-fond_page w-full">
     <!-- Section Utilisateurs -->
     <div class="w-1/3 bg-fond_section1 p-2 flex flex-col gap-2 rounded-lg">
       <div class="h-1/9 bg-fond_section1 rounded-lg py-2">
@@ -60,6 +60,14 @@
           <button id="toggleCreateResourceButton"
             class=" ml-2 mb-2 mt-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
             Ressource</button>
+            <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
+
+              <!-- Nouveau bouton détail -->
+              <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
+                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-300 transition-colors duration-200">
+                Détail
+              </button>
+            </div>
           <div id="CreateResourceDiv" class="hidden">
             <app-form-create-resource></app-form-create-resource>
           </div>
@@ -204,18 +212,10 @@
               </div>
             </div>
           </div>
-          <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
-
-            <!-- Nouveau bouton détail -->
-            <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
-              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-300 transition-colors duration-200">
-              Détail
-            </button>
-          </div>
         </div>
-        <div id="CreateSemesterDiv" class="hidden">
-          <app-form-create-semester></app-form-create-semester>
-        </div>
+      </div>
+      <div id="CreateSemesterDiv" class="hidden">
+        <app-form-create-semester></app-form-create-semester>
       </div>
     </div>
   </div>
