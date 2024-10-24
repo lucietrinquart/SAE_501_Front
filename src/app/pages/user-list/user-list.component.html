@@ -74,7 +74,9 @@
           <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
             <div class="flex flex-col w-full gap-2">
               <div class="bg-fond_section1 p-2 rounded-lg mb-2">
-                <div class="bg-white text-black p-2 rounded-lg mb-2">{{ resource.name }}</div>
+                <div class="bg-white text-black p-2 rounded-lg mb-2">{{ resource.name }} - {{
+                  getUserNameById(resource.ref_teacher_id) }}
+                </div>
 
                 <div class="bg-fond_section2 p-2 rounded-lg">
                   <table class="table-auto w-full text-left">
