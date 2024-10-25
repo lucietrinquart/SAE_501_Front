@@ -5,8 +5,10 @@
       <div class="h-1/9 bg-fond_section1 rounded-lg py-2">
 
         <a href="/user" class="bg-white border rounded p-2 hover:bg-gray-300 transition-colors duration-200">Home</a>
-        <a href="/resource" class="bg-white border rounded ml-2 p-2 hover:bg-gray-300 transition-colors duration-200">Resources</a>
-        <a (click)="logout()" class="bg-white border rounded ml-2 p-2 hover:bg-gray-300 transition-colors duration-200 cursor-pointer">
+        <a href="/resource"
+          class="bg-white border rounded ml-2 p-2 hover:bg-gray-300 transition-colors duration-200">Resources</a>
+        <a (click)="logout()"
+          class="bg-white border rounded ml-2 p-2 hover:bg-gray-300 transition-colors duration-200 cursor-pointer">
           Déconnecter</a>
 
       </div>
@@ -63,7 +65,7 @@
 
             <!-- Nouveau bouton détail -->
             <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
-              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-300 transition-colors duration-200">
+              class="px-4 py-2 bg-green-500 text-white  ml-2 rounded-md hover:bg-green-300 transition-colors duration-200">
               Détail
             </button>
           </div>
@@ -73,7 +75,7 @@
           <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
             <div class="flex flex-col w-full gap-2">
               <div class="bg-fond_section1 p-2 rounded-lg mb-2">
-                <div class="bg-white text-black p-2 rounded-lg mb-2">{{ resource.name }} - {{
+                <div class="text-white bg-fond_section2 p-2 rounded-lg mb-2">{{ resource.name }} - {{
                   getUserNameById(resource.ref_teacher_id) }}
                 </div>
 
@@ -85,6 +87,8 @@
                         <th class="border px-4 py-2 text-white">CM</th>
                         <th class="border px-4 py-2 text-white">TD</th>
                         <th class="border px-4 py-2 text-white">TP</th>
+                        <th class="border px-4 py-2 text-white">Actions</th>
+
                       </tr>
                     </thead>
                     <tbody class="rounded-lg">
