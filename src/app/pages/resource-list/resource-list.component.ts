@@ -182,6 +182,7 @@ export class ResourceListComponent implements OnInit {
         () => {
           // Remove the deleted resource from filteredResources
           this.filteredResources = this.filteredResources.filter(item => item.id !== resourceId);
+          window.location.reload();
         },
         error => {
           console.error('Erreur lors de la suppression de la ressource', error);
