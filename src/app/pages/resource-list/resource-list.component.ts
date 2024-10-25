@@ -4,6 +4,7 @@ import { ResourceList } from "../../shared/interfaces/resources";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 interface ResourceType {
   id: number;
@@ -29,7 +30,8 @@ export class ResourceListComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.searchSubject
       .pipe(
@@ -144,5 +146,10 @@ export class ResourceListComponent implements OnInit {
         console.error('Error updating resource:', error);
       }
     );
+  }
+
+  logout() {
+    this.apiService.logout();  // Déconnecter l'utilisateur via l'API
+    this.router.navigate(['/login']); // Rediriger vers la page de login
   }
 }

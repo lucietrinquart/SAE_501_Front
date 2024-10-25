@@ -361,6 +361,11 @@ export class UserListComponent implements OnInit {
     return user ? 'Professeur Référent: ' + user.username : 'Unknown'; // Si aucun utilisateur n'est trouvé
   }
 
+  logout() {
+    this.apiService.logout();  // Déconnecter l'utilisateur via l'API
+    this.router.navigate(['/login']); // Rediriger vers la page de login
+  }
+
 }
 
 
