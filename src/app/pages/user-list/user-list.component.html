@@ -1,4 +1,4 @@
-<body class="bg-fond_page w-full">
+<body class=" min-h-screen bg-fond_page w-full">
   <div class="flex gap-2 p-2 bg-fond_page w-full">
     <!-- Section Utilisateurs -->
     <div class="w-1/3 bg-fond_section1 p-2 flex flex-col gap-2 rounded-lg">
@@ -15,7 +15,7 @@
         <button id="toggleAddUserButton"
           class=" mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
           Utilisateur</button>
-        <div id="addUserDiv" class="hidden">
+        <div id="addUserDiv" class="hidden mb-2">
           <app-form-create-user></app-form-create-user>
         </div>
         <!-- Barre de recherche -->
@@ -39,8 +39,8 @@
     </div>
 
     <!-- Section des Ressources et Semestres -->
-    <div class="flex w-full gap-5">
-      <div class="w-4/5">
+    <div class="flex w-full gap-2">
+      <div class="w-full">
         <!-- Liste des Semestres -->
         <ul class="flex gap-2 p-2 bg-fond_section1 rounded-lg">
           <li class="" *ngFor="let sem of semestre; trackBy: trackBySemester">
@@ -60,17 +60,17 @@
           <button id="toggleCreateResourceButton"
             class=" ml-2 mb-2 mt-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
             Ressource</button>
-            <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
+          <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
 
-              <!-- Nouveau bouton détail -->
-              <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
-                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-300 transition-colors duration-200">
-                Détail
-              </button>
-            </div>
-          <div id="CreateResourceDiv" class="hidden">
-            <app-form-create-resource></app-form-create-resource>
+            <!-- Nouveau bouton détail -->
+            <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
+              class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-300 transition-colors duration-200">
+              Détail
+            </button>
           </div>
+          <!-- <div id="CreateResourceDiv" class="hidden">
+            <app-form-create-resource></app-form-create-resource>
+          </div> -->
           <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
             <div class="flex flex-col w-full gap-2">
               <div class="bg-fond_section1 p-2 rounded-lg mb-2">
@@ -214,11 +214,13 @@
           </div>
         </div>
       </div>
+      <div id="CreateResourceDiv" class="hidden">
+        <app-form-create-resource></app-form-create-resource>
+      </div>
       <div id="CreateSemesterDiv" class="hidden">
         <app-form-create-semester></app-form-create-semester>
       </div>
     </div>
   </div>
-
 
 </body>
