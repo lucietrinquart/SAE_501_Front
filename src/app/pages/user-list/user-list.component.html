@@ -276,42 +276,42 @@
                     class="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-400 transition-colors duration-200">
                     {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
                   </button>
+                  @if (isResourceExpanded(resource.id)) {
+                  <div class="h-1/5 bg-fond_section2 p-4 mt-2 rounded-lg">
+                    <h3 class="font-bold text-white">Volumes nationaux</h3>
+                    <ul class="space-y-4">
+                      <li>
+                        <div class="flex items-center gap-2">
+                          <span class="w-32 text-white">Volume National:</span>
+                          <input type="number" [ngModel]="resource.vol_nat"
+                            (blur)="updateResourceVolume(resource.id, 'vol_nat', getInputValue($event))"
+                            class="border rounded p-1 w-24" />
+                        </div>
+                        <div class="mt-1 text-sm text-white">
+                          Différence entre le volume National et le volume reparti
+                          @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                          <div>{{ getTotalDifference(resource.id) }}</div>
+                          }
+                        </div>
+                      </li>
+                      <li>
+                        <div class="flex items-center gap-2">
+                          <span class="w-32 text-white">Volume National TP:</span>
+                          <input type="number" [ngModel]="resource.vol_nat_tp"
+                            (blur)="updateResourceVolume(resource.id, 'vol_nat_tp', getInputValue($event))"
+                            class="border rounded p-1 w-24" />
+                        </div>
+                        <div class="mt-1 text-sm text-white">
+                          Différence entre le volume National TP et le volume reparti TP
+                          @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                          <div>{{ getTotalDifferenceTP(resource.id) }}</div>
+                          }
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  }
                 </div>
-                @if (isResourceExpanded(resource.id)) {
-                <div class="h-1/5 bg-fond_section2 p-4 mt-2 rounded-lg">
-                  <h3 class="font-bold text-white">Volumes nationaux</h3>
-                  <ul class="space-y-4">
-                    <li>
-                      <div class="flex items-center gap-2">
-                        <span class="w-32 text-white">Volume National:</span>
-                        <input type="number" [ngModel]="resource.vol_nat"
-                          (blur)="updateResourceVolume(resource.id, 'vol_nat', getInputValue($event))"
-                          class="border rounded p-1 w-24" />
-                      </div>
-                      <div class="mt-1 text-sm text-white">
-                        Différence entre le volume National et le volume reparti
-                        @if (getFilteredUserWorkloads(resource.id).length > 0) {
-                        <div>{{ getTotalDifference(resource.id) }}</div>
-                        }
-                      </div>
-                    </li>
-                    <li>
-                      <div class="flex items-center gap-2">
-                        <span class="w-32 text-white">Volume National TP:</span>
-                        <input type="number" [ngModel]="resource.vol_nat_tp"
-                          (blur)="updateResourceVolume(resource.id, 'vol_nat_tp', getInputValue($event))"
-                          class="border rounded p-1 w-24" />
-                      </div>
-                      <div class="mt-1 text-sm text-white">
-                        Différence entre le volume National TP et le volume reparti TP
-                        @if (getFilteredUserWorkloads(resource.id).length > 0) {
-                        <div>{{ getTotalDifferenceTP(resource.id) }}</div>
-                        }
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-                }
               </div>
             </div>
           </div>
