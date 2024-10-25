@@ -1,294 +1,289 @@
-<body class=" min-h-screen bg-fond_page w-full">
-  <div class="flex gap-2 p-2 bg-fond_page w-full">
+<body class="min-h-screen bg-fond_page w-full p-2">
+  <div class="flex flex-col lg:flex-row gap-2 w-full">
     <!-- Section Utilisateurs -->
-    <div class="w-1/3 bg-fond_section1 p-2 flex flex-col gap-2 rounded-lg">
-      <div class="h-1/9 bg-fond_section1 rounded-lg py-2">
-
-        <a [routerLink]="['/user']" class="bg-white border rounded p-2 hover:bg-gray-300 transition-colors duration-200">Accueil</a>
-        <a [routerLink]="['/resource']"
-          class="bg-white border rounded ml-2 p-2 hover:bg-gray-300 transition-colors duration-200">Resources</a>
-        <a (click)="logout()"
-          class="bg-white border rounded ml-2 p-2 hover:bg-gray-300 transition-colors duration-200 cursor-pointer">
-          Déconnecter</a>
-
+    <div class="w-full lg:w-1/3 bg-fond_section1 p-2 flex flex-col gap-2 rounded-lg">
+      <div class="bg-fond_section1 rounded-lg py-2">
+        <div class="flex flex-wrap gap-2">
+          <a [routerLink]="['/user']" class="bg-white border rounded p-2 hover:bg-gray-300 transition-colors duration-200">Accueil</a>
+          <a [routerLink]="['/resource']" class="bg-white border rounded p-2 hover:bg-gray-300 transition-colors duration-200">Resources</a>
+          <a (click)="logout()" class="bg-white border rounded p-2 hover:bg-gray-300 transition-colors duration-200 cursor-pointer">Déconnecter</a>
+        </div>
       </div>
-      <ul>
+
+      <ul class="w-full">
         <button (click)="formUserHidden = !formUserHidden"
-          class=" mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
-          Utilisateur</button>
+          class="w-full sm:w-auto mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">
+          Créer Utilisateur
+        </button>
+
         <div [class.hidden]="formUserHidden">
           <app-form-create-user></app-form-create-user>
         </div>
-        <!-- Barre de recherche -->
+
         <div class="mb-4 w-full">
           <input type="text" [(ngModel)]="userSearchTerm" (input)="filterUserList()"
             placeholder="Rechercher un professeur..."
             class="w-full px-4 py-2 border rounded focus:outline-none focus:border-blue-500">
         </div>
 
-
         <li *ngFor="let user of filteredUserList; trackBy: trackByUser">
-          <div
-            class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
+          <div class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex flex-col sm:flex-row justify-between items-center gap-2"
             [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
             <span>{{ user.username }}</span>
             <div class="flex gap-2" (click)="$event.stopPropagation()">
-              <button
-                class="btn-size mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
+              <button class="btn-size cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
                 (click)="openEditUserModal(user)">
                 Éditer
               </button>
-              <button
-                class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200"
+              <button class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200"
                 (click)="removeFromUser(user.id)">
                 X
               </button>
             </div>
           </div>
 
-          <!-- Edit User Modal -->
+          <!-- Modal reste inchangé car il est déjà centré -->
           <div *ngIf="editingUser?.id === user.id"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            (click)="closeEditUserModal()">
-            <div class="bg-white p-6 rounded-lg shadow-xl w-96" (click)="$event.stopPropagation()">
-              <h2 class="text-xl font-bold mb-4">Éditer un Utilisateur</h2>
-              <form (submit)="updateUser($event)">
-                <div class="mb-4">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
-                  <input type="text" [(ngModel)]="editUserForm.username" name="username"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                </div>
-                <div class="mb-4">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                  <input type="email" [(ngModel)]="editUserForm.email" name="email"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                </div>
-                <div class="mb-4">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">
-                    Nouveau mot de passe:
-                    <span class="font-normal text-gray-500 text-xs">Laisser vide pour ne pas le changer</span>
-                  </label>
-                  <div class="relative">
-                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="editUserForm.password"
-                      name="password" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500">
-                    <button type="button"
-                      class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      (click)="togglePasswordVisibility()">
-                      <span class="text-sm">{{ showPassword ? 'Hide' : 'Show' }}</span>
-                    </button>
-                  </div>
-                </div>
-                <div class="mb-4">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Horaires maximales</label>
-                  <input type="number" [(ngModel)]="editUserForm.max_hour_vol" name="max_hour_vol"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500">
-                </div>
-                <div class="mb-4">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
-                  <select [(ngModel)]="editUserForm.role" name="role"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
-                    <option value="admin">Admin</option>
-                    <option value="enseignant">Enseignant titulaire</option>
-                    <option value="vacataire">Vacataire</option>
-                  </select>
-                </div>
-                <div class="flex justify-end gap-2">
+          class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          (click)="closeEditUserModal()">
+          <div class="bg-white p-6 rounded-lg shadow-xl w-96" (click)="$event.stopPropagation()">
+            <h2 class="text-xl font-bold mb-4">Éditer un Utilisateur</h2>
+            <form (submit)="updateUser($event)">
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+                <input type="text" [(ngModel)]="editUserForm.username" name="username"
+                  class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                <input type="email" [(ngModel)]="editUserForm.email" name="email"
+                  class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Nouveau mot de passe:
+                  <span class="font-normal text-gray-500 text-xs">Laisser vide pour ne pas le changer</span>
+                </label>
+                <div class="relative">
+                  <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="editUserForm.password"
+                    name="password" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500">
                   <button type="button"
-                    class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition-colors duration-200"
-                    (click)="closeEditUserModal()">
-                    Annuler
-                  </button>
-                  <button type="submit"
-                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition-colors duration-200">
-                    Enregistrer
+                    class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    (click)="togglePasswordVisibility()">
+                    <span class="text-sm">{{ showPassword ? 'Hide' : 'Show' }}</span>
                   </button>
                 </div>
-              </form>
-            </div>
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Horaires maximales</label>
+                <input type="number" [(ngModel)]="editUserForm.max_hour_vol" name="max_hour_vol"
+                  class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500">
+              </div>
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
+                <select [(ngModel)]="editUserForm.role" name="role"
+                  class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
+                  <option value="admin">Admin</option>
+                  <option value="enseignant">Enseignant titulaire</option>
+                  <option value="vacataire">Vacataire</option>
+                </select>
+              </div>
+              <div class="flex justify-end gap-2">
+                <button type="button"
+                  class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition-colors duration-200"
+                  (click)="closeEditUserModal()">
+                  Annuler
+                </button>
+                <button type="submit"
+                  class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition-colors duration-200">
+                  Enregistrer
+                </button>
+              </div>
+            </form>
           </div>
+        </div>
         </li>
-
       </ul>
     </div>
 
     <!-- Section des Ressources et Semestres -->
-    <div class="flex w-full gap-2">
-      <div class="w-full">
-        <!-- Liste des Semestres -->
-        <ul class="flex gap-2 p-2 bg-fond_section1 rounded-lg">
-          <li class="" *ngFor="let sem of semestre; trackBy: trackBySemester">
-            <div
-              class="cursor-pointer px-4 py-2 bg-fond_section2 border rounded-lg border-none hover:bg-gray-500 transition-colors duration-200"
-              [class.bg-blue-500]="selectedSemester === sem.id" (click)="selectSemester(sem.id)">
-              <h1 class="text-blanc">Semestre {{ sem.id }}</h1>
-            </div>
-          </li>
-          <button (click)="formSemesterHidden = !formSemesterHidden"
-            class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
-            Semester</button>
-        </ul>
+    <div class="flex flex-col w-full gap-2">
+      <!-- Liste des Semestres -->
+      <ul class="flex flex-wrap gap-2 p-2 bg-fond_section1 rounded-lg">
+        <li class="flex-shrink-0" *ngFor="let sem of semestre; trackBy: trackBySemester">
+          <div class="cursor-pointer px-4 py-2 bg-fond_section2 border rounded-lg border-none hover:bg-gray-500 transition-colors duration-200"
+            [class.bg-blue-500]="selectedSemester === sem.id" (click)="selectSemester(sem.id)">
+            <h1 class="text-blanc">Semestre {{ sem.id }}</h1>
+          </div>
+        </li>
+        <button (click)="formSemesterHidden = !formSemesterHidden"
+          class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">
+          Créer Semester
+        </button>
+      </ul>
 
-        <!-- Affichage des Ressources -->
-        <div class="bg-fond_section1 rounded-lg mb-2 mt-2">
+      <!-- Section des ressources -->
+      <div class="bg-fond_section1 rounded-lg p-2">
+        <div class="flex flex-wrap gap-2 mb-2">
           <button (click)="formResourceHidden = !formResourceHidden"
-            class=" ml-2 mb-2 mt-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
-            Ressource</button>
+            class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">
+            Créer Ressource
+          </button>
           <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
-
-            <!-- Nouveau bouton détail -->
             <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
-              class="px-4 py-2 bg-green-500 text-white  ml-2 rounded-md hover:bg-green-300 transition-colors duration-200">
+              class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-300 transition-colors duration-200">
               Détail
             </button>
           </div>
-          <!-- <div id="CreateResourceDiv" class="hidden">
-            <app-form-create-resource></app-form-create-resource>
-          </div> -->
-          <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
-            <div class="flex flex-col w-full gap-2">
-              <div class="bg-fond_section1 p-2 rounded-lg mb-2">
-                <div class="text-white bg-fond_section2 p-2 rounded-lg mb-2">{{ resource.name }} - {{
-                  getUserNameById(resource.ref_teacher_id) }}
-                </div>
+        </div>
 
-                <div class="bg-fond_section2 p-2 rounded-lg">
-                  <table class="table-auto w-full text-left">
-                    <thead>
+        <!-- Table des ressources -->
+        <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
+          <div class="flex flex-col w-full gap-2">
+            <div class="bg-fond_section1 p-2 rounded-lg mb-2">
+              <div class="text-white bg-fond_section2 p-2 rounded-lg mb-2">
+                {{ resource.name }} - {{ getUserNameById(resource.ref_teacher_id) }}
+              </div>
+
+              <div class="bg-fond_section2 p-2 rounded-lg overflow-x-auto">
+                <table class="table-auto w-full text-left">
+                  <thead>
+                    <tr>
+                      <th class="border px-4 py-2 text-white">Utilisateurs</th>
+                      <th class="border px-4 py-2 text-white">CM</th>
+                      <th class="border px-4 py-2 text-white">TD</th>
+                      <th class="border px-4 py-2 text-white">TP</th>
+                      <th class="border px-4 py-2 text-white">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="rounded-lg">
+                    <ng-container
+                      *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
                       <tr>
-                        <th class="border px-4 py-2 text-white">Utilisateurs</th>
-                        <th class="border px-4 py-2 text-white">CM</th>
-                        <th class="border px-4 py-2 text-white">TD</th>
-                        <th class="border px-4 py-2 text-white">TP</th>
-                        <th class="border px-4 py-2 text-white">Actions</th>
-
-                      </tr>
-                    </thead>
-                    <tbody class="rounded-lg">
-                      <ng-container
-                        *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
-                        <tr>
-                          <td class="border px-4 py-2 text-white">{{ getUsername(workload.user_id) }}</td>
-
-                          <!-- vol_cm input -->
-                          <td class="border px-4 py-2">
-                            <input type="number" [ngModel]="workload.vol_cm"
-                              (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
-                              class="border rounded p-1" />
-                          </td>
-
-                          <!-- vol_td input -->
-                          <td class="border px-4 py-2">
-                            <input type="number" [ngModel]="workload.vol_td"
-                              (blur)="updateWorkload(workload.id, 'vol_td', getInputValue($event))"
-                              class="border rounded p-1" />
-                          </td>
-
-                          <!-- vol_tp input -->
-                          <td class="border px-4 py-2">
-                            <input type="number" [ngModel]="workload.vol_tp"
-                              (blur)="updateWorkload(workload.id, 'vol_tp', getInputValue($event))"
-                              class="border rounded p-1" />
-                          </td>
-
-                          <td>
-                            <button
-                              class=" ml-2 bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg  hover:bg-red-400 transition-colors duration-200"
-                              (click)="removeFromWorkload(workload.id)">X</button>
-                          </td>
-
-                        </tr>
-                      </ng-container>
-                    </tbody>
-
-                    <tbody>
-                      <tr>
-                        <td class="border px-4 py-2 relative">
-                          <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()"
-                            (focus)="showDropdown = true" class="border rounded p-1 w-full"
-                            placeholder="Rechercher un professeur..." />
-
-                          <div *ngIf="showDropdown && filteredUsers.length > 0"
-                            class="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
-                            <ul class="py-1">
-                              <li *ngFor="let user of filteredUsers" (click)="selectUser(user)"
-                                class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                                {{ user.username }}
-                              </li>
-                            </ul>
-                          </div>
-                        </td>
+                        <td class="border px-4 py-2 text-white">{{ getUsername(workload.user_id) }}</td>
 
                         <!-- vol_cm input -->
                         <td class="border px-4 py-2">
-                          <input type="number" [(ngModel)]="newWorkload.vol_cm" class="border rounded p-1"
-                            placeholder="CM Volume" />
+                          <input type="number" [ngModel]="workload.vol_cm"
+                            (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
+                            class="border rounded p-1" />
                         </td>
 
                         <!-- vol_td input -->
                         <td class="border px-4 py-2">
-                          <input type="number" [(ngModel)]="newWorkload.vol_td" class="border rounded p-1"
-                            placeholder="TD Volume" />
+                          <input type="number" [ngModel]="workload.vol_td"
+                            (blur)="updateWorkload(workload.id, 'vol_td', getInputValue($event))"
+                            class="border rounded p-1" />
                         </td>
 
                         <!-- vol_tp input -->
                         <td class="border px-4 py-2">
-                          <input type="number" [(ngModel)]="newWorkload.vol_tp" class="border rounded p-1"
-                            placeholder="TP Volume" />
+                          <input type="number" [ngModel]="workload.vol_tp"
+                            (blur)="updateWorkload(workload.id, 'vol_tp', getInputValue($event))"
+                            class="border rounded p-1" />
                         </td>
 
                         <td>
                           <button
-                            class="ml-2 bg-green-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-green-300 transition-colors duration-200"
-                            (click)="submitNewWorkload(resource.id, selectedSemester)">+</button>
+                            class=" ml-2 bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg  hover:bg-red-400 transition-colors duration-200"
+                            (click)="removeFromWorkload(workload.id)">X</button>
                         </td>
+
                       </tr>
-                    </tbody>
-                  </table>
-                  <button (click)="toggleResource(resource.id)"
-                    class="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-400 transition-colors duration-200">
-                    {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
-                  </button>
-                  @if (isResourceExpanded(resource.id)) {
-                  <div class="h-1/5 bg-fond_section2 p-4 mt-2 rounded-lg">
-                    <h3 class="font-bold text-white">Volumes nationaux</h3>
-                    <ul class="space-y-4">
-                      <li>
-                        <div class="flex items-center gap-2">
-                          <span class="w-32 text-white">Volume National:</span>
-                          <input type="number" [ngModel]="resource.vol_nat"
-                            (blur)="updateResourceVolume(resource.id, 'vol_nat', getInputValue($event))"
-                            class="border rounded p-1 w-24" />
+                    </ng-container>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <td class="border px-4 py-2 relative">
+                        <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()"
+                          (focus)="showDropdown = true" class="border rounded p-1 w-full"
+                          placeholder="Rechercher un professeur..." />
+
+                        <div *ngIf="showDropdown && filteredUsers.length > 0"
+                          class="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                          <ul class="py-1">
+                            <li *ngFor="let user of filteredUsers" (click)="selectUser(user)"
+                              class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                              {{ user.username }}
+                            </li>
+                          </ul>
                         </div>
-                        <div class="mt-1 text-sm text-white">
-                          Différence entre le volume National et le volume reparti
-                          @if (getFilteredUserWorkloads(resource.id).length > 0) {
-                          <div>{{ getTotalDifference(resource.id) }}</div>
-                          }
-                        </div>
-                      </li>
-                      <li>
-                        <div class="flex items-center gap-2">
-                          <span class="w-32 text-white">Volume National TP:</span>
-                          <input type="number" [ngModel]="resource.vol_nat_tp"
-                            (blur)="updateResourceVolume(resource.id, 'vol_nat_tp', getInputValue($event))"
-                            class="border rounded p-1 w-24" />
-                        </div>
-                        <div class="mt-1 text-sm text-white">
-                          Différence entre le volume National TP et le volume reparti TP
-                          @if (getFilteredUserWorkloads(resource.id).length > 0) {
-                          <div>{{ getTotalDifferenceTP(resource.id) }}</div>
-                          }
-                        </div>
-                      </li>
-                    </ul>
-                  </div>
-                  }
+                      </td>
+
+                      <!-- vol_cm input -->
+                      <td class="border px-4 py-2">
+                        <input type="number" [(ngModel)]="newWorkload.vol_cm" class="border rounded p-1"
+                          placeholder="CM Volume" />
+                      </td>
+
+                      <!-- vol_td input -->
+                      <td class="border px-4 py-2">
+                        <input type="number" [(ngModel)]="newWorkload.vol_td" class="border rounded p-1"
+                          placeholder="TD Volume" />
+                      </td>
+
+                      <!-- vol_tp input -->
+                      <td class="border px-4 py-2">
+                        <input type="number" [(ngModel)]="newWorkload.vol_tp" class="border rounded p-1"
+                          placeholder="TP Volume" />
+                      </td>
+
+                      <td>
+                        <button
+                          class="ml-2 bg-green-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-green-300 transition-colors duration-200"
+                          (click)="submitNewWorkload(resource.id, selectedSemester)">+</button>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+
+                <button (click)="toggleResource(resource.id)"
+                  class="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-400 transition-colors duration-200">
+                  {{ isResourceExpanded(resource.id) ? 'Voir moins' : 'Voir plus' }}
+                </button>
+
+                @if (isResourceExpanded(resource.id)) {
+                <div class="h-auto bg-fond_section2 p-4 mt-2 rounded-lg">
+                  <h3 class="font-bold text-white">Volumes nationaux</h3>
+                  <ul class="space-y-4">
+                    <li>
+                      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <span class="w-32 text-white">Volume National:</span>
+                        <input type="number" [ngModel]="resource.vol_nat"
+                          (blur)="updateResourceVolume(resource.id, 'vol_nat', getInputValue($event))"
+                          class="border rounded p-1 w-24" />
+                      </div>
+                      <div class="mt-1 text-sm text-white">
+                        Différence entre le volume National et le volume reparti
+                        @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                        <div>{{ getTotalDifference(resource.id) }}</div>
+                        }
+                      </div>
+                    </li>
+                    <li>
+                      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                        <span class="w-32 text-white">Volume National TP:</span>
+                        <input type="number" [ngModel]="resource.vol_nat_tp"
+                          (blur)="updateResourceVolume(resource.id, 'vol_nat_tp', getInputValue($event))"
+                          class="border rounded p-1 w-24" />
+                      </div>
+                      <div class="mt-1 text-sm text-white">
+                        Différence entre le volume National TP et le volume reparti TP
+                        @if (getFilteredUserWorkloads(resource.id).length > 0) {
+                        <div>{{ getTotalDifferenceTP(resource.id) }}</div>
+                        }
+                      </div>
+                    </li>
+                  </ul>
                 </div>
+                }
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div [class.hidden]="formResourceHidden">
         <app-form-create-resource></app-form-create-resource>
       </div>
@@ -296,6 +291,11 @@
         <app-form-create-semester></app-form-create-semester>
       </div>
     </div>
+    <div [class.hidden]="formResourceHidden">
+      <app-form-create-resource></app-form-create-resource>
+    </div>
+    <div [class.hidden]="formSemesterHidden">
+      <app-form-create-semester></app-form-create-semester>
+    </div>
   </div>
-
 </body>
