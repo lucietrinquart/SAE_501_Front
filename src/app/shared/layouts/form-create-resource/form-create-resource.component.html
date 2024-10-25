@@ -1,14 +1,14 @@
-<div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-    <h3 class="text-xl font-bold mb-4">Ajouter une nouvelle ressource</h3>
+<div class="max-w-md mx-auto bg-fond_section1 p-6 rounded-lg shadow-md">
+    <h3 class="text-xl text-blanc font-bold mb-4">Ajouter une nouvelle ressource</h3>
     <form (ngSubmit)="onSubmit()" #resourceForm="ngForm" class="space-y-6">
         <div class="form-group">
-            <label for="name" class="block text-sm font-medium text-gray-700">Nom de la ressource</label>
+            <label for="name" class="block text-sm font-medium text-blanc">Nom de la ressource</label>
             <input type="text" id="name" [(ngModel)]="newResource.name" name="name" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div class="form-group">
-            <label for="semester_id" class="block text-sm font-medium text-gray-700">Semestre</label>
+            <label for="semester_id" class="block text-sm font-medium text-blanc">Semestre</label>
             <select id="semester_id" [(ngModel)]="newResource.semester_id" name="semester_id" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option *ngFor="let semester of semestre" [value]="semester.id">{{ semester.name }}</option>
@@ -16,13 +16,13 @@
         </div>
 
         <div class="form-group">
-            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+            <label for="description" class="block text-sm font-medium text-blanc">Description</label>
             <input type="text" id="description" [(ngModel)]="newResource.description" name="description"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div class="form-group">
-            <label for="type" class="block text-sm font-medium text-gray-700">Type de ressource</label>
+            <label for="type" class="block text-sm font-medium text-blanc">Type de ressource</label>
             <select id="type" [(ngModel)]="newResource.resource_type_id" name="type" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option *ngFor="let resourceType of resource_types" [value]="resourceType.id">{{ resourceType.name }}
@@ -31,7 +31,7 @@
         </div>
 
         <div class="form-group">
-            <label for="profRef" class="block text-sm font-medium text-gray-700">Professeur Référent</label>
+            <label for="profRef" class="block text-sm font-medium text-blanc">Professeur Référent</label>
             <select id="profRef" [(ngModel)]="newResource.ref_teacher_id" name="profRef" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option class="text-black" *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
@@ -39,37 +39,37 @@
         </div>
 
         <div class="form-group">
-            <label for="course" class="block text-sm font-medium text-gray-700">Parcours</label>
+            <label for="course" class="block text-sm font-medium text-blanc">Parcours</label>
             <input type="text" id="course" [(ngModel)]="newResource.course" name="course"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div class="form-group">
-            <label for="vol_nat" class="block text-sm font-medium text-gray-700">Volume nat</label>
+            <label for="vol_nat" class="block text-sm font-medium text-blanc">Volume nat</label>
             <input type="number" id="vol_nat" [(ngModel)]="newResource.vol_nat" name="vol_nat"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div class="form-group">
-            <label for="vol_nat_tp" class="block text-sm font-medium text-gray-700">Volume nat TP</label>
+            <label for="vol_nat_tp" class="block text-sm font-medium text-blanc">Volume nat TP</label>
             <input type="number" id="vol_nat_tp" [(ngModel)]="newResource.vol_nat_tp" name="vol_nat_tp"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div class="form-group">
-            <label for="vol_e" class="block text-sm font-medium text-gray-700">Volume E</label>
+            <label for="vol_e" class="block text-sm font-medium text-blanc">Volume E</label>
             <input type="number" id="vol_e" [(ngModel)]="newResource.vol_e" name="vol_e"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <div class="form-group">
-            <label for="vol_ne" class="block text-sm font-medium text-gray-700">Volume NE</label>
+            <label for="vol_ne" class="block text-sm font-medium text-blanc">Volume NE</label>
             <input type="number" id="vol_ne" [(ngModel)]="newResource.vol_ne" name="vol_ne"
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
 
         <button type="submit"
-            class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="w-full bg-bouton text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             [disabled]="!resourceForm.form.valid">
             Ajouter la ressource
         </button>
