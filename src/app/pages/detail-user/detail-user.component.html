@@ -14,6 +14,9 @@
       </a>
     </div>
     <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
+      <!-- Header -->
+
+
       <div class="p-6 space-y-8">
         <!-- Informations de base -->
         <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
@@ -33,27 +36,28 @@
             </div>
           </div>
         </div>
-
         <!-- Resources Grid -->
-        <div class="bg-white rounded-xl border border-gray-200">
-          <!-- Header Row -->
-          <div class="grid grid-cols-4 border-b border-gray-200 bg-gray-50 font-semibold">
-            <div class="p-4 border-r border-gray-200">Ressource</div>
-            <div class="p-4 border-r border-gray-200 text-right">CM</div>
-            <div class="p-4 border-r border-gray-200 text-right">TD</div>
-            <div class="p-4 text-right">TP</div>
-          </div>
+<div class="bg-white rounded-xl border border-gray-200">
+    <!-- Header Row -->
+    <div class="grid grid-cols-4 border-b border-gray-200 bg-gray-50 font-semibold">
+      <div class="p-4 border-r border-gray-200">Ressource</div>
+      <div class="p-4 border-r border-gray-200 text-right">CM</div>
+      <div class="p-4 border-r border-gray-200 text-right">TD</div>
+      <div class="p-4 text-right">TP</div>
+    </div>
+    
+    <!-- Resource Rows -->
+    @for (resource of resourcesWithWorkload; track resource.id) {
+    <div class="grid grid-cols-4 border-b border-gray-200 hover:bg-gray-50">
+      <div class="p-4 border-r border-gray-200 font-semibold">{{resource.name}}</div>
+      <div class="p-4 border-r border-gray-200 text-right font-mono">{{resource.workload?.vol_cm}} </div>
+      <div class="p-4 border-r border-gray-200 text-right font-mono">{{resource.workload?.vol_td}} </div>
+      <div class="p-4 text-right font-mono">{{resource.workload?.vol_tp}} </div>
+    </div>
+    }
+  </div>
 
-          <!-- Resource Rows -->
-          @for (resource of resourcesWithWorkload; track resource.id) {
-          <div class="grid grid-cols-4 border-b border-gray-200 hover:bg-gray-50">
-            <div class="p-4 border-r border-gray-200 font-semibold">{{resource.name}}</div>
-            <div class="p-4 border-r border-gray-200 text-right font-mono">{{resource.workload?.vol_cm}}</div>
-            <div class="p-4 border-r border-gray-200 text-right font-mono">{{resource.workload?.vol_td}}</div>
-            <div class="p-4 text-right font-mono">{{resource.workload?.vol_tp}}</div>
-          </div>
-          }
-        </div>
+
 
         <!-- Totals Dashboard -->
         <div *ngIf="calculateTotalHours() as totals">
@@ -84,42 +88,8 @@
           </div>
         </div>
 
-        <button 
-          (click)="onSubmit()"
-          [disabled]="isGenerating"
-          class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg text-white font-medium shadow-sm">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          <span *ngIf="!isGenerating">Générer le PDF</span>
-          <span *ngIf="isGenerating">Génération en cours...</span>
-        </button>
+        <button class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 transition-colors rounded-lg text-white font-medium shadow-sm">générer pdf</button>
 
-        <!-- -->
-        <div class="signature-section mt-4">
-          <h3>Signature</h3>
-          <p class="text-muted">Veuillez signer dans la zone ci-dessous</p>
-          <app-signature-pad 
-            (signatureSaved)="onSignatureSaved($event)">
-          </app-signature-pad>
-        </div>
-
-        <!-- -->
-        <div *ngIf="pdfFileId" class="mt-3">
-          <div class="alert alert-success">
-            Le PDF a été généré avec succès !
-          </div>
-          <div class="d-flex justify-between gap-10">
-            <!-- Bouton pour visualiser -->
-            <button (click)="viewPdf()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-              Visualiser le PDF
-            </button>
-            <!-- Bouton pour télécharger -->
-            <button (click)="downloadPdf()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-              Télécharger le PDF
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>

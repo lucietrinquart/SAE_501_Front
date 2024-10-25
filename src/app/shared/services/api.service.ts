@@ -16,11 +16,7 @@ export class ApiService {
     private http: HttpClient,
     private router: Router,
     private authService: AuthService
-  ) { }
-
-  public getBaseUrl(): string {
-    return 'http://localhost:8000/api';
-  }
+  ) {}
 
   public postApi(endpoint: string, data: any): Promise<any> {
     return this.http.post(`${this.apiUrl}${endpoint}`, data).toPromise();

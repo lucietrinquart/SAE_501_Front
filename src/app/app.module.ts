@@ -10,16 +10,12 @@ import { FormCreateSemesterComponent } from './shared/layouts/form-create-semest
 import { FormCreateResourceComponent } from './shared/layouts/form-create-resource/form-create-resource.component';
 import { FormCreateUserComponent } from './shared/layouts/form-create-user/form-create-user.component';
 import { FormulaireComponent } from './pages/formulaire/formulaire.component';
-import { PageVacataireComponent } from './pages/page-vacataire/page-vacataire.component';
-
-
 import { DetailUserComponent } from './pages/detail-user/detail-user.component';
+import { PageVacataireComponent } from './pages/page-vacataire/page-vacataire.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NavButtonsComponent } from './shared/nav-buttons/nav-buttons.component';
-import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.component';
-import { SignaturePadComponent } from './shared/signature-pad/signature-pad.component';
 
 @NgModule({
   declarations: [
@@ -31,13 +27,10 @@ import { SignaturePadComponent } from './shared/signature-pad/signature-pad.comp
     FormCreateResourceComponent,
     FormCreateUserComponent,
     FormulaireComponent,
-    PageVacataireComponent,
     DetailUserComponent,
     PageVacataireComponent,
     UnauthorizedComponent,
-    NavButtonsComponent,
-    PdfFormComponent,
-    SignaturePadComponent,
+    NavButtonsComponent
   ],
   imports: [
     BrowserModule,

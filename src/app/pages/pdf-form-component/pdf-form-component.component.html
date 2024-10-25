@@ -1,7 +1,0 @@
-<p>pdf-form-component works!</p>
-
-<form (ngSubmit)="onSubmit()">
-    <input [(ngModel)]="name" name="name" placeholder="Nom" required>
-    <input [(ngModel)]="email" name="email" placeholder="Email" required type="email">
-    <button type="submit" [disabled]="!name || !email">Générer PDF</button>
-  </form>
