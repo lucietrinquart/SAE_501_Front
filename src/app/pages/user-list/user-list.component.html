@@ -23,20 +23,25 @@
         </div>
 
         <li *ngFor="let user of filteredUserList; trackBy: trackByUser">
-          <div
-            class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex flex-col sm:flex-row justify-between items-center gap-2"
-            [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
+          <div class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
+            [class.bg-blue-500]="selectedProfessor === user.id" 
+            (click)="toggleProfessor(user.id)">
             <span>{{ user.username }}</span>
             <div class="flex gap-2" (click)="$event.stopPropagation()">
-              <button
-                class="btn-size cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
-                (click)="openEditUserModal(user)">
-                Éditer
+              <button 
+                (click)="showUserDetails(user)" 
+                class="btn-size bg-green-500 text-white rounded-md hover:bg-green-300 transition-colors duration-200">
+                <img src="details.svg" alt="Details icon">
               </button>
-              <button
-                class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200"
+              <button 
+              class="btn-size bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
+                (click)="openEditUserModal(user)">
+                <img src="edit.svg" alt="Edit icon">
+              </button>
+              <button 
+              class="btn-size bg-red-500 text-white rounded-md hover:bg-red-400 transition-colors duration-200"  
                 (click)="removeFromUser(user.id)">
-                X
+                <img src="delete.svg" alt="Delete icon">
               </button>
             </div>
           </div>
@@ -129,12 +134,6 @@
             class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">
             Créer Ressource
           </button>
-          <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
-            <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
-              class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-300 transition-colors duration-200">
-              Détail
-            </button>
-          </div>
         </div>
 
         <!-- Table des ressources -->
@@ -179,7 +178,7 @@
                         <td>
                           <button
                             class="ml-2 bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-red-400 transition-colors duration-200"
-                            (click)="removeFromWorkload(workload.id)">X</button>
+                            (click)="removeFromWorkload(workload.id)"><img src="delete.svg" alt="Delete icon"></button>
                         </td>
                       </tr>
                     </ng-container>
@@ -215,7 +214,7 @@
                       <td>
                         <button
                           class="ml-2 bg-green-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-green-300 transition-colors duration-200"
-                          (click)="submitNewWorkload(resource.id, selectedSemester)">+</button>
+                          (click)="submitNewWorkload(resource.id, selectedSemester)"><img src="add.svg" alt="Add icon"></button>
                       </td>
                     </tr>
                   </tbody>
