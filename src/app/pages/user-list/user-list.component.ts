@@ -16,6 +16,21 @@ import { Router } from '@angular/router';
 })
 export class UserListComponent implements OnInit {
 
+  editingUser: User | null = null;
+  showPassword: boolean = false;
+  editUserForm: {
+    username: string;
+    email: string;
+    password: string;
+    role: string;
+    max_hour_vol: number;
+  } = {
+    username: '',
+    email: '',
+    password: '',
+    role: 'user',
+    max_hour_vol: 0
+  };
 
   users: User[] = [];
   userworkload: UserWorkload[] = [];
@@ -364,6 +379,54 @@ export class UserListComponent implements OnInit {
   logout() {
     this.apiService.logout();  // Déconnecter l'utilisateur via l'API
     this.router.navigate(['/login']); // Rediriger vers la page de login
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  openEditUserModal(user: User) {
+    this.editingUser = user;
+    this.editUserForm = {
+      username: user.username,
+      email: user.email || '',
+      password: '', // Initialize empty password
+      role: user.role,
+      max_hour_vol: user.max_hour_vol ? Number(user.max_hour_vol) : 0
+    };
+  }
+
+  closeEditUserModal() {
+    this.editingUser = null;
+    this.showPassword = false; // Reset password visibility
+  }
+
+  updateUser(event: Event) {
+    event.preventDefault();
+    if (!this.editingUser) return;
+
+    // Only include password in payload if it's been modified
+    const payload: any = {
+      username: this.editUserForm.username,
+      email: this.editUserForm.email,
+      role: this.editUserForm.role,
+      max_hour_vol: this.editUserForm.max_hour_vol
+    };
+
+    // Add password to payload only if it's not empty
+    if (this.editUserForm.password.trim()) {
+      payload.password = this.editUserForm.password;
+    }
+
+    this.apiService.requestApi(`/user/update/${this.editingUser.id}`, 'PUT', payload)
+      .then(response => {
+        console.log('User updated successfully:', response);
+        this.loadData(); // Refresh the user list
+        this.closeEditUserModal();
+      })
+      .catch(error => {
+        console.error('Error updating user:', error);
+      });
   }
 
 }
