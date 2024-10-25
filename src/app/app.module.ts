@@ -15,6 +15,7 @@ import { PageVacataireComponent } from './pages/page-vacataire/page-vacataire.co
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NavButtonsComponent } from './shared/nav-buttons/nav-buttons.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { RouterModule } from '@angular/router';
     FormulaireComponent,
     DetailUserComponent,
     PageVacataireComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
+    NavButtonsComponent
   ],
   imports: [
     BrowserModule,

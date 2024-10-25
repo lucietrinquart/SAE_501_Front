@@ -25,12 +25,12 @@ export class UserListComponent implements OnInit {
     role: string;
     max_hour_vol: number;
   } = {
-    username: '',
-    email: '',
-    password: '',
-    role: 'user',
-    max_hour_vol: 0
-  };
+      username: '',
+      email: '',
+      password: '',
+      role: 'user',
+      max_hour_vol: 0
+    };
 
   users: User[] = [];
   userworkload: UserWorkload[] = [];
@@ -49,6 +49,12 @@ export class UserListComponent implements OnInit {
   selectedSemester: number = 1;
   selectedProfessor: number | null = null;
   expandedResources: { [key: number]: boolean } = {};
+
+
+  formSemesterHidden = true;
+  formResourceHidden = true;
+  formUserHidden = true;
+
 
   newWorkload: { user_id: number | null, vol_cm: number, vol_td: number, vol_tp: number } = {
     user_id: null,
@@ -270,7 +276,14 @@ export class UserListComponent implements OnInit {
         this.loadData();
       })
       .catch(error => {
-        console.error('Erreur lors de la création du workload:', error);
+        if (error.status === 409) {
+          window.alert('Impossible d\'ajouter cet utilisateur car il est déjà présent dans cette ressource.');
+
+
+        } else {
+          console.error('Erreur lors de la création du workload:', error);
+          window.alert('Une erreur est survenue lors de la création du workload.');
+        }
       });
   }
 
@@ -430,33 +443,3 @@ export class UserListComponent implements OnInit {
   }
 
 }
-
-
-document.addEventListener('DOMContentLoaded', () => {
-  const toggleAddUserButton = document.getElementById('toggleAddUserButton');
-  const addUserDiv = document.getElementById('addUserDiv');
-
-  const toggleCreateResourceButton = document.getElementById('toggleCreateResourceButton');
-  const CreateResourceDiv = document.getElementById('CreateResourceDiv');
-
-  const toggleCreateSemesterButton = document.getElementById('toggleCreateSemesterButton');
-  const CreateSemesterDiv = document.getElementById('CreateSemesterDiv');
-
-  if (toggleAddUserButton && addUserDiv) {
-    toggleAddUserButton.addEventListener('click', () => {
-      addUserDiv.classList.toggle('hidden');
-    });
-  }
-
-  if (toggleCreateResourceButton && CreateResourceDiv) {
-    toggleCreateResourceButton.addEventListener('click', () => {
-      CreateResourceDiv.classList.toggle('hidden');
-    });
-  }
-
-  if (toggleCreateSemesterButton && CreateSemesterDiv) {
-    toggleCreateSemesterButton.addEventListener('click', () => {
-      CreateSemesterDiv.classList.toggle('hidden');
-    });
-  }
-});
