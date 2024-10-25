@@ -103,6 +103,7 @@ export class ResourceListComponent implements OnInit {
         name: [resource.name],
         resource_type_id: [resource.resource_type_id],
         description: [resource.description],
+        ref_teacher_id: [resource.ref_teacher_id],
         semester_id: [resource.semester_id],
         course: [resource.course],
         vol_nat: [resource.vol_nat],
