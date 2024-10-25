@@ -23,23 +23,21 @@
         </div>
 
         <li *ngFor="let user of filteredUserList; trackBy: trackByUser">
-          <div class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
-            [class.bg-blue-500]="selectedProfessor === user.id" 
-            (click)="toggleProfessor(user.id)">
+          <div
+            class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
+            [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
             <span>{{ user.username }}</span>
             <div class="flex gap-2" (click)="$event.stopPropagation()">
-              <button 
-                (click)="showUserDetails(user)" 
+              <button (click)="showUserDetails(user)"
                 class="btn-size bg-green-500 text-white rounded-md hover:bg-green-300 transition-colors duration-200">
                 <img src="details.svg" alt="Details icon">
               </button>
-              <button 
-              class="btn-size bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
+              <button
+                class="btn-size bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
                 (click)="openEditUserModal(user)">
                 <img src="edit.svg" alt="Edit icon">
               </button>
-              <button 
-              class="btn-size bg-red-500 text-white rounded-md hover:bg-red-400 transition-colors duration-200"  
+              <button class="btn-size bg-red-500 text-white rounded-md hover:bg-red-400 transition-colors duration-200"
                 (click)="removeFromUser(user.id)">
                 <img src="delete.svg" alt="Delete icon">
               </button>
@@ -141,7 +139,9 @@
           <div class="flex flex-col w-full gap-2">
             <div class="bg-fond_section1 p-2 rounded-lg mb-2">
               <div class="text-white bg-fond_section2 p-2 rounded-lg mb-2">
-                {{ resource.name }} - {{ getUserNameById(resource.ref_teacher_id) }}
+                {{ getResourceTypeById(resource.resource_type_id) }} {{ resource.name
+                }} - {{
+                getUserNameById(resource.ref_teacher_id) }}
               </div>
 
               <div class="bg-fond_section2 p-2 rounded-lg overflow-x-auto">
@@ -214,7 +214,8 @@
                       <td>
                         <button
                           class="ml-2 bg-green-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-green-300 transition-colors duration-200"
-                          (click)="submitNewWorkload(resource.id, selectedSemester)"><img src="add.svg" alt="Add icon"></button>
+                          (click)="submitNewWorkload(resource.id, selectedSemester)"><img src="add.svg"
+                            alt="Add icon"></button>
                       </td>
                     </tr>
                   </tbody>

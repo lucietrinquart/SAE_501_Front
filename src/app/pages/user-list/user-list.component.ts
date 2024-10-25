@@ -4,6 +4,8 @@ import { User } from "../../shared/interfaces/user";
 import { UserWorkload } from '../../shared/interfaces/user-workload';
 import { ResourceWorkload } from '../../shared/interfaces/resource-workload';
 import { ResourceList } from '../../shared/interfaces/resources';
+import { ResourceType } from '../../shared/interfaces/resourcesTypes';
+
 import { Semester } from '../../shared/interfaces/semester';
 import { ResourceWithUsers } from '../../shared/interfaces/resource-with-users';
 import { HttpClient } from '@angular/common/http';
@@ -35,6 +37,7 @@ export class UserListComponent implements OnInit {
   users: User[] = [];
   userworkload: UserWorkload[] = [];
   resources: ResourceList[] = [];
+  resourceTypes: ResourceType[] = [];
   semestre: Semester[] = [];
 
   // Nouvelles propriétés pour la recherche d'utilisateurs
@@ -128,14 +131,16 @@ export class UserListComponent implements OnInit {
       this.apiService.requestApi(`/user?ts=${timestamp}`, 'GET', null),
       this.apiService.requestApi(`/user/workload?ts=${timestamp}`, 'GET', null),
       this.apiService.requestApi(`/resource?ts=${timestamp}`, 'GET', null),
-      this.apiService.requestApi(`/semesters?ts=${timestamp}`, 'GET', null)
+      this.apiService.requestApi(`/semesters?ts=${timestamp}`, 'GET', null),
+      this.apiService.requestApi(`/resource/types`, 'GET', null)
     ])
-      .then(([users, userworkload, resources, semesters]) => {
+      .then(([users, userworkload, resources, semesters, resourceTypes]) => {
         this.users = Array.isArray(users) ? users : [];
         this.filteredUserList = this.users; // Initialize filtered list
         this.userworkload = Array.isArray(userworkload) ? userworkload : [];
         this.resources = Array.isArray(resources) ? resources : [];
         this.semestre = Array.isArray(semesters) ? semesters : [];
+        this.resourceTypes = Array.isArray(resourceTypes) ? resourceTypes : []; // Store resource types data
 
         this.userworkload = this.userworkload.map(workload => ({
           ...workload,
@@ -387,6 +392,14 @@ export class UserListComponent implements OnInit {
     }
     const user = this.users.find(u => u.id === userId);
     return user ? 'Professeur Référent: ' + user.username : 'Unknown'; // Si aucun utilisateur n'est trouvé
+  }
+
+  getResourceTypeById(resourcetypeId: number | null | undefined): string {
+    if (resourcetypeId === null || resourcetypeId === undefined) {
+      return 'Pas de Type -'; // Return empty if ID is null or undefined
+    }
+    const resourceType = this.resourceTypes.find(type => type.id === resourcetypeId);
+    return resourceType ? resourceType.name + ' -' : 'Type Inconnu'; // Return resource type name or 'Unknown'
   }
 
   logout() {
