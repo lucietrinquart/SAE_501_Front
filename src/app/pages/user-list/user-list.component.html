@@ -13,10 +13,10 @@
 
       </div>
       <ul>
-        <button id="toggleAddUserButton"
+        <button (click)="formUserHidden = !formUserHidden"
           class=" mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
           Utilisateur</button>
-        <div id="addUserDiv" class="hidden mb-2">
+        <div [class.hidden]="formUserHidden">
           <app-form-create-user></app-form-create-user>
         </div>
         <!-- Barre de recherche -->
@@ -28,26 +28,26 @@
 
 
         <li *ngFor="let user of filteredUserList; trackBy: trackByUser">
-          <div class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
-            [class.bg-blue-500]="selectedProfessor === user.id" 
-            (click)="toggleProfessor(user.id)">
+          <div
+            class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
+            [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
             <span>{{ user.username }}</span>
             <div class="flex gap-2" (click)="$event.stopPropagation()">
-              <button 
+              <button
                 class="btn-size mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
                 (click)="openEditUserModal(user)">
                 Éditer
               </button>
-              <button 
-                class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200" 
+              <button
+                class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200"
                 (click)="removeFromUser(user.id)">
                 X
               </button>
             </div>
           </div>
-          
+
           <!-- Edit User Modal -->
-          <div *ngIf="editingUser?.id === user.id" 
+          <div *ngIf="editingUser?.id === user.id"
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             (click)="closeEditUserModal()">
             <div class="bg-white p-6 rounded-lg shadow-xl w-96" (click)="$event.stopPropagation()">
@@ -55,79 +55,51 @@
               <form (submit)="updateUser($event)">
                 <div class="mb-4">
                   <label class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
-                  <input 
-                    type="text" 
-                    [(ngModel)]="editUserForm.username" 
-                    name="username"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                    required
-                  >
+                  <input type="text" [(ngModel)]="editUserForm.username" name="username"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
                 </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                  <input 
-                    type="email" 
-                    [(ngModel)]="editUserForm.email" 
-                    name="email"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                    required
-                  >
+                  <input type="email" [(ngModel)]="editUserForm.email" name="email"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
                 </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 text-sm font-bold mb-2">
-                    Nouveau mot de passe: 
+                    Nouveau mot de passe:
                     <span class="font-normal text-gray-500 text-xs">Laisser vide pour ne pas le changer</span>
                   </label>
                   <div class="relative">
-                    <input 
-                      [type]="showPassword ? 'text' : 'password'"
-                      [(ngModel)]="editUserForm.password" 
-                      name="password"
-                      class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                    >
-                    <button 
-                      type="button"
+                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="editUserForm.password"
+                      name="password" class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500">
+                    <button type="button"
                       class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                      (click)="togglePasswordVisibility()"
-                    >
+                      (click)="togglePasswordVisibility()">
                       <span class="text-sm">{{ showPassword ? 'Hide' : 'Show' }}</span>
                     </button>
                   </div>
                 </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 text-sm font-bold mb-2">Horaires maximales</label>
-                  <input 
-                    type="number" 
-                    [(ngModel)]="editUserForm.max_hour_vol" 
-                    name="max_hour_vol"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                  >
+                  <input type="number" [(ngModel)]="editUserForm.max_hour_vol" name="max_hour_vol"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500">
                 </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
-                  <select 
-                    [(ngModel)]="editUserForm.role" 
-                    name="role"
-                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
-                    required
-                  >
+                  <select [(ngModel)]="editUserForm.role" name="role"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500" required>
                     <option value="admin">Admin</option>
                     <option value="enseignant">Enseignant titulaire</option>
                     <option value="vacataire">Vacataire</option>
                   </select>
                 </div>
                 <div class="flex justify-end gap-2">
-                  <button 
-                    type="button"
+                  <button type="button"
                     class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition-colors duration-200"
-                    (click)="closeEditUserModal()"
-                  >
+                    (click)="closeEditUserModal()">
                     Annuler
                   </button>
-                  <button 
-                    type="submit"
-                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition-colors duration-200"
-                  >
+                  <button type="submit"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition-colors duration-200">
                     Enregistrer
                   </button>
                 </div>
@@ -151,14 +123,14 @@
               <h1 class="text-blanc">Semestre {{ sem.id }}</h1>
             </div>
           </li>
-          <button id="toggleCreateSemesterButton"
+          <button (click)="formSemesterHidden = !formSemesterHidden"
             class="cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
             Semester</button>
         </ul>
 
         <!-- Affichage des Ressources -->
         <div class="bg-fond_section1 rounded-lg mb-2 mt-2">
-          <button id="toggleCreateResourceButton"
+          <button (click)="formResourceHidden = !formResourceHidden"
             class=" ml-2 mb-2 mt-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200">Créer
             Ressource</button>
           <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
@@ -317,10 +289,10 @@
           </div>
         </div>
       </div>
-      <div id="CreateResourceDiv" class="hidden">
+      <div [class.hidden]="formResourceHidden">
         <app-form-create-resource></app-form-create-resource>
       </div>
-      <div id="CreateSemesterDiv" class="hidden">
+      <div [class.hidden]="formSemesterHidden">
         <app-form-create-semester></app-form-create-semester>
       </div>
     </div>
