@@ -175,4 +175,19 @@ export class ResourceListComponent implements OnInit {
     this.apiService.logout();  // Déconnecter l'utilisateur via l'API
     this.router.navigate(['/login']); // Rediriger vers la page de login
   }
+
+  deleteResource(resourceId: number): void {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette ressource ?')) {
+      this.apiService.deleteResource(resourceId).subscribe(
+        () => {
+          // Remove the deleted resource from filteredResources
+          this.filteredResources = this.filteredResources.filter(item => item.id !== resourceId);
+        },
+        error => {
+          console.error('Erreur lors de la suppression de la ressource', error);
+          // Optionally handle error (show a message to the user)
+        }
+      );
+    }
+  }
 }

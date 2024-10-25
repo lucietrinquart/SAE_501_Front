@@ -50,6 +50,10 @@ export class ApiService {
     return this.http.put<ResourceList>(`${this.apiUrl}/resource/update/${id}`, data, { headers });
   }
 
+  deleteResource(resourceId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/resource/delete/${resourceId}`);
+  }
+
   public async requestApi(
     action: string,
     method: string = 'GET',
@@ -119,7 +123,7 @@ export class ApiService {
         },
         error: (error: HttpErrorResponse) => {
           console.error(`Erreur pour ${action}:`, error);
-          
+
           if (form) {
             form.enable();
             if (error.error.message) {
@@ -165,13 +169,13 @@ export class ApiService {
       .filter(([_, value]) => value !== undefined && value !== null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join('&');
-      
+
     return queryParams ? `${url}?${queryParams}` : url;
   }
 
   private setFormAlert(
-    form: FormGroup, 
-    message: string, 
+    form: FormGroup,
+    message: string,
     status: 'success' | 'error' | 'warning' | 'info' = 'success'
   ): void {
     form.setErrors({
@@ -188,11 +192,11 @@ export class ApiService {
     this.authService.logout(); // Utilise la méthode logout du AuthService
 
     return this.http.post(`${this.apiUrl}/logout`, {}).subscribe(() => {
-        this.router.navigate(['/']).then(() => {
-            window.location.reload(); // Recharge la page après la redirection
-        });
+      this.router.navigate(['/']).then(() => {
+        window.location.reload(); // Recharge la page après la redirection
+      });
     }, error => {
-        console.error('Erreur lors de la déconnexion:', error);
+      console.error('Erreur lors de la déconnexion:', error);
     });
   }
 }

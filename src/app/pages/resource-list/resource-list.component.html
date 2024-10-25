@@ -47,7 +47,7 @@
                 (click)="$event.stopPropagation()">
             </div>
 
-            <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+            <div class="flex items-center gap-2 w-full sm:w-full justify-between sm:justify-end">
 
 
               <!-- Select for editing referent teacher -->
@@ -63,13 +63,23 @@
 
 
 
-              <span class="bg-blue-100 text-blue-600 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm">
-                {{ getResourceTypeName(item.resource_type_id) }}
-              </span>
-              <span class="text-blanc transition-transform duration-200" [class.transform]="expandedResources[item.id]"
-                [class.rotate-180]="expandedResources[item.id]">
-                ▼
-              </span>
+              <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                <!-- Select for editing resource type -->
+                <label class="sr-only">Type de ressource</label>
+                <select *ngIf="resourceForms[item.id].get('resource_type_id')"
+                  [formControl]="$any(resourceForms[item.id].get('resource_type_id'))"
+                  class="bg-blue-100 text-blue-600 px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm"
+                  (click)="$event.stopPropagation()">
+                  <option *ngFor="let type of resourceTypes" [value]="type.id">{{ type.name }}</option>
+                </select>
+
+                <!-- Dropdown icon -->
+                <span class="text-blanc transition-transform duration-200"
+                  [class.transform]="expandedResources[item.id]" [class.rotate-180]="expandedResources[item.id]">
+                  ▼
+                </span>
+              </div>
+
             </div>
           </div>
 
@@ -135,10 +145,17 @@
                 </div>
               </div>
 
+              <!-- Delete button -->
+
               <!-- Bouton de confirmation -->
               <div class="flex justify-end mt-3 sm:mt-4">
+                <button (click)="deleteResource(item.id); $event.stopPropagation()"
+                  class="px-3 py-1 text-black mr-2 bg-red-500 rounded hover:bg-red-300 transition-colors duration-200">
+                  Supprimer
+                </button>
+
                 <button (click)="saveChanges(item); $event.stopPropagation()"
-                  class="px-2 sm:px-3 py-1 sm:py-1.5 bg-bouton text-white rounded-lg hover:bg-green-600 transition-colors duration-200 text-xs sm:text-sm">
+                  class="px-2 sm:px-3 py-1 sm:py-1.5 bg-bouton text-white rounded-lg hover:bg-blue-400  transition-colors duration-200 text-xs sm:text-sm">
                   Confirmer les modifications
                 </button>
               </div>
