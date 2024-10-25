@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {UserListComponent} from "./pages/user-list/user-list.component";
 import {ResourceListComponent} from "./pages/resource-list/resource-list.component";
+import { PdfFormComponent } from './pages/pdf-form-component/pdf-form-component.component';
 import {UserWorkloadComponent} from "./pages/user-workload/user-workload.component";
 import {FormulaireComponent} from "./pages/formulaire/formulaire.component";
 import {DetailUserComponent} from "./pages/detail-user/detail-user.component";
@@ -34,6 +35,14 @@ const routes: Routes = [
     component: ResourceListComponent,
     canActivate: [AuthGuard],
     data: { roles: ['admin', 'enseignant']  }
+  },
+  {
+    path: 'pdf',
+    component: PdfFormComponent,
+  },
+  {
+    path: 'user-workload',
+    component: UserWorkloadComponent,
   },
   {
     path: 'vacataire',
