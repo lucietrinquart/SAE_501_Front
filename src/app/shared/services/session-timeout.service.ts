@@ -1,60 +1,40 @@
-// session-timeout.service.ts
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
+import { ApiService } from './api.service'; // Service d'authentification
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionTimeoutService {
-  private readonly TIMEOUT_DURATION = 30 * 60 * 1000; // 8 heures en millisecondes
-  private timeoutId: any;
+  private timeout: any;
+  private readonly timeoutDuration = 20 * 60 * 1000; // 30 minutes
 
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {}
+  constructor(private apiService: ApiService, private router: Router) {
+    this.startTimeout();
+  }
 
+  // Redémarre le minuteur d'inactivité
+  resetTimeout() {
+    clearTimeout(this.timeout);
+    this.startTimeout();
+  }
+
+  // Démarre le minuteur
+  startTimeout() {
+    this.timeout = setTimeout(() => {
+      this.logout();
+    }, this.timeoutDuration);
+  }
+
+  // Méthode de déconnexion
+  logout() {
+    this.apiService.logout();  // Déconnecter l'utilisateur via l'API
+    this.router.navigate(['/login']); // Rediriger vers la page de login
+  }
+
+  // Écouter les événements utilisateur
   monitorUserActivity() {
-    // Initialiser la surveillance
-    this.resetTimer();
-
-    // Écouter la fermeture de la fenêtre
-    window.addEventListener('beforeunload', () => {
-      this.authService.logout();
-    });
-
-    // Écouter la visibilité de la page
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        this.authService.logout();
-      }
-    });
-
-    // Réinitialiser le timer sur les événements utilisateur
-    const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
-    events.forEach(event => {
-      document.addEventListener(event, () => this.resetTimer());
-    });
-  }
-
-  private resetTimer() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-
-    this.timeoutId = setTimeout(() => {
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      if (user?.id) {
-        this.authService.logout();
-        this.router.navigate(['']);
-      }
-    }, this.TIMEOUT_DURATION);
-  }
-
-  stopMonitoring() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
+    window.addEventListener('mousemove', () => this.resetTimeout());
+    window.addEventListener('keydown', () => this.resetTimeout());
   }
 }

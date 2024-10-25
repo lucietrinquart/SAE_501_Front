@@ -9,10 +9,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<any>(this.getUserFromStorage());
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor() {
-    // Vérifie la validité de la session au démarrage
-    this.checkSession();
-  }
+  constructor() {}
 
   // Récupérer l'utilisateur du localStorage
   private getUserFromStorage() {
@@ -20,23 +17,9 @@ export class AuthService {
     return user ? JSON.parse(user) : null;
   }
 
-  // Vérifier la validité de la session
-  private checkSession() {
-    const loginTimestamp = localStorage.getItem('loginTimestamp');
-    if (loginTimestamp) {
-      const currentTime = new Date().getTime();
-      const loginTime = parseInt(loginTimestamp);
-      
-      if (currentTime - loginTime > 8 * 60 * 60 * 1000) {
-        this.logout();
-      }
-    }
-  }
-
   // Définir l'utilisateur courant
   setCurrentUser(user: any) {
     localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('loginTimestamp', new Date().getTime().toString());
     this.currentUserSubject.next(user);
   }
 
@@ -54,7 +37,6 @@ export class AuthService {
   // Déconnexion
   logout() {
     localStorage.removeItem('user');
-    localStorage.removeItem('loginTimestamp');
     this.currentUserSubject.next(null);
   }
 }

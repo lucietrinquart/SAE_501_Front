@@ -1,4 +1,3 @@
-// app.component.ts
 import { Component } from '@angular/core';
 import { ApiService } from "./shared/services/api.service";
 import { SessionTimeoutService } from './shared/services/session-timeout.service';
@@ -12,10 +11,10 @@ export class AppComponent {
   title = 'SAE501';
 
   constructor(
-    public apiService: ApiService,
-    private sessionTimeoutService: SessionTimeoutService
+    public apiService: ApiService, // Injection d'ApiService
+    private sessionTimeoutService: SessionTimeoutService // Injection de SessionTimeoutService
   ) {
-    // Démarrer la surveillance de l'activité de l'utilisateur
+    // Démarrer la surveillance de l'activité de l'utilisateur pour la session
     this.sessionTimeoutService.monitorUserActivity();
   }
 }
