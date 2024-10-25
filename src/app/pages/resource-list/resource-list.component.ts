@@ -156,19 +156,22 @@ export class ResourceListComponent implements OnInit {
 
   public saveChanges(resource: ResourceList): void {
     const updatedData = this.resourceForms[resource.id].value;
-    this.apiService.updateResource(resource.id, updatedData).subscribe(
-      updatedResource => {
-        console.log('Resource updated successfully', updatedResource);
-        const index = this.resources.findIndex(r => r.id === resource.id);
-        if (index !== -1) {
-          this.resources[index] = { ...this.resources[index], ...updatedData };
+    if (confirm('Êtes-vous sûr de vouloir modifier cette ressource ?')) {
+      this.apiService.updateResource(resource.id, updatedData).subscribe(
+        updatedResource => {
+          console.log('Resource updated successfully', updatedResource);
+          const index = this.resources.findIndex(r => r.id === resource.id);
+          if (index !== -1) {
+            this.resources[index] = { ...this.resources[index], ...updatedData };
+          }
+          this.filterResources();
+          window.location.reload();
+        },
+        error => {
+          console.error('Error updating resource:', error);
         }
-        this.filterResources();
-      },
-      error => {
-        console.error('Error updating resource:', error);
-      }
-    );
+      );
+    }
   }
 
   logout() {
