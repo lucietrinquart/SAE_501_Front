@@ -96,17 +96,26 @@
         </button>
 
         <!-- -->
+        <div class="signature-section mt-4">
+          <h3>Signature</h3>
+          <p class="text-muted">Veuillez signer dans la zone ci-dessous</p>
+          <app-signature-pad 
+            (signatureSaved)="onSignatureSaved($event)">
+          </app-signature-pad>
+        </div>
+
+        <!-- -->
         <div *ngIf="pdfFileId" class="mt-3">
           <div class="alert alert-success">
             Le PDF a été généré avec succès !
           </div>
-          <div class="d-flex gap-2">
+          <div class="d-flex justify-between gap-10">
             <!-- Bouton pour visualiser -->
-            <button (click)="viewPdf()" class="btn btn-secondary">
+            <button (click)="viewPdf()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
               Visualiser le PDF
             </button>
             <!-- Bouton pour télécharger -->
-            <button (click)="downloadPdf()" class="btn btn-primary">
+            <button (click)="downloadPdf()" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
               Télécharger le PDF
             </button>
           </div>

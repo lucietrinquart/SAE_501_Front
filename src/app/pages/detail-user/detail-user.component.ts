@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from "../../shared/services/api.service";
 import { User } from "../../shared/interfaces/user";
 import { UserWorkload } from '../../shared/interfaces/user-workload';
@@ -6,6 +6,7 @@ import { ResourceList } from '../../shared/interfaces/resources';
 import { Semester } from '../../shared/interfaces/semester';
 import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SignaturePadComponent } from '../../shared/signature-pad/signature-pad.component';
 
 interface ResourceWithWorkload extends ResourceList {
   workload?: UserWorkload;
@@ -50,6 +51,9 @@ export class DetailUserComponent implements OnInit {
   currentUser: User | null = null;
   userId: number | null = null;
 
+  // Signature
+  signatureData: string | null = null;
+
   // PFP purpose
   pdfFileId: string | null = null;
   isGenerating: boolean = false;
@@ -61,6 +65,7 @@ export class DetailUserComponent implements OnInit {
     public router: Router,
     private route: ActivatedRoute
   ) { }
+  
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -176,13 +181,23 @@ export class DetailUserComponent implements OnInit {
     };
   }
 
+  onSignatureSaved(signature: string) {
+    this.signatureData = signature;
+    //console.log('Signature sauvegardée');
+  }
+
   async onSubmit() {
     try {
       this.isGenerating = true;
       this.errorMessage = null;
       this.pdfFileId = null;
 
-      const pdfData = this.preparePdfData();
+      const pdfData = {
+        ...this.preparePdfData(),
+        signature: this.signatureData
+      };
+
+      //console.log(pdfData);
       
       const response = await this.apiService.requestApi(
         '/pdf/generate',
@@ -192,7 +207,7 @@ export class DetailUserComponent implements OnInit {
       
       if (response && response.file_id) {
         this.pdfFileId = response.file_id;
-        console.log('PDF généré avec succès', response);
+        //console.log('PDF généré avec succès', response);
       } else {
         throw new Error('Identifiant du PDF non reçu');
       }
