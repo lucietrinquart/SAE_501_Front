@@ -46,7 +46,15 @@
                 class="w-full p-1 sm:p-2 font-medium text-base sm:text-lg focus:outline-none border-b border-transparent focus:border-blue-500 rounded bg-blanc"
                 (click)="$event.stopPropagation()">
             </div>
+
             <div class="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+
+    
+              <span class="text-blanc text-sm px-2">
+                Référent : {{ getReferentTeacherName(item.ref_teacher_id) }}
+              </span>
+
+
               <span class="bg-blue-100 text-blue-600 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm">
                 {{ getResourceTypeName(item.resource_type_id) }}
               </span>
@@ -77,7 +85,7 @@
                   class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-blanc"
                   (click)="$event.stopPropagation()">
               </div>
-
+              
               <!-- Semestre -->
               <div class="mb-3 sm:mb-4">
                 <label class="font-bold text-blanc block mb-1 sm:mb-2 text-sm sm:text-base">Semestre</label>

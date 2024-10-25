@@ -1,11 +1,11 @@
-// api.service.ts
 import { Injectable, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { ResourceList } from '../interfaces/resources';
+import { User } from '../interfaces/user';
 import { Router } from '@angular/router';
-import { AuthService } from './auth.service'; // Assurez-vous que ce chemin est correct
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,11 @@ export class ApiService {
   public getResources(): Observable<ResourceList[]> {
     const headers = this.getNoCacheHeaders();
     return this.http.get<ResourceList[]>(`${this.apiUrl}/resource`, { headers });
+  }
+
+  public getUsers(): Observable<User[]> {
+    const headers = this.getNoCacheHeaders();
+    return this.http.get<User[]>(`${this.apiUrl}/user`, { headers });
   }
 
   public getResourceTypes(): Observable<any[]> {

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from "../../shared/services/api.service";
 import { ResourceList } from "../../shared/interfaces/resources";
+import { User } from "../../shared/interfaces/user";
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -26,6 +27,7 @@ export class ResourceListComponent implements OnInit {
   public expandedResources: { [key: number]: boolean } = {};
   public searchTerm: string = '';
   public isCreateModalOpen: boolean = false;
+  public users: User[] = [];
   private searchSubject = new Subject<string>();
 
   constructor(
@@ -46,7 +48,26 @@ export class ResourceListComponent implements OnInit {
   ngOnInit(): void {
     this.loadResourceTypes();
     this.loadResources();
+    this.loadUsers();
   }
+
+  private loadUsers(): void {
+    this.apiService.getUsers().subscribe(
+      (users: User[]) => {
+        this.users = users;
+      },
+      error => {
+        console.error('Error loading users:', error);
+      }
+    );
+  }
+
+  public getReferentTeacherName(teacherId: number | null | undefined): string {
+    if (!teacherId) return 'Aucun référent';
+    const teacher = this.users.find(user => user.id === teacherId);
+    return teacher ? teacher.username : 'Référent inconnu';
+}
+
 
   public toggleCreateModal(): void {
     this.isCreateModalOpen = !this.isCreateModalOpen;
@@ -82,6 +103,7 @@ export class ResourceListComponent implements OnInit {
         name: [resource.name],
         resource_type_id: [resource.resource_type_id],
         description: [resource.description],
+        ref_teacher_id: [resource.ref_teacher_id],
         semester_id: [resource.semester_id],
         course: [resource.course],
         vol_nat: [resource.vol_nat],
