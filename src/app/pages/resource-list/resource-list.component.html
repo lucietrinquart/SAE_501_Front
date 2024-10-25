@@ -3,9 +3,7 @@
     <!-- Navigation des semestres style tab -->
     <nav class="mb-4 lg:mb-8 text-blanc overflow-x-auto">
       <div class="flex items-center gap-2 sm:gap-3 min-w-max">
-        <a href="/user" class="px-3 sm:px-4 lg:px-6 py-2 lg:py-3 text-sm font-medium bg-white rounded p-2 text-black hover:bg-gray-300 transition-colors duration-200">Accueil</a>
-
-<a (click)="logout()" class="px-3 sm:px-4 lg:px-6 py-2 lg:py-3 text-sm font-medium bg-white rounded p-2 text-black hover:bg-gray-300 transition-colors duration-200 cursor-pointer">Déconnecter</a>
+        <app-nav-buttons></app-nav-buttons>
         <button (click)="filterBySemester(null)" [class.border-b-2]="selectedSemester === null"
           class="px-3 sm:px-4 lg:px-6 py-2 lg:py-3 text-sm font-medium transition-colors duration-200 bg-fond_section1 rounded hover:bg-fond_section2">
           Tous
@@ -129,18 +127,16 @@
 
   <!-- Modal pour créer une ressource -->
   <div *ngIf="isCreateModalOpen"
-      class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-70 flex items-start justify-center pt-15"
-      (click)="toggleCreateModal()">
+    class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-70 flex items-start justify-center pt-15"
+    (click)="toggleCreateModal()">
     <div class="relative bg-fond_section1 rounded-lg shadow-xl p-6 m-4 max-w-xl w-full"
-        (click)="$event.stopPropagation()">
+      (click)="$event.stopPropagation()">
       <!-- Bouton pour fermer -->
-      <button
-        (click)="toggleCreateModal()"
-        class="absolute top-4 right-4 text-blanc hover:text-gray-300 transition-colors duration-200"
-      >
+      <button (click)="toggleCreateModal()"
+        class="absolute top-4 right-4 text-blanc hover:text-gray-300 transition-colors duration-200">
         ✕
       </button>
-    
+
       <!-- Formulaire de création -->
       <app-form-create-resource></app-form-create-resource>
     </div>
