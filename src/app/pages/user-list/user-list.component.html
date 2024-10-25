@@ -26,11 +26,110 @@
 
 
         <li *ngFor="let user of filteredUserList; trackBy: trackByUser">
-          <div class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded"
-            [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
+          <div class="user-container cursor-pointer px-4 py-2 mb-2 bg-white border rounded flex justify-between items-center"
+            [class.bg-blue-500]="selectedProfessor === user.id" 
+            (click)="toggleProfessor(user.id)">
             <span>{{ user.username }}</span>
-            <button class=" bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn" (click)="removeFromUser(user.id)"
-              (click)="$event.stopPropagation()">X</button>
+            <div class="flex gap-2" (click)="$event.stopPropagation()">
+              <button 
+                class="bg-yellow-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-yellow-400 transition-colors duration-200"
+                (click)="openEditUserModal(user)">
+                Edit
+              </button>
+              <button 
+                class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200" 
+                (click)="removeFromUser(user.id)">
+                X
+              </button>
+            </div>
+          </div>
+          
+          <!-- Edit User Modal -->
+          <div *ngIf="editingUser?.id === user.id" 
+            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            (click)="closeEditUserModal()">
+            <div class="bg-white p-6 rounded-lg shadow-xl w-96" (click)="$event.stopPropagation()">
+              <h2 class="text-xl font-bold mb-4">Edit User</h2>
+              <form (submit)="updateUser($event)">
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
+                  <input 
+                    type="text" 
+                    [(ngModel)]="editUserForm.username" 
+                    name="username"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                  <input 
+                    type="email" 
+                    [(ngModel)]="editUserForm.email" 
+                    name="email"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">
+                    New Password: 
+                    <span class="font-normal text-gray-500 text-xs">(leave empty to keep current password)</span>
+                  </label>
+                  <div class="relative">
+                    <input 
+                      [type]="showPassword ? 'text' : 'password'"
+                      [(ngModel)]="editUserForm.password" 
+                      name="password"
+                      class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+                    >
+                    <button 
+                      type="button"
+                      class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      (click)="togglePasswordVisibility()"
+                    >
+                      <span class="text-sm">{{ showPassword ? 'Hide' : 'Show' }}</span>
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Max Hours:</label>
+                  <input 
+                    type="number" 
+                    [(ngModel)]="editUserForm.max_hour_vol" 
+                    name="max_hour_vol"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+                  >
+                </div>
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
+                  <select 
+                    [(ngModel)]="editUserForm.role" 
+                    name="role"
+                    class="w-full px-3 py-2 border rounded focus:outline-none focus:border-blue-500"
+                    required
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                  </select>
+                </div>
+                <div class="flex justify-end gap-2">
+                  <button 
+                    type="button"
+                    class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition-colors duration-200"
+                    (click)="closeEditUserModal()"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition-colors duration-200"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </li>
 
