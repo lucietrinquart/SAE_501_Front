@@ -30,9 +30,8 @@
             </select>
         </div>
 
-
         <div class="form-group">
-            <label for="profRef" class="block text-sm font-medium text-gray-700">profRef</label>
+            <label for="profRef" class="block text-sm font-medium text-gray-700">Professeur Référent</label>
             <select id="profRef" [(ngModel)]="newResource.ref_teacher_id" name="profRef" required
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                 <option class="text-black" *ngFor="let user of users" [value]="user.id">{{ user.username }}</option>
