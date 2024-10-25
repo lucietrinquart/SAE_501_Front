@@ -28,6 +28,7 @@
             [class.bg-blue-500]="selectedProfessor === user.id" (click)="toggleProfessor(user.id)">
             <span>{{ user.username }}</span>
             <div class="flex gap-2" (click)="$event.stopPropagation()">
+<<<<<<< Updated upstream
               <button
                 class="btn-size cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
                 (click)="openEditUserModal(user)">
@@ -35,14 +36,34 @@
               </button>
               <button
                 class="bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg remove-btn hover:bg-red-400 transition-colors duration-200"
+=======
+              <button 
+                (click)="showUserDetails(user)" 
+                class="btn-size bg-green-500 text-white rounded-md hover:bg-green-300 transition-colors duration-200">
+                <img src="details.svg" alt="Details icon">
+              </button>
+              <button 
+                class="btn-size bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
+                (click)="openEditUserModal(user)">
+                <img src="edit.svg" alt="Edit icon">
+              </button>
+              <button 
+                class="btn-size bg-red-500 text-white rounded-md hover:bg-red-400 transition-colors duration-200" 
+>>>>>>> Stashed changes
                 (click)="removeFromUser(user.id)">
-                X
+                <img src="delete.svg" alt="Delete icon">
               </button>
             </div>
           </div>
+<<<<<<< Updated upstream
 
           <!-- Modal -->
           <div *ngIf="editingUser?.id === user.id"
+=======
+          
+          <!-- Edit Usr Modal -->
+          <div *ngIf="editingUser?.id === user.id" 
+>>>>>>> Stashed changes
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             (click)="closeEditUserModal()">
             <div class="bg-white p-6 rounded-lg shadow-xl w-96" (click)="$event.stopPropagation()">
@@ -130,12 +151,23 @@
             Créer Ressource
           </button>
           <div *ngFor="let user of filteredUserList; trackBy: trackByUser">
+<<<<<<< Updated upstream
             <button *ngIf="selectedProfessor === user.id" (click)="showUserDetails(user)"
               class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-300 transition-colors duration-200">
               Détail
             </button>
           </div>
         </div>
+=======
+          </div>
+
+          <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
+            <div class="flex flex-col w-full gap-2">
+              <div class="bg-fond_section1 p-2 rounded-lg mb-2">
+                <div class="text-white bg-fond_section2 p-2 rounded-lg mb-2">{{ resource.name }} - {{
+                  getUserNameById(resource.ref_teacher_id) }}
+                </div>
+>>>>>>> Stashed changes
 
         <!-- Table des ressources -->
         <div class="w-full" *ngFor="let resource of getFilteredResources(); trackBy: trackByResource">
@@ -160,7 +192,74 @@
                     <ng-container
                       *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
                       <tr>
+<<<<<<< Updated upstream
                         <td class="border px-4 py-2 text-white">{{ getUsername(workload.user_id) }}</td>
+=======
+                        <th class="border px-4 py-2 text-white">Utilisateurs</th>
+                        <th class="border px-4 py-2 text-white">CM</th>
+                        <th class="border px-4 py-2 text-white">TD</th>
+                        <th class="border px-4 py-2 text-white">TP</th>
+                        <th class="border px-4 py-2 text-white">Actions</th>
+
+                      </tr>
+                    </thead>
+                    <tbody class="rounded-lg">
+                      <ng-container
+                        *ngFor="let workload of getFilteredUserWorkloads(resource.id); trackBy: trackByWorkload">
+                        <tr>
+                          <td class="border px-4 py-2 text-white">{{ getUsername(workload.user_id) }}</td>
+
+                          <!-- vol_cm input -->
+                          <td class="border px-4 py-2">
+                            <input type="number" [ngModel]="workload.vol_cm"
+                              (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
+                              class="border rounded p-1" />
+                          </td>
+
+                          <!-- vol_td input -->
+                          <td class="border px-4 py-2">
+                            <input type="number" [ngModel]="workload.vol_td"
+                              (blur)="updateWorkload(workload.id, 'vol_td', getInputValue($event))"
+                              class="border rounded p-1" />
+                          </td>
+
+                          <!-- vol_tp input -->
+                          <td class="border px-4 py-2">
+                            <input type="number" [ngModel]="workload.vol_tp"
+                              (blur)="updateWorkload(workload.id, 'vol_tp', getInputValue($event))"
+                              class="border rounded p-1" />
+                          </td>
+
+                          <td>
+                            <button
+                              class=" ml-2 bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg  hover:bg-red-400 transition-colors duration-200"
+                              (click)="removeFromWorkload(workload.id)"> <img src="delete.svg" alt="Delete icon"></button>
+                          </td>
+
+                        </tr>
+                      </ng-container>
+                    </tbody>
+
+                    <tbody>
+                      <tr>
+                        <td class="border px-4 py-2 relative">
+                          <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()"
+                            (focus)="showDropdown = true" class="border rounded p-1 w-full"
+                            placeholder="Rechercher un professeur..." />
+
+                          <div *ngIf="showDropdown && filteredUsers.length > 0"
+                            class="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                            <ul class="py-1">
+                              <li *ngFor="let user of filteredUsers" (click)="selectUser(user)"
+                                class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                                {{ user.username }}
+                              </li>
+                            </ul>
+                          </div>
+                        </td>
+
+                        <!-- vol_cm input -->
+>>>>>>> Stashed changes
                         <td class="border px-4 py-2">
                           <input type="number" [ngModel]="workload.vol_cm"
                             (blur)="updateWorkload(workload.id, 'vol_cm', getInputValue($event))"
@@ -178,8 +277,13 @@
                         </td>
                         <td>
                           <button
+<<<<<<< Updated upstream
                             class="ml-2 bg-red-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-red-400 transition-colors duration-200"
                             (click)="removeFromWorkload(workload.id)">X</button>
+=======
+                            class="ml-2 bg-green-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-green-300 transition-colors duration-200"
+                            (click)="submitNewWorkload(resource.id, selectedSemester)"><img src="add.svg" alt="Add icon"></button>
+>>>>>>> Stashed changes
                         </td>
                       </tr>
                     </ng-container>
