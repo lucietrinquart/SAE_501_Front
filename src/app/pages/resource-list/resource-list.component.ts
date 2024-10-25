@@ -66,7 +66,7 @@ export class ResourceListComponent implements OnInit {
     if (!teacherId) return 'Aucun référent';
     const teacher = this.users.find(user => user.id === teacherId);
     return teacher ? teacher.username : 'Référent inconnu';
-}
+  }
 
 
   public toggleCreateModal(): void {
@@ -103,7 +103,7 @@ export class ResourceListComponent implements OnInit {
         name: [resource.name],
         resource_type_id: [resource.resource_type_id],
         description: [resource.description],
-        ref_teacher_id: [resource.ref_teacher_id],
+        ref_teacher_id: [resource.ref_teacher_id], // This should correctly bind to the select input
         semester_id: [resource.semester_id],
         course: [resource.course],
         vol_nat: [resource.vol_nat],
