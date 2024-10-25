@@ -34,6 +34,7 @@
     <div *ngIf="filteredResources.length === 0" class="text-center py-4 sm:py-6 lg:py-8 text-blanc">
       Aucune ressource trouvée pour ce semestre.
     </div>
+    
     <!-- Grid des ressources -->
     <div class="container mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-7xl mx-auto">
@@ -58,18 +59,28 @@
             </div>
           </div>
 
-          <!-- Description toujours visible -->
-          <div class="mb-3 text-blanc">
-            <p class="text-xs sm:text-sm">{{ resourceForms[item.id].get('description')?.value }}</p>
+          <!-- Description -->
+          <div class="mb-3">
+            <label class="text-xs text-blanc sm:text-sm block mb-1">Description</label>
+            <textarea 
+              *ngIf="resourceForms[item.id].get('description')"
+              [formControl]="$any(resourceForms[item.id].get('description'))"
+              class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-blanc"
+              rows="3"
+              (click)="$event.stopPropagation()">
+            </textarea>
           </div>
 
           <!-- Contenu dépliable -->
           <div *ngIf="expandedResources[item.id]" class="mt-4">
             <form [formGroup]="resourceForms[item.id]">
-              <!-- Formation si existe -->
-              <div *ngIf="item.course" class="mb-3 sm:mb-4">
+              <!-- Formation -->
+              <div class="mb-3 sm:mb-4">
                 <label class="font-bold text-blanc block mb-1 sm:mb-2 text-sm sm:text-base">Formation</label>
-                <p class="text-blanc text-sm">{{ item.course }}</p>
+                <input 
+                  formControlName="course"
+                  class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-blanc"
+                  (click)="$event.stopPropagation()">
               </div>
 
               <!-- Semestre -->
@@ -145,3 +156,4 @@
       <app-form-create-resource></app-form-create-resource>
     </div>
   </div>
+</div>
