@@ -270,9 +270,16 @@ export class UserListComponent implements OnInit {
         this.loadData();
       })
       .catch(error => {
-        console.error('Erreur lors de la création du workload:', error);
+        if (error.status === 409) {
+          window.alert('Impossible d\'ajouter cet utilisateur car il est déjà présent dans cette ressource.');
+          
+
+        } else {
+          console.error('Erreur lors de la création du workload:', error);
+          window.alert('Une erreur est survenue lors de la création du workload.');
+        }
       });
-  }
+}
 
   calculateResourceTotals(resourceId: number) {
     const workloads = this.getFilteredUserWorkloads(resourceId);
