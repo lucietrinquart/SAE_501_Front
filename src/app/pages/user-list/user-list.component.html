@@ -34,7 +34,7 @@
             <span>{{ user.username }}</span>
             <div class="flex gap-2" (click)="$event.stopPropagation()">
               <button 
-                class="bg-yellow-500 text-white p-2 pr-3 pl-3 rounded-lg hover:bg-yellow-400 transition-colors duration-200"
+                class="btn-size mb-2 cursor-pointer px-4 py-2 bg-bouton text-white border rounded border-none hover:bg-blue-400 transition-colors duration-200"
                 (click)="openEditUserModal(user)">
                 Éditer
               </button>
@@ -75,8 +75,8 @@
                 </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 text-sm font-bold mb-2">
-                    New Password: 
-                    <span class="font-normal text-gray-500 text-xs">(leave empty to keep current password)</span>
+                    Nouveau mot de passe: 
+                    <span class="font-normal text-gray-500 text-xs">Laisser vide pour ne pas le changer</span>
                   </label>
                   <div class="relative">
                     <input 
@@ -95,7 +95,7 @@
                   </div>
                 </div>
                 <div class="mb-4">
-                  <label class="block text-gray-700 text-sm font-bold mb-2">Max Hours:</label>
+                  <label class="block text-gray-700 text-sm font-bold mb-2">Horaires maximales</label>
                   <input 
                     type="number" 
                     [(ngModel)]="editUserForm.max_hour_vol" 
@@ -112,7 +112,8 @@
                     required
                   >
                     <option value="admin">Admin</option>
-                    <option value="user">User</option>
+                    <option value="enseignant">Enseignant titulaire</option>
+                    <option value="vacataire">Vacataire</option>
                   </select>
                 </div>
                 <div class="flex justify-end gap-2">
@@ -121,13 +122,13 @@
                     class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition-colors duration-200"
                     (click)="closeEditUserModal()"
                   >
-                    Cancel
+                    Annuler
                   </button>
                   <button 
                     type="submit"
                     class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400 transition-colors duration-200"
                   >
-                    Save Changes
+                    Enregistrer
                   </button>
                 </div>
               </form>
