@@ -37,10 +37,6 @@ const routes: Routes = [
     data: { roles: ['admin', 'enseignant']  }
   },
   {
-    path: 'pdf',
-    component: PdfFormComponent,
-  },
-  {
     path: 'user-workload',
     component: UserWorkloadComponent,
   },
