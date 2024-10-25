@@ -83,6 +83,7 @@ export class ResourceListComponent implements OnInit {
         resource_type_id: [resource.resource_type_id],
         description: [resource.description],
         semester_id: [resource.semester_id],
+        course: [resource.course],
         vol_nat: [resource.vol_nat],
         vol_nat_tp: [resource.vol_nat_tp],
         vol_e: [resource.vol_e],
@@ -100,7 +101,7 @@ export class ResourceListComponent implements OnInit {
     let filtered = this.resources;
 
     if (this.selectedSemester !== null) {
-      filtered = filtered.filter(resource => 
+      filtered = filtered.filter(resource =>
         resource.semester_id === this.selectedSemester
       );
     }
