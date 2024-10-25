@@ -32,7 +32,7 @@
     <div *ngIf="filteredResources.length === 0" class="text-center py-4 sm:py-6 lg:py-8 text-blanc">
       Aucune ressource trouvée pour ce semestre.
     </div>
-    
+
     <!-- Grid des ressources -->
     <div class="container mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 max-w-7xl mx-auto">
@@ -60,11 +60,9 @@
           <!-- Description -->
           <div class="mb-3">
             <label class="text-xs text-blanc sm:text-sm block mb-1">Description</label>
-            <textarea 
-              *ngIf="resourceForms[item.id].get('description')"
+            <textarea *ngIf="resourceForms[item.id].get('description')"
               [formControl]="$any(resourceForms[item.id].get('description'))"
-              class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-blanc"
-              rows="3"
+              class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-blanc" rows="3"
               (click)="$event.stopPropagation()">
             </textarea>
           </div>
@@ -75,8 +73,7 @@
               <!-- Formation -->
               <div class="mb-3 sm:mb-4">
                 <label class="font-bold text-blanc block mb-1 sm:mb-2 text-sm sm:text-base">Formation</label>
-                <input 
-                  formControlName="course"
+                <input formControlName="course"
                   class="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500 text-sm bg-blanc"
                   (click)="$event.stopPropagation()">
               </div>
